@@ -1,0 +1,44 @@
+{
+  "locations": [
+    {
+      "id": "loc-guwahati-warehouse",
+      "name": "Guwahati Central Warehouse",
+      "kind": "warehouse",
+      "lat": 26.1445,
+      "lon": 91.7362,
+      "status": "active"
+    },
+    {
+      "id": "loc-dibrugarh-hospital",
+      "name": "Dibrugarh District Hospital",
+      "kind": "hospital",
+      "lat": 27.4728,
+      "lon": 94.912,
+      "status": "active"
+    },
+    {
+      "id": "loc-shillong-market",
+      "name": "Shillong Central Market",
+      "kind": "market",
+      "lat": 25.5788,
+      "lon": 91.8933,
+      "status": "active"
+    },
+    {
+      "id": "loc-itanagar-village",
+      "name": "Itanagar Township",
+      "kind": "village",
+      "lat": 27.0844,
+      "lon": 93.6053,
+      "status": "reduced_access"
+    },
+    {
+      "id": "loc-agra-bridge",
+      "name": "Saraighat Bridge Junction",
+      "kind": "agricultural_centre",
+      "lat": 26.1528,
+      "lon": 91.6636,
+      "status": "active"
+    }
+  ]
+}

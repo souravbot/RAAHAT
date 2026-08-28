@@ -1,0 +1,899 @@
+{
+  "metadata": {
+    "region_id": "raahat_demo_ner",
+    "region_name": "RAAHAT Fictional NER Demo Region",
+    "version": 1,
+    "state_updated_at": "2026-01-01T00:00:00+00:00"
+  },
+  "nodes": [
+    {
+      "id": "J001",
+      "name": "Riverside Crossing Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 26.18,
+      "lng": 91.72,
+      "attributes": {
+        "junction_class": "PRIMARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "J002",
+      "name": "Hill Station Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 26.14,
+      "lng": 91.66,
+      "attributes": {
+        "junction_class": "SECONDARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "J003",
+      "name": "Valley Spur Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 26.1,
+      "lng": 91.78,
+      "attributes": {
+        "junction_class": "SECONDARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "J004",
+      "name": "Tea Belt Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 26.22,
+      "lng": 91.62,
+      "attributes": {
+        "junction_class": "TERTIARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "H001",
+      "name": "Central District Hospital",
+      "type": "HOSPITAL",
+      "category": null,
+      "lat": 26.17,
+      "lng": 91.7,
+      "attributes": {
+        "bed_count": 220,
+        "inventory": {
+          "medicine": {
+            "quantity": 500,
+            "unit": "units",
+            "daily_consumption_rate": 80
+          }
+        }
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "H002",
+      "name": "City Referral Hospital",
+      "type": "HOSPITAL",
+      "category": null,
+      "lat": 26.15,
+      "lng": 91.68,
+      "attributes": {
+        "bed_count": 160,
+        "inventory": {
+          "medicine": {
+            "quantity": 500,
+            "unit": "units",
+            "daily_consumption_rate": 80
+          }
+        }
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "H003",
+      "name": "Sector Health Centre",
+      "type": "HOSPITAL",
+      "category": null,
+      "lat": 26.12,
+      "lng": 91.74,
+      "attributes": {
+        "bed_count": 60,
+        "inventory": {
+          "medicine": {
+            "quantity": 500,
+            "unit": "units",
+            "daily_consumption_rate": 80
+          }
+        }
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "W001",
+      "name": "Central Supply Warehouse",
+      "type": "WAREHOUSE",
+      "category": null,
+      "lat": 26.19,
+      "lng": 91.73,
+      "attributes": {
+        "capacity": 10000,
+        "inventory": {
+          "medicine": {
+            "quantity": 3000,
+            "unit": "units"
+          },
+          "water": {
+            "quantity": 15000,
+            "unit": "litres"
+          },
+          "food": {
+            "quantity": 8000,
+            "unit": "kg"
+          }
+        }
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "W002",
+      "name": "Riverside Depot",
+      "type": "WAREHOUSE",
+      "category": null,
+      "lat": 26.16,
+      "lng": 91.71,
+      "attributes": {
+        "capacity": 8000,
+        "inventory": {
+          "medicine": {
+            "quantity": 2200,
+            "unit": "units"
+          },
+          "water": {
+            "quantity": 9000,
+            "unit": "litres"
+          },
+          "food": {
+            "quantity": 5000,
+            "unit": "kg"
+          }
+        }
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "W003",
+      "name": "Hill Storage Hub",
+      "type": "WAREHOUSE",
+      "category": null,
+      "lat": 26.13,
+      "lng": 91.67,
+      "attributes": {
+        "capacity": 6000,
+        "inventory": {
+          "medicine": {
+            "quantity": 1500,
+            "unit": "units"
+          },
+          "water": {
+            "quantity": 6000,
+            "unit": "litres"
+          },
+          "food": {
+            "quantity": 3500,
+            "unit": "kg"
+          }
+        }
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "M001",
+      "name": "Town Centre Market",
+      "type": "MARKET",
+      "category": null,
+      "lat": 26.18,
+      "lng": 91.69,
+      "attributes": {
+        "market_capacity": 4000
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "M002",
+      "name": "Riverside Market",
+      "type": "MARKET",
+      "category": null,
+      "lat": 26.155,
+      "lng": 91.72,
+      "attributes": {
+        "market_capacity": 3000
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V001",
+      "name": "Lungri Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 26.13,
+      "lng": 91.76,
+      "attributes": {
+        "population": 4200,
+        "vulnerability_index": 0.3
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V002",
+      "name": "Bhage Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 26.11,
+      "lng": 91.7,
+      "attributes": {
+        "population": 1800,
+        "vulnerability_index": 0.25
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "J005",
+      "name": "East Belt Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 26.26,
+      "lng": 91.88,
+      "attributes": {
+        "junction_class": "SECONDARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "J006",
+      "name": "North Spur Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 26.3,
+      "lng": 91.94,
+      "attributes": {
+        "junction_class": "TERTIARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V003",
+      "name": "Dholpur Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 26.24,
+      "lng": 91.84,
+      "attributes": {
+        "population": 6200,
+        "vulnerability_index": 0.2
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V004",
+      "name": "Rangia Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 26.28,
+      "lng": 91.9,
+      "attributes": {
+        "population": 3300,
+        "vulnerability_index": 0.28
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V005",
+      "name": "Nalbari Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 26.2,
+      "lng": 91.82,
+      "attributes": {
+        "population": 5100,
+        "vulnerability_index": 0.22
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V006",
+      "name": "Sonapur Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 26.31,
+      "lng": 91.97,
+      "attributes": {
+        "population": 1400,
+        "vulnerability_index": 0.35
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "J007",
+      "name": "South Remote Junction",
+      "type": "ROAD_JUNCTION",
+      "category": null,
+      "lat": 25.98,
+      "lng": 91.62,
+      "attributes": {
+        "junction_class": "TERTIARY"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "B001",
+      "name": "Far Bank River Bridge",
+      "type": "BRIDGE",
+      "category": null,
+      "lat": 26.06,
+      "lng": 91.72,
+      "attributes": {
+        "bridge_class": "MAJOR",
+        "criticality_hint": "only_road_crossing"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "B002",
+      "name": "Deep Gorge Bridge",
+      "type": "BRIDGE",
+      "category": null,
+      "lat": 26.02,
+      "lng": 91.68,
+      "attributes": {
+        "bridge_class": "MINOR",
+        "criticality_hint": "seasonal_risk"
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V007",
+      "name": "Alubari Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 25.95,
+      "lng": 91.66,
+      "attributes": {
+        "population": 2600,
+        "vulnerability_index": 0.45
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    },
+    {
+      "id": "V008",
+      "name": "Nongriat Village",
+      "type": "VILLAGE",
+      "category": null,
+      "lat": 25.92,
+      "lng": 91.6,
+      "attributes": {
+        "population": 1200,
+        "vulnerability_index": 0.5
+      },
+      "state": {
+        "status": "NORMAL"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "E001",
+      "type": "ROAD",
+      "connects": [
+        "J001",
+        "J002"
+      ],
+      "distance_km": 8.0,
+      "base_travel_time_min": 12.0,
+      "status": "OPEN",
+      "risk_score": 8,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E002",
+      "type": "ROAD",
+      "connects": [
+        "J002",
+        "J003"
+      ],
+      "distance_km": 14.0,
+      "base_travel_time_min": 22.0,
+      "status": "OPEN",
+      "risk_score": 15,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E003",
+      "type": "ROAD",
+      "connects": [
+        "J003",
+        "J001"
+      ],
+      "distance_km": 12.0,
+      "base_travel_time_min": 18.0,
+      "status": "OPEN",
+      "risk_score": 10,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E004",
+      "type": "ROAD",
+      "connects": [
+        "J001",
+        "J004"
+      ],
+      "distance_km": 9.0,
+      "base_travel_time_min": 14.0,
+      "status": "OPEN",
+      "risk_score": 12,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E005",
+      "type": "ROAD",
+      "connects": [
+        "J001",
+        "H001"
+      ],
+      "distance_km": 2.0,
+      "base_travel_time_min": 4.0,
+      "status": "OPEN",
+      "risk_score": 5,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E006",
+      "type": "ROAD",
+      "connects": [
+        "J002",
+        "H002"
+      ],
+      "distance_km": 1.5,
+      "base_travel_time_min": 3.0,
+      "status": "OPEN",
+      "risk_score": 4,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E007",
+      "type": "ROAD",
+      "connects": [
+        "J003",
+        "H003"
+      ],
+      "distance_km": 2.5,
+      "base_travel_time_min": 5.0,
+      "status": "OPEN",
+      "risk_score": 6,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E008",
+      "type": "ROAD",
+      "connects": [
+        "J001",
+        "W001"
+      ],
+      "distance_km": 1.8,
+      "base_travel_time_min": 4.0,
+      "status": "OPEN",
+      "risk_score": 5,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E009",
+      "type": "ROAD",
+      "connects": [
+        "J002",
+        "W002"
+      ],
+      "distance_km": 2.2,
+      "base_travel_time_min": 4.0,
+      "status": "OPEN",
+      "risk_score": 5,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E010",
+      "type": "ROAD",
+      "connects": [
+        "J003",
+        "W003"
+      ],
+      "distance_km": 2.0,
+      "base_travel_time_min": 4.0,
+      "status": "OPEN",
+      "risk_score": 5,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E011",
+      "type": "ROAD",
+      "connects": [
+        "J001",
+        "M001"
+      ],
+      "distance_km": 1.2,
+      "base_travel_time_min": 3.0,
+      "status": "OPEN",
+      "risk_score": 4,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E012",
+      "type": "ROAD",
+      "connects": [
+        "J003",
+        "M002"
+      ],
+      "distance_km": 1.6,
+      "base_travel_time_min": 3.0,
+      "status": "OPEN",
+      "risk_score": 4,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E013",
+      "type": "ROAD",
+      "connects": [
+        "J003",
+        "V001"
+      ],
+      "distance_km": 6.0,
+      "base_travel_time_min": 14.0,
+      "status": "OPEN",
+      "risk_score": 20,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E014",
+      "type": "ROAD",
+      "connects": [
+        "J002",
+        "V002"
+      ],
+      "distance_km": 7.5,
+      "base_travel_time_min": 16.0,
+      "status": "OPEN",
+      "risk_score": 22,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E015",
+      "type": "ROAD",
+      "connects": [
+        "J004",
+        "V002"
+      ],
+      "distance_km": 9.0,
+      "base_travel_time_min": 20.0,
+      "status": "OPEN",
+      "risk_score": 25,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E016",
+      "type": "ROAD",
+      "connects": [
+        "J001",
+        "J005"
+      ],
+      "distance_km": 18.0,
+      "base_travel_time_min": 30.0,
+      "status": "OPEN",
+      "risk_score": 12,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E017",
+      "type": "ROAD",
+      "connects": [
+        "J005",
+        "V003"
+      ],
+      "distance_km": 4.0,
+      "base_travel_time_min": 9.0,
+      "status": "OPEN",
+      "risk_score": 12,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E018",
+      "type": "ROAD",
+      "connects": [
+        "J005",
+        "V004"
+      ],
+      "distance_km": 6.5,
+      "base_travel_time_min": 13.0,
+      "status": "OPEN",
+      "risk_score": 16,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E019",
+      "type": "ROAD",
+      "connects": [
+        "J005",
+        "J006"
+      ],
+      "distance_km": 10.0,
+      "base_travel_time_min": 18.0,
+      "status": "OPEN",
+      "risk_score": 14,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E020",
+      "type": "ROAD",
+      "connects": [
+        "J006",
+        "V004"
+      ],
+      "distance_km": 5.0,
+      "base_travel_time_min": 11.0,
+      "status": "OPEN",
+      "risk_score": 15,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E021",
+      "type": "ROAD",
+      "connects": [
+        "J005",
+        "V005"
+      ],
+      "distance_km": 7.0,
+      "base_travel_time_min": 15.0,
+      "status": "OPEN",
+      "risk_score": 18,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E022",
+      "type": "ROAD",
+      "connects": [
+        "J006",
+        "V006"
+      ],
+      "distance_km": 8.0,
+      "base_travel_time_min": 19.0,
+      "status": "OPEN",
+      "risk_score": 24,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E023",
+      "type": "BRIDGE",
+      "connects": [
+        "J003",
+        "B001"
+      ],
+      "distance_km": 5.0,
+      "base_travel_time_min": 8.0,
+      "status": "OPEN",
+      "risk_score": 12,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E024",
+      "type": "ROAD",
+      "connects": [
+        "B001",
+        "J007"
+      ],
+      "distance_km": 16.0,
+      "base_travel_time_min": 34.0,
+      "status": "OPEN",
+      "risk_score": 20,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E025",
+      "type": "ROAD",
+      "connects": [
+        "J007",
+        "V007"
+      ],
+      "distance_km": 6.5,
+      "base_travel_time_min": 16.0,
+      "status": "OPEN",
+      "risk_score": 24,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E026",
+      "type": "ROAD",
+      "connects": [
+        "J007",
+        "V008"
+      ],
+      "distance_km": 8.5,
+      "base_travel_time_min": 22.0,
+      "status": "OPEN",
+      "risk_score": 30,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E027",
+      "type": "BRIDGE",
+      "connects": [
+        "J004",
+        "B002"
+      ],
+      "distance_km": 12.0,
+      "base_travel_time_min": 26.0,
+      "status": "OPEN",
+      "risk_score": 40,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E028",
+      "type": "ROAD",
+      "connects": [
+        "B002",
+        "J007"
+      ],
+      "distance_km": 9.0,
+      "base_travel_time_min": 24.0,
+      "status": "OPEN",
+      "risk_score": 35,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    },
+    {
+      "id": "E029",
+      "type": "ROAD",
+      "connects": [
+        "V007",
+        "V008"
+      ],
+      "distance_km": 7.0,
+      "base_travel_time_min": 18.0,
+      "status": "OPEN",
+      "risk_score": 26,
+      "attributes": {},
+      "state": {
+        "last_updated_at": ""
+      }
+    }
+  ]
+}
