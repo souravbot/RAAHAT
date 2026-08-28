@@ -37,6 +37,26 @@ class RegionalState(BaseModel):
     def edge_map(self) -> Dict[str, TransportEdge]:
         return {e.id: e for e in self.edges}
 
+    def clone(self) -> "RegionalState":
+        """Deep copy used for simulation isolation.
+
+        Simulations operate on this clone; the live instance is never touched.
+        """
+        return self.model_copy(deep=True)
+
+    def to_payload(self) -> Dict:
+        """JSON-serializable form (matches what /twin returns node/edge-wise)."""
+        return {
+            "metadata": self.metadata.model_dump(),
+            "nodes": [n.model_dump_simple() for n in self.nodes],
+            "edges": [e.model_dump_simple() for e in self.edges],
+        }
+
+    def bump_version(self, updated_at: str) -> None:
+        """Increment the state version and refresh the updated timestamp."""
+        self.metadata.version += 1
+        self.metadata.state_updated_at = updated_at
+
     @field_validator("nodes")
     @classmethod
     def node_ids_unique(cls, v):

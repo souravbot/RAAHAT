@@ -3,6 +3,7 @@
 
 import { create } from 'zustand'
 import { fetchTwin } from '../api/twin'
+import { applyDisruption, runSimulation, resetDemo } from '../api/disruptionApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
@@ -20,6 +21,11 @@ export const useTwinStore = create((set, get) => ({
   // map instance ref (set by MapView) for programmatic focus
   mapRef: null,
 
+  // ---- disruption / simulation UI state ----
+  disruptionBusy: false,
+  disruptionError: null,
+  simResult: null,
+
   // ---- actions ----
   loadTwin: async () => {
     set({ loading: true, error: null })
@@ -36,6 +42,65 @@ export const useTwinStore = create((set, get) => ({
       set({ loading: false, error: err.message })
     }
   },
+
+  refreshTwin: async () => {
+    try {
+      const twin = await fetchTwin()
+      set({
+        metadata: twin.metadata,
+        nodes: twin.nodes,
+        edges: twin.edges,
+        summary: twin.summary,
+      })
+      return twin
+    } catch (err) {
+      set({ error: err.message })
+      throw err
+    }
+  },
+
+  // Applies a LIVE disruption, then refreshes the twin so the map updates.
+  applyLiveDisruption: async (payload) => {
+    set({ disruptionBusy: true, disruptionError: null })
+    try {
+      const result = await applyDisruption(payload)
+      await get().refreshTwin()
+      set({ disruptionBusy: false })
+      return result
+    } catch (err) {
+      set({ disruptionBusy: false, disruptionError: err.message })
+      throw err
+    }
+  },
+
+  // Runs a hypothetical simulation without touching live state.
+  runSimulationNow: async (payload) => {
+    set({ disruptionBusy: true, disruptionError: null })
+    try {
+      const result = await runSimulation(payload)
+      set({ disruptionBusy: false, simResult: result })
+      return result
+    } catch (err) {
+      set({ disruptionBusy: false, disruptionError: err.message })
+      throw err
+    }
+  },
+
+  resetDemo: async () => {
+    set({ disruptionBusy: true, disruptionError: null })
+    try {
+      await resetDemo()
+      await get().refreshTwin()
+      set({ disruptionBusy: false, simResult: null, selectedNodeId: null, selectedEdgeId: null })
+      return true
+    } catch (err) {
+      set({ disruptionBusy: false, disruptionError: err.message })
+      throw err
+    }
+  },
+
+  clearDisruptionError: () => set({ disruptionError: null }),
+  clearSimResult: () => set({ simResult: null }),
 
   setMapRef: (map) => set({ mapRef: map }),
 

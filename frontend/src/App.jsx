@@ -1,13 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTwinStore } from './state/useTwinStore'
 import MapView from './map/MapView'
 import Sidebar from './panels/Sidebar'
 import NodeDetailPanel from './panels/NodeDetailPanel'
 import EdgeDetailPanel from './panels/EdgeDetailPanel'
+import DisruptionControl from './components/disruption/DisruptionControl'
+import SimulationResult from './components/disruption/SimulationResult'
 import './App.css'
 
 export default function App() {
   const loadTwin = useTwinStore((s) => s.loadTwin)
+  const resetDemo = useTwinStore((s) => s.resetDemo)
   const loading = useTwinStore((s) => s.loading)
   const error = useTwinStore((s) => s.error)
   const metadata = useTwinStore((s) => s.metadata)
@@ -17,12 +20,27 @@ export default function App() {
   const selectedNodeId = useTwinStore((s) => s.selectedNodeId)
   const selectedEdgeId = useTwinStore((s) => s.selectedEdgeId)
 
+  const [confirmReset, setConfirmReset] = useState(false)
+
   useEffect(() => {
     loadTwin()
   }, [loadTwin])
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId)
   const selectedEdge = edges.find((e) => e.id === selectedEdgeId)
+
+  const handleReset = async () => {
+    if (!confirmReset) {
+      setConfirmReset(true)
+      return
+    }
+    setConfirmReset(false)
+    try {
+      await resetDemo()
+    } catch {
+      // error surfaced via disruptionError
+    }
+  }
 
   return (
     <div className="app">
@@ -54,13 +72,25 @@ export default function App() {
       ) : (
         <div className="app-body">
           <Sidebar />
-          <MapView />
-          {(selectedNode || selectedEdge) && (
-            <div className="detail-slot">
-              {selectedNode && <NodeDetailPanel node={selectedNode} />}
-              {selectedEdge && <EdgeDetailPanel edge={selectedEdge} />}
-            </div>
-          )}
+          <div className="map-region">
+            <MapView />
+            {(selectedNode || selectedEdge) && (
+              <div className="detail-overlay">
+                {selectedNode && <NodeDetailPanel node={selectedNode} />}
+                {selectedEdge && <EdgeDetailPanel edge={selectedEdge} />}
+              </div>
+            )}
+          </div>
+          <aside className="control-column">
+            <DisruptionControl />
+            <SimulationResult />
+            <button
+              className={`btn reset-btn ${confirmReset ? 'reset-confirm' : ''}`}
+              onClick={handleReset}
+            >
+              {confirmReset ? 'Confirm reset?' : 'RESET DEMO'}
+            </button>
+          </aside>
         </div>
       )}
     </div>

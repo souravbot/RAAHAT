@@ -2,14 +2,18 @@
 
 Phase 1 is file-backed. Later phases may swap the repository behind this service
 without changing the engine interfaces.
+
+This service is the single owner of ALL live-state mutations. Engines must go
+through these mutators; they must never edit the graph/state ad hoc.
 """
 
+import datetime
 import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List
 
-from app.models.edge import TransportEdge
+from app.models.edge import EdgeStatus, TransportEdge
 from app.models.node import RegionalNode
 from app.models.regional_state import RegionalState
 from app.core.config import get_settings
@@ -19,8 +23,15 @@ class RegionalStateError(Exception):
     """Raised when the regional state cannot be loaded or is invalid."""
 
 
+def _now_iso() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
 class RegionalStateService:
-    """Owns the current canonical RegionalState instance + read access helpers."""
+    """Owns the current canonical RegionalState instance + read access helpers.
+
+    All live-state mutations go through the mutator methods below.
+    """
 
     def __init__(self, data_path: Path):
         self._data_path = data_path
@@ -95,6 +106,48 @@ class RegionalStateService:
                 if other != node_id:
                     seen[other] = None
         return list(seen.keys())
+
+    # ---------------------------------------------------------------- mutation
+    def bump_metadata(self) -> None:
+        """Increment version + refresh updated_at after a live mutation."""
+        self._state.bump_version(_now_iso())
+
+    def set_edge_status(self, edge_id: str, status: EdgeStatus, risk_score: int) -> TransportEdge:
+        """Set an edge's status + risk score (e.g. a closure). Mutation only."""
+        edge = self.get_edge(edge_id)
+        edge.status = status
+        edge.risk_score = max(0, min(100, int(risk_score)))
+        self._bump_metadata()
+        return edge
+
+    def set_edge_risk(self, edge_id: str, risk_score: int) -> TransportEdge:
+        """Set an edge's risk score and derive a consistent status.
+
+        Never sets CLOSED from a risk change alone:
+          risk < 40   -> OPEN
+          risk >= 40  -> AT_RISK
+        """
+        edge = self.get_edge(edge_id)
+        new_risk = max(0, min(100, int(risk_score)))
+        edge.risk_score = new_risk
+        if new_risk < 40:
+            edge.status = EdgeStatus.OPEN
+        else:
+            edge.status = EdgeStatus.AT_RISK
+        self._bump_metadata()
+        return edge
+
+    def reset(self) -> RegionalState:
+        """Restore the original fixture baseline and reset metadata version.
+
+        Live state lives in memory; the on-disk fixture is unchanged, so a fresh
+        load restores the baseline.
+        """
+        self._state = self._load()
+        # Force a clean version/a timestamp so the reset is visible.
+        self._state.metadata.version = 1
+        self._state.metadata.state_updated_at = _now_iso()
+        return self._state
 
 
 @lru_cache(maxsize=1)
