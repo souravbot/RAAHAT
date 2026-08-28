@@ -1,70 +1,68 @@
-import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet'
-import { fetchLocations } from './api/mock'
+import { useEffect } from 'react'
+import { useTwinStore } from './state/useTwinStore'
+import MapView from './map/MapView'
+import Sidebar from './panels/Sidebar'
+import NodeDetailPanel from './panels/NodeDetailPanel'
+import EdgeDetailPanel from './panels/EdgeDetailPanel'
 import './App.css'
 
-// Fix default marker icon paths (react-leaflet + bundlers)
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-})
-
-const KIND_LABEL = {
-  warehouse: '🏬 Warehouse',
-  hospital: '🏥 Hospital',
-  market: '🛒 Market',
-  village: '🏘️ Village',
-  agricultural_centre: '🌾 Agricultural Centre',
-}
-
 export default function App() {
-  const [locations, setLocations] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const loadTwin = useTwinStore((s) => s.loadTwin)
+  const loading = useTwinStore((s) => s.loading)
+  const error = useTwinStore((s) => s.error)
+  const metadata = useTwinStore((s) => s.metadata)
+  const nodes = useTwinStore((s) => s.nodes)
+  const edges = useTwinStore((s) => s.edges)
+  const summary = useTwinStore((s) => s.summary)
+  const selectedNodeId = useTwinStore((s) => s.selectedNodeId)
+  const selectedEdgeId = useTwinStore((s) => s.selectedEdgeId)
 
   useEffect(() => {
-    fetchLocations()
-      .then((data) => setLocations(data.locations ?? []))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [])
+    loadTwin()
+  }, [loadTwin])
+
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId)
+  const selectedEdge = edges.find((e) => e.id === selectedEdgeId)
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>RAAHAT</h1>
-        <span className="subtitle">Regional AI for Accessibility, Assistance &amp; Transport</span>
-        <span className={`api-status ${error ? 'error' : loading ? 'loading' : 'ok'}`}>
-          {error ? `API error: ${error}` : loading ? 'Loading locations…' : `Loaded ${locations.length} locations`}
-        </span>
+        <div className="brand">
+          <h1>RAAHAT</h1>
+          <span className="subtitle">Regional AI for Accessibility, Assistance &amp; Transport</span>
+        </div>
+        <div
+          className={`api-status ${error ? 'error' : loading ? 'loading' : 'ok'}`}
+          title={error || undefined}
+        >
+          {error
+            ? 'Offline'
+            : loading
+              ? 'Loading twin…'
+              : `Twin v${metadata?.version} · ${summary?.total_nodes ?? nodes.length} nodes / ${summary?.total_edges ?? edges.length} routes`}
+        </div>
       </header>
 
-      <div className="map-wrap">
-        <MapContainer
-          center={[26.14, 92.0]}
-          zoom={6}
-          className="map"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {locations.map((loc) => (
-            <Marker key={loc.id} position={[loc.lat, loc.lon]}>
-              <Popup>
-                <strong>{loc.name}</strong>
-                <br />
-                {KIND_LABEL[loc.kind] ?? loc.kind}
-                <br />
-                <em>Status: {loc.status}</em>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+      {error ? (
+        <div className="error-screen">
+          <h2>Unable to load the Regional Twin</h2>
+          <p>{error}</p>
+          <p className="error-hint">
+            Start the RAAHAT backend (<code>uvicorn app.main:app --port 8000</code>) and refresh.
+          </p>
+        </div>
+      ) : (
+        <div className="app-body">
+          <Sidebar />
+          <MapView />
+          {(selectedNode || selectedEdge) && (
+            <div className="detail-slot">
+              {selectedNode && <NodeDetailPanel node={selectedNode} />}
+              {selectedEdge && <EdgeDetailPanel edge={selectedEdge} />}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
