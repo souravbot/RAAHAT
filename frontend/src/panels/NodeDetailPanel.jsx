@@ -8,7 +8,13 @@ import { attributeRows, categoryLabel, coord } from '../utils/formatters'
 export default function NodeDetailPanel({ node }) {
   const edges = useTwinStore((s) => s.edges)
   const clearSelection = useTwinStore((s) => s.clearSelection)
+  const villageAccessibility = useTwinStore((s) => s.villageAccessibility)
   const meta = nodeMeta(node.type)
+
+  // Get accessibility data for villages
+  const villageAccess = node.type === 'VILLAGE' 
+    ? villageAccessibility?.find(v => v.village_id === node.id)
+    : null
 
   const connectedEdges = edges.filter((e) => e.connects.includes(node.id))
   const rows = attributeRows(node.attributes)
@@ -65,6 +71,39 @@ export default function NodeDetailPanel({ node }) {
           <dd>{connectedEdges.length}</dd>
         </div>
       </dl>
+
+      {villageAccess && (
+        <div className="detail-block accessibility-block">
+          <h3 className="detail-subtitle">ACCESSIBILITY INTELLIGENCE</h3>
+          <div className="accessibility-score-display">
+            <span className="access-score-label">Overall Score</span>
+            <span className="access-score-value">{villageAccess.accessibility_score.toFixed(1)}</span>
+            <span className="access-score-suffix">/ 100</span>
+          </div>
+          <div className="accessibility-breakdown">
+            <div className="access-item">
+              <span className="access-label">Nearest Hospital</span>
+              <span className="access-value">
+                {villageAccess.hospital.reachable
+                  ? `${villageAccess.hospital.nearest_service_name} (Hospital) — ${villageAccess.hospital.travel_cost_min} min`
+                  : 'Unreachable'}
+              </span>
+            </div>
+            <div className="access-item">
+              <span className="access-label">Nearest Warehouse</span>
+              <span className="access-value">
+                {villageAccess.warehouse.reachable
+                  ? `${villageAccess.warehouse.nearest_service_name} (Warehouse) — ${villageAccess.warehouse.travel_cost_min} min`
+                  : 'Unreachable'}
+              </span>
+            </div>
+            <div className="access-item">
+              <span className="access-label">Network Resilience</span>
+              <span className="access-value">{villageAccess.network_resilience_score.toFixed(1)} / 100</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {rows.length > 0 && (
         <div className="detail-block">

@@ -10,6 +10,7 @@ from app.api import disruption
 from app.api import simulation
 from app.api import events
 from app.api import reset
+from app.api import accessibility
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -39,3 +40,4 @@ app.include_router(disruption.router)
 app.include_router(simulation.router)
 app.include_router(events.router)
 app.include_router(reset.router)
+app.include_router(accessibility.router)

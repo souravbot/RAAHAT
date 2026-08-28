@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from app.models.edge import TransportEdge
 from app.models.node import RegionalNode
 from app.models.regional_state import RegionalMetadata
+from app.models.accessibility import VillageAccessibility
 
 
 class TwinSummary(BaseModel):
@@ -21,6 +22,8 @@ class TwinResponse(BaseModel):
     nodes: List[Dict[str, Any]]
     edges: List[Dict[str, Any]]
     summary: TwinSummary
+    # Village accessibility intelligence
+    village_accessibility: List[VillageAccessibility] = []
 
 
 class NodeDetailResponse(BaseModel):

@@ -29,8 +29,11 @@ export default function MapView() {
   const selectNode = useTwinStore((s) => s.selectNode)
   const selectEdge = useTwinStore((s) => s.selectEdge)
   const setMapRef = useTwinStore((s) => s.setMapRef)
+  const villageAccessibility = useTwinStore((s) => s.villageAccessibility)
 
   const byId = nodesById()
+  const getVillageAccess = (villageId) => 
+    villageAccessibility?.find(v => v.village_id === villageId)?.accessibility_score
 
   return (
     <div className="map-host">
@@ -55,14 +58,21 @@ export default function MapView() {
             onSelect={selectEdge}
           />
         ))}
-        {nodes.map((node) => (
-          <NodeMarker
-            key={node.id}
-            node={node}
-            selected={selectedNodeId === node.id}
-            onSelect={selectNode}
-          />
-        ))}
+        {nodes.map((node) => {
+          const accessibilityScore = node.type === 'VILLAGE' 
+            ? villageAccessibility?.find(v => v.village_id === node.id)?.accessibility_score
+            : undefined
+          
+          return (
+            <NodeMarker
+              key={node.id}
+              node={node}
+              selected={selectedNodeId === node.id}
+              onSelect={selectNode}
+              accessibilityScore={accessibilityScore}
+            />
+          )
+        })}
       </MapContainer>
       <MapLegend />
     </div>

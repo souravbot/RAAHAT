@@ -8,6 +8,7 @@ version.
 
 from app.models.disruption import DisruptionRequest, SimulationResult
 from app.services.disruption_service import DisruptionService
+from app.services.accessibility_service import calculate_accessibility
 from app.services.regional_state_service import RegionalStateService
 
 
@@ -28,11 +29,16 @@ class SimulationService:
         hypothetical = self._state_service.state.clone()
         event, updated_edge = DisruptionService.apply(hypothetical, request)
 
+        # Calculate accessibility for the hypothetical state
+        from app.services.accessibility_service import calculate_accessibility
+        accessibility_result = calculate_accessibility(hypothetical)
+
         return SimulationResult(
             simulation_id=_next_sim_id(),
             simulated_event=event,
             simulated_edge=updated_edge,
             hypothetical_state=hypothetical.to_payload(),
+            hypothetical_accessibility=[v.model_dump() for v in accessibility_result.villages],
         )
 
 

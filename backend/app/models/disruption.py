@@ -1,11 +1,12 @@
-"""Disruption request / result schemas (Phase 3)."""
+"""Disruption request / result schemas (Phase 3 + 4)."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 from pydantic import BaseModel, Field, field_validator
 
 from app.models.event import DisruptionEvent
 from app.models.edge import TransportEdge
+from app.models.accessibility import VillageAccessibility
 
 
 class DisruptionRequest(BaseModel):
@@ -47,3 +48,5 @@ class SimulationResult(BaseModel):
     simulated_edge: TransportEdge
     # The full hypothetical regional state (never the live one).
     hypothetical_state: Dict[str, Any]
+    # Accessibility intelligence for the hypothetical scenario
+    hypothetical_accessibility: List[Any] = []

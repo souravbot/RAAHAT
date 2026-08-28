@@ -14,6 +14,9 @@ export const useTwinStore = create((set, get) => ({
   loading: true,
   error: null,
 
+  // ---- village accessibility intelligence ----
+  villageAccessibility: [],
+
   // ---- selection ----
   selectedNodeId: null,
   selectedEdgeId: null,
@@ -36,6 +39,7 @@ export const useTwinStore = create((set, get) => ({
         nodes: twin.nodes,
         edges: twin.edges,
         summary: twin.summary,
+        villageAccessibility: twin.village_accessibility || [],
         loading: false,
       })
     } catch (err) {
@@ -51,6 +55,7 @@ export const useTwinStore = create((set, get) => ({
         nodes: twin.nodes,
         edges: twin.edges,
         summary: twin.summary,
+        villageAccessibility: twin.village_accessibility || [],
       })
       return twin
     } catch (err) {
@@ -127,5 +132,10 @@ export const useTwinStore = create((set, get) => ({
     const map = new Map()
     for (const n of get().nodes) map.set(n.id, n)
     return map
+  },
+
+  // Get accessibility data for a specific village
+  getVillageAccessibility: (villageId) => {
+    return get().villageAccessibility.find(v => v.village_id === villageId)
   },
 }))

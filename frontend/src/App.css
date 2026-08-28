@@ -857,3 +857,229 @@ body {
     width: 260px;
   }
 }
+
+/* ===========================
+   PHASE 4 — Accessibility Styles
+   =========================== */
+
+/* Village marker accessibility ring */
+.accessibility-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 3px solid var(--access-color, #94a3b8);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.node-marker-wrap .node-marker {
+  position: relative;
+}
+
+/* Accessibility legend ring */
+.legend-ring {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 3px solid var(--background);
+  display: inline-block;
+}
+
+/* Accessibility dashboard */
+.dashboard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.dashboard-title {
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+
+.dashboard-avg {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  background: var(--panel-2);
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+}
+
+.avg-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.avg-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.avg-suffix {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.dashboard-stats {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.5rem 0.4rem;
+  border-radius: 8px;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.stat-item.stat-high {
+  background: rgba(22, 163, 74, 0.12);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+}
+.stat-item.stat-high .stat-value { color: #16a34a; }
+
+.stat-item.stat-moderate {
+  background: rgba(217, 119, 6, 0.12);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+.stat-item.stat-moderate .stat-value { color: #d97706; }
+
+.stat-item.stat-low {
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+.stat-item.stat-low .stat-value { color: #f97316; }
+
+.stat-item.stat-isolated {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+.stat-item.stat-isolated .stat-value { color: #dc2626; }
+
+.dashboard-total {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.dashboard-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+/* Node detail panel - accessibility block */
+.accessibility-block {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: var(--panel-2);
+}
+
+.accessibility-score-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.access-score-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.access-score-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.access-score-suffix {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.accessibility-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.access-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.access-label {
+  color: var(--text-muted);
+}
+
+.access-value {
+  color: var(--text);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Village marker accessibility ring styles */
+.node-marker {
+  position: relative;
+}
+
+.node-marker-wrap .node-marker.is-selected {
+  box-shadow: 0 0 0 3px #0369a1;
+}
+
+/* Dashboard empty state */
+.dashboard-empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+}
+
+.dashboard-loading {
+  font-size: 0.85rem;
+}

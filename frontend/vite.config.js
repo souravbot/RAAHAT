@@ -16,6 +16,7 @@ export default defineConfig({
       '/reset': 'http://localhost:8000',
       '/demo': 'http://localhost:8000',
       '/health': 'http://localhost:8000',
+      '/accessibility': 'http://localhost:8000',
     },
   },
 })

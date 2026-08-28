@@ -14,6 +14,7 @@ from app.api.schemas import (
 )
 from app.services.regional_state_service import get_regional_state_service
 from app.services.graph_service import GraphService
+from app.services.accessibility_service import calculate_accessibility
 
 router = APIRouter(prefix="/twin", tags=["twin"])
 
@@ -32,6 +33,10 @@ def get_twin() -> TwinResponse:
     state = _service.state
     graph = _graph_service()
 
+    # Calculate village accessibility intelligence
+    from app.services.accessibility_service import calculate_accessibility
+    accessibility_result = calculate_accessibility(state)
+
     return TwinResponse(
         metadata=state.metadata,
         nodes=[n.model_dump_simple() for n in state.nodes],
@@ -42,6 +47,7 @@ def get_twin() -> TwinResponse:
             nodes_by_type=graph.nodes_by_type(),
             edges_by_status=graph.edges_by_status(),
         ),
+        village_accessibility=[v.model_dump() for v in accessibility_result.villages],
     )
 
 
