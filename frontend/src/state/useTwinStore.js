@@ -5,6 +5,7 @@ import { create } from 'zustand'
 import { fetchTwin } from '../api/twin'
 import { applyDisruption, runSimulation, resetDemo } from '../api/disruptionApi'
 import { analyzeImpact } from '../api/impactApi'
+import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
@@ -17,6 +18,12 @@ export const useTwinStore = create((set, get) => ({
 
   // ---- village accessibility intelligence ----
   villageAccessibility: [],
+
+  // ---- supply intelligence ----
+  supplyData: [],
+  supplySummary: null,
+  supplyBusy: false,
+  supplyError: null,
 
   // ---- selection ----
   selectedNodeId: null,
@@ -128,6 +135,37 @@ export const useTwinStore = create((set, get) => ({
 
   clearImpactResult: () => set({ impactResult: null }),
   clearImpactError: () => set({ impactError: null }),
+
+  // Runs supply depletion analysis for all facilities.
+  loadDepletion: async () => {
+    set({ supplyBusy: true, supplyError: null })
+    try {
+      const data = await fetchAllDepletion()
+      set({
+        supplyBusy: false,
+        supplyData: data.alerts || [],
+        supplySummary: data.summary || null,
+      })
+      return data
+    } catch (err) {
+      set({ supplyBusy: false, supplyError: err.message })
+      throw err
+    }
+  },
+
+  fetchRegionalSummary: async () => {
+    set({ supplyBusy: true, supplyError: null })
+    try {
+      const data = await fetchRegionalSupplySummary()
+      set({ supplyBusy: false, supplySummary: data.summary || data })
+      return data
+    } catch (err) {
+      set({ supplyBusy: false, supplyError: err.message })
+      throw err
+    }
+  },
+
+  clearSupplyError: () => set({ supplyError: null }),
 
   setMapRef: (map) => set({ mapRef: map }),
 

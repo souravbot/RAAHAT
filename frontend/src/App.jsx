@@ -8,10 +8,12 @@ import DisruptionControl from './components/disruption/DisruptionControl'
 import SimulationResult from './components/disruption/SimulationResult'
 import AccessibilityDashboard from './components/disruption/AccessibilityDashboard'
 import ImpactAnalysisPanel from './components/disruption/ImpactAnalysisPanel'
+import CriticalSupplyPanel from './components/disruption/CriticalSupplyPanel'
 import './App.css'
 
 export default function App() {
   const loadTwin = useTwinStore((s) => s.loadTwin)
+  const loadDepletion = useTwinStore((s) => s.loadDepletion)
   const resetDemo = useTwinStore((s) => s.resetDemo)
   const loading = useTwinStore((s) => s.loading)
   const error = useTwinStore((s) => s.error)
@@ -26,7 +28,8 @@ export default function App() {
 
   useEffect(() => {
     loadTwin()
-  }, [loadTwin])
+    loadDepletion()
+  }, [loadTwin, loadDepletion])
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId)
   const selectedEdge = edges.find((e) => e.id === selectedEdgeId)
@@ -87,6 +90,7 @@ export default function App() {
             <DisruptionControl />
             <SimulationResult />
             <ImpactAnalysisPanel />
+            <CriticalSupplyPanel />
             <AccessibilityDashboard />
             <button
               className={`btn reset-btn ${confirmReset ? 'reset-confirm' : ''}`}

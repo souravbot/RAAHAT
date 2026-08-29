@@ -3,11 +3,20 @@
 
 import { useEffect } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
+import L from 'leaflet'
 import { useTwinStore } from '../state/useTwinStore'
 import NodeMarker from './NodeMarker'
 import EdgeLine from './EdgeLine'
 import MapLegend from './MapLegend'
 import { NODE_META } from './icons'
+
+// Fix default marker icon paths (react-leaflet + bundlers)
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+})
 
 function useFitBounds(map) {
   const nodes = useTwinStore((s) => s.nodes)
@@ -42,6 +51,7 @@ export default function MapView() {
         center={[26.14, 92.0]}
         zoom={7}
         ref={setMapRef}
+        style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
