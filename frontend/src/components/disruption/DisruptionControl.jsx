@@ -11,9 +11,12 @@ export default function DisruptionControl() {
   const edges = useTwinStore((s) => s.edges)
   const applyLiveDisruption = useTwinStore((s) => s.applyLiveDisruption)
   const runSimulationNow = useTwinStore((s) => s.runSimulationNow)
+  const runImpactAnalysis = useTwinStore((s) => s.runImpactAnalysis)
   const disruptionBusy = useTwinStore((s) => s.disruptionBusy)
   const disruptionError = useTwinStore((s) => s.disruptionError)
+  const impactBusy = useTwinStore((s) => s.impactBusy)
   const clearDisruptionError = useTwinStore((s) => s.clearDisruptionError)
+  const clearImpactError = useTwinStore((s) => s.clearImpactError)
 
   const [edgeId, setEdgeId] = useState('')
   const [type, setType] = useState('closure')
@@ -65,6 +68,21 @@ export default function DisruptionControl() {
       })
     } catch (err) {
       // error surfaced via disruptionError
+    }
+  }
+
+  const handleImpact = async () => {
+    if (!edgeId) return
+    clearImpactError()
+    setActionMsg(null)
+    try {
+      const res = await runImpactAnalysis(edgeId)
+      setActionMsg({
+        kind: 'impact',
+        text: `Impact analysis complete. Score: ${res.impact_score}, Level: ${res.impact_level}`,
+      })
+    } catch (err) {
+      // error surfaced via impactError
     }
   }
 
@@ -152,9 +170,17 @@ export default function DisruptionControl() {
         >
           {disruptionBusy ? 'Working…' : 'RUN WHAT-IF SIMULATION'}
         </button>
+        <button
+          className="btn btn-impact"
+          onClick={handleImpact}
+          disabled={!edgeId || disruptionBusy || impactBusy}
+          title="Analyze cascading impact of closing this edge"
+        >
+          {impactBusy ? 'Analyzing…' : 'ANALYZE IMPACT'}
+        </button>
       </div>
       <div className="control-hint">
-        Live disruptions change the actual Regional State. Simulations are hypothetical only.
+        Live disruptions change the actual Regional State. Simulations are hypothetical only. Impact analysis shows cascading consequences.
       </div>
     </div>
   )

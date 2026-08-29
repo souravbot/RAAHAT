@@ -7,6 +7,7 @@ import EdgeDetailPanel from './panels/EdgeDetailPanel'
 import DisruptionControl from './components/disruption/DisruptionControl'
 import SimulationResult from './components/disruption/SimulationResult'
 import AccessibilityDashboard from './components/disruption/AccessibilityDashboard'
+import ImpactAnalysisPanel from './components/disruption/ImpactAnalysisPanel'
 import './App.css'
 
 export default function App() {
@@ -85,6 +86,7 @@ export default function App() {
           <aside className="control-column">
             <DisruptionControl />
             <SimulationResult />
+            <ImpactAnalysisPanel />
             <AccessibilityDashboard />
             <button
               className={`btn reset-btn ${confirmReset ? 'reset-confirm' : ''}`}

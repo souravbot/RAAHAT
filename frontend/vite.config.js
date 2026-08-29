@@ -17,6 +17,7 @@ export default defineConfig({
       '/demo': 'http://localhost:8000',
       '/health': 'http://localhost:8000',
       '/accessibility': 'http://localhost:8000',
+      '/impact': 'http://localhost:8000',
     },
   },
 })

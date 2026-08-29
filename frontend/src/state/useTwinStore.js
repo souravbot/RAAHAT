@@ -4,6 +4,7 @@
 import { create } from 'zustand'
 import { fetchTwin } from '../api/twin'
 import { applyDisruption, runSimulation, resetDemo } from '../api/disruptionApi'
+import { analyzeImpact } from '../api/impactApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
@@ -28,6 +29,11 @@ export const useTwinStore = create((set, get) => ({
   disruptionBusy: false,
   disruptionError: null,
   simResult: null,
+
+  // ---- impact analysis UI state ----
+  impactBusy: false,
+  impactError: null,
+  impactResult: null,
 
   // ---- actions ----
   loadTwin: async () => {
@@ -106,6 +112,22 @@ export const useTwinStore = create((set, get) => ({
 
   clearDisruptionError: () => set({ disruptionError: null }),
   clearSimResult: () => set({ simResult: null }),
+
+  // Runs impact analysis for a selected edge.
+  runImpactAnalysis: async (edgeId) => {
+    set({ impactBusy: true, impactError: null })
+    try {
+      const result = await analyzeImpact(edgeId)
+      set({ impactBusy: false, impactResult: result })
+      return result
+    } catch (err) {
+      set({ impactBusy: false, impactError: err.message })
+      throw err
+    }
+  },
+
+  clearImpactResult: () => set({ impactResult: null }),
+  clearImpactError: () => set({ impactError: null }),
 
   setMapRef: (map) => set({ mapRef: map }),
 
