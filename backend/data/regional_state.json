@@ -895,5 +895,42 @@
         "last_updated_at": ""
       }
     }
+  ],
+  "vehicles": [
+    {
+      "id": "VEH-001",
+      "current_node": "W001",
+      "capacity": 1000,
+      "type": "Truck",
+      "status": "available"
+    },
+    {
+      "id": "VEH-002",
+      "current_node": "J001",
+      "capacity": 500,
+      "type": "Supply Van",
+      "status": "available"
+    },
+    {
+      "id": "VEH-003",
+      "current_node": "W002",
+      "capacity": 300,
+      "type": "Mini Truck",
+      "status": "available"
+    },
+    {
+      "id": "VEH-004",
+      "current_node": "H001",
+      "capacity": 120,
+      "type": "Ambulance",
+      "status": "available"
+    },
+    {
+      "id": "VEH-005",
+      "current_node": "J005",
+      "capacity": 200,
+      "type": "Emergency Vehicle",
+      "status": "en-route"
+    }
   ]
 }

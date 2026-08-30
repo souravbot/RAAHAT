@@ -15,6 +15,8 @@ class TwinSummary(BaseModel):
     total_edges: int
     nodes_by_type: Dict[str, int]
     edges_by_status: Dict[str, int]
+    total_vehicles: int = 0
+    available_vehicles: int = 0
 
 
 class TwinResponse(BaseModel):
@@ -24,6 +26,8 @@ class TwinResponse(BaseModel):
     summary: TwinSummary
     # Village accessibility intelligence
     village_accessibility: List[VillageAccessibility] = []
+    # Fleet intelligence (Phase 8)
+    vehicles: List[Dict[str, Any]] = []
 
 
 class NodeDetailResponse(BaseModel):

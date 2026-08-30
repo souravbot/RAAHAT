@@ -8,6 +8,7 @@ import { useTwinStore } from '../state/useTwinStore'
 import NodeMarker from './NodeMarker'
 import EdgeLine from './EdgeLine'
 import MapLegend from './MapLegend'
+import RouteOverlay from './RouteOverlay'
 import { NODE_META } from './icons'
 
 // Fix default marker icon paths (react-leaflet + bundlers)
@@ -83,6 +84,8 @@ export default function MapView() {
             />
           )
         })}
+        {/* Phase 8: recommended action route overlay */}
+        <RouteOverlay />
       </MapContainer>
       <MapLegend />
     </div>

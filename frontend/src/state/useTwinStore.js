@@ -7,12 +7,14 @@ import { applyDisruption, runSimulation, resetDemo } from '../api/disruptionApi'
 import { analyzeImpact } from '../api/impactApi'
 import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionApi'
 import { fetchPriorities } from '../api/priorityApi'
+import { recommendAction, confirmDispatch } from '../api/actionPlanApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
   metadata: null,
   nodes: [],
   edges: [],
+  vehicles: [],
   summary: null,
   loading: true,
   error: null,
@@ -32,6 +34,15 @@ export const useTwinStore = create((set, get) => ({
   priorityBusy: false,
   priorityError: null,
   priorityFilter: { limit: null, facilityType: null, priorityLevel: null },
+
+  // ---- fleet (Phase 8) ----
+  vehicles: [],
+
+  // ---- action plan / recommendation (Phase 8) ----
+  actionPlan: null,
+  actionBusy: false,
+  actionError: null,
+  actionDispatching: false,
 
   // ---- selection ----
   selectedNodeId: null,
@@ -61,6 +72,7 @@ export const useTwinStore = create((set, get) => ({
         edges: twin.edges,
         summary: twin.summary,
         villageAccessibility: twin.village_accessibility || [],
+        vehicles: twin.vehicles || [],
         loading: false,
       })
     } catch (err) {
@@ -77,6 +89,7 @@ export const useTwinStore = create((set, get) => ({
         edges: twin.edges,
         summary: twin.summary,
         villageAccessibility: twin.village_accessibility || [],
+        vehicles: twin.vehicles || [],
       })
       return twin
     } catch (err) {
@@ -129,7 +142,14 @@ export const useTwinStore = create((set, get) => ({
         get().loadDepletion(),
         get().loadPriorities(),
       ])
-      set({ disruptionBusy: false, simResult: null, selectedNodeId: null, selectedEdgeId: null })
+      set({
+        disruptionBusy: false,
+        simResult: null,
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        actionPlan: null,
+        actionError: null,
+      })
       return true
     } catch (err) {
       set({ disruptionBusy: false, disruptionError: err.message })
@@ -187,6 +207,37 @@ export const useTwinStore = create((set, get) => ({
 
   clearSupplyError: () => set({ supplyError: null }),
 
+  // ---- Phase 8: Action Plan / Recommendation ----
+  // Generates an explainable action plan for a supply shortage.
+  generateActionPlan: async (payload) => {
+    set({ actionBusy: true, actionError: null })
+    try {
+      const result = await recommendAction(payload)
+      set({ actionBusy: false, actionPlan: result })
+      return result
+    } catch (err) {
+      set({ actionBusy: false, actionError: err.message })
+      throw err
+    }
+  },
+
+  // Confirms dispatch: sets the vehicle to en-route, refreshes the twin.
+  confirmVehicleDispatch: async (vehicleId) => {
+    set({ actionDispatching: true, actionError: null })
+    try {
+      const result = await confirmDispatch(vehicleId)
+      await get().refreshTwin()
+      set({ actionDispatching: false })
+      return result
+    } catch (err) {
+      set({ actionDispatching: false, actionError: err.message })
+      throw err
+    }
+  },
+
+  clearActionPlan: () => set({ actionPlan: null }),
+  clearActionError: () => set({ actionError: null }),
+
   // Runs resource priority intelligence for the LIVE regional state.
   loadPriorities: async (filters = {}) => {
     set({ priorityBusy: true, priorityError: null })
@@ -236,6 +287,12 @@ export const useTwinStore = create((set, get) => ({
   nodesById: () => {
     const map = new Map()
     for (const n of get().nodes) map.set(n.id, n)
+    return map
+  },
+
+  edgesById: () => {
+    const map = new Map()
+    for (const e of get().edges) map.set(e.id, e)
     return map
   },
 

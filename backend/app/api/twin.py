@@ -46,8 +46,11 @@ def get_twin() -> TwinResponse:
             total_edges=len(state.edges),
             nodes_by_type=graph.nodes_by_type(),
             edges_by_status=graph.edges_by_status(),
+            total_vehicles=len(state.vehicles),
+            available_vehicles=sum(1 for v in state.vehicles if v.status.value == "available"),
         ),
         village_accessibility=[v.model_dump() for v in accessibility_result.villages],
+        vehicles=[v.model_dump_simple() for v in state.vehicles],
     )
 
 

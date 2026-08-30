@@ -16,6 +16,7 @@ from typing import Dict, List
 from app.models.edge import EdgeStatus, TransportEdge
 from app.models.node import RegionalNode
 from app.models.regional_state import RegionalState
+from app.models.vehicles import VehicleStatus
 from app.core.config import get_settings
 
 
@@ -71,6 +72,12 @@ class RegionalStateService:
                     raise RegionalStateError(
                         f"Edge {edge.id} references unknown node {node_id}"
                     )
+        # every vehicle must be located at an existing node
+        for vehicle in state.vehicles:
+            if vehicle.current_node not in node_ids:
+                raise RegionalStateError(
+                    f"Vehicle {vehicle.id} references unknown node {vehicle.current_node}"
+                )
 
     # ---------------------------------------------------------------- access
     @property
@@ -136,6 +143,21 @@ class RegionalStateService:
             edge.status = EdgeStatus.AT_RISK
         self._bump_metadata()
         return edge
+
+    # ---------------------------------------------------------------- vehicles
+    def get_vehicle(self, vehicle_id: str) -> Vehicle:
+        """Return a vehicle by ID."""
+        vehicle = self._state.vehicle_map().get(vehicle_id)
+        if vehicle is None:
+            raise KeyError(vehicle_id)
+        return vehicle
+
+    def set_vehicle_status(self, vehicle_id: str, status: "VehicleStatus") -> Vehicle:
+        """Set a vehicle's status (e.g. available -> en-route after dispatch)."""
+        vehicle = self.get_vehicle(vehicle_id)
+        vehicle.status = status
+        self.bump_metadata()
+        return vehicle
 
     def reset(self) -> RegionalState:
         """Restore the original fixture baseline and reset metadata version.

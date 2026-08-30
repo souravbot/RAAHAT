@@ -20,6 +20,7 @@ export default defineConfig({
       '/impact': 'http://localhost:8000',
       '/depletion': 'http://localhost:8000',
       '/priority': 'http://localhost:8000',
+      '/recommend-action': 'http://localhost:8000',
     },
   },
 })

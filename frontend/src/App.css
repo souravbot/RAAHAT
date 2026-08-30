@@ -1624,3 +1624,243 @@ body {
   font-size: 0.7rem;
   color: #6d28d9;
 }
+
+/* ===========================
+   PHASE 8 — Action Plan & Route Visualization
+   =========================== */
+
+.action-plan-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.action-badge {
+  white-space: nowrap;
+  background: rgba(124, 58, 237, 0.12);
+  color: #6d28d9;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.action-source-toggle {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--panel-2);
+  border-radius: 7px;
+  padding: 0.2rem;
+}
+
+.action-source-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0;
+}
+
+.action-manual-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.action-generate-btn {
+  width: 100%;
+}
+
+.action-failed {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 8px;
+  padding: 0.55rem 0.6rem;
+  font-size: 0.78rem;
+  color: #b91c1c;
+}
+
+.action-failed-message {
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.action-reasons-list {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.72rem;
+  color: var(--text);
+}
+
+/* Action Plan Card */
+.action-plan-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: var(--panel-2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.action-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.action-card-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #dc2626;
+}
+
+.action-card-facts {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+}
+
+.action-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.35rem 0.5rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.action-fact-label {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.action-fact-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.action-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.action-card-step-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.action-card-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.action-sub {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.action-card-route {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.action-route-node {
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+}
+
+.action-route-arrow {
+  color: var(--text-muted);
+}
+
+.action-route-meta {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+/* Steps */
+.action-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.75rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.action-steps li::marker {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+/* Why this recommendation */
+.action-checks {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.72rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.action-checks li::marker {
+  color: #16a34a;
+  font-weight: 800;
+}
+
+.action-dispatch-btn {
+  width: 100%;
+  background: #16a34a;
+}
+
+.action-dispatch-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.action-dispatch-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.action-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Map overlay markers */
+.action-marker-wrap {
+  background: transparent;
+  border: none;
+}
+
+.action-warehouse-marker,
+.action-vehicle-marker,
+.action-target-marker {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.action-target-marker {
+  background: #dc2626;
+  color: #fff;
+  font-size: 12px;
+}

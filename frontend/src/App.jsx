@@ -10,6 +10,7 @@ import AccessibilityDashboard from './components/disruption/AccessibilityDashboa
 import ImpactAnalysisPanel from './components/disruption/ImpactAnalysisPanel'
 import CriticalSupplyPanel from './components/disruption/CriticalSupplyPanel'
 import PriorityPanel from './components/disruption/PriorityPanel'
+import ActionPlanPanel from './components/disruption/ActionPlanPanel'
 import './App.css'
 
 export default function App() {
@@ -100,6 +101,7 @@ export default function App() {
             <ImpactAnalysisPanel />
             <CriticalSupplyPanel />
             <PriorityPanel />
+            <ActionPlanPanel />
             <AccessibilityDashboard />
             <button
               className={`btn reset-btn ${confirmReset ? 'reset-confirm' : ''}`}
