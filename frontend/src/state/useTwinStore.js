@@ -6,6 +6,7 @@ import { fetchTwin } from '../api/twin'
 import { applyDisruption, runSimulation, resetDemo } from '../api/disruptionApi'
 import { analyzeImpact } from '../api/impactApi'
 import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionApi'
+import { fetchPriorities } from '../api/priorityApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
@@ -24,6 +25,13 @@ export const useTwinStore = create((set, get) => ({
   supplySummary: null,
   supplyBusy: false,
   supplyError: null,
+
+  // ---- resource priority intelligence (Phase 7) ----
+  priorities: [],
+  prioritySummary: null,
+  priorityBusy: false,
+  priorityError: null,
+  priorityFilter: { limit: null, facilityType: null, priorityLevel: null },
 
   // ---- selection ----
   selectedNodeId: null,
@@ -78,11 +86,18 @@ export const useTwinStore = create((set, get) => ({
   },
 
   // Applies a LIVE disruption, then refreshes the twin so the map updates.
+  // Phase 7: derived intelligence (priority, depletion, supply) must be
+  // recalculated so it never becomes stale after a live state change.
   applyLiveDisruption: async (payload) => {
     set({ disruptionBusy: true, disruptionError: null })
     try {
       const result = await applyDisruption(payload)
       await get().refreshTwin()
+      // Recalculate derived intelligence against the updated live state.
+      await Promise.allSettled([
+        get().loadDepletion(),
+        get().loadPriorities(),
+      ])
       set({ disruptionBusy: false })
       return result
     } catch (err) {
@@ -109,6 +124,11 @@ export const useTwinStore = create((set, get) => ({
     try {
       await resetDemo()
       await get().refreshTwin()
+      // Recalculate derived intelligence after resetting to baseline.
+      await Promise.allSettled([
+        get().loadDepletion(),
+        get().loadPriorities(),
+      ])
       set({ disruptionBusy: false, simResult: null, selectedNodeId: null, selectedEdgeId: null })
       return true
     } catch (err) {
@@ -166,6 +186,31 @@ export const useTwinStore = create((set, get) => ({
   },
 
   clearSupplyError: () => set({ supplyError: null }),
+
+  // Runs resource priority intelligence for the LIVE regional state.
+  loadPriorities: async (filters = {}) => {
+    set({ priorityBusy: true, priorityError: null })
+    try {
+      const data = await fetchPriorities({ ...get().priorityFilter, ...filters })
+      set({
+        priorityBusy: false,
+        priorities: data.priorities || [],
+        prioritySummary: data.summary || null,
+        priorityFilter: { ...get().priorityFilter, ...filters },
+      })
+      return data
+    } catch (err) {
+      set({ priorityBusy: false, priorityError: err.message })
+      throw err
+    }
+  },
+
+  setPriorityFilter: (filters) => {
+    set({ priorityFilter: { ...get().priorityFilter, ...filters } })
+    get().loadPriorities(filters).catch(() => {})
+  },
+
+  clearPriorityError: () => set({ priorityError: null }),
 
   setMapRef: (map) => set({ mapRef: map }),
 

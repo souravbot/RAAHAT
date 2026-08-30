@@ -1,0 +1,7 @@
+{
+  "oxygen": 1.0,
+  "medicine": 0.85,
+  "water": 0.75,
+  "food": 0.60,
+  "default_resource_weight": 0.50
+}

@@ -13,6 +13,7 @@ from app.api import reset
 from app.api import accessibility
 from app.api import impact
 from app.api import depletion
+from app.api import priority
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -45,6 +46,7 @@ app.include_router(reset.router)
 app.include_router(accessibility.router)
 app.include_router(impact.router)
 app.include_router(depletion.router)
+app.include_router(priority.router)
 app.include_router(events.router)
 app.include_router(reset.router)
 app.include_router(accessibility.router)

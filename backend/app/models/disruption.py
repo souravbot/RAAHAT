@@ -50,3 +50,7 @@ class SimulationResult(BaseModel):
     hypothetical_state: Dict[str, Any]
     # Accessibility intelligence for the hypothetical scenario
     hypothetical_accessibility: List[Any] = []
+    # Priority intelligence for the hypothetical scenario (Phase 7).
+    # Simulated priorities are clearly labeled and never overwrite live
+    # priority results.
+    hypothetical_priorities: Optional[Any] = None

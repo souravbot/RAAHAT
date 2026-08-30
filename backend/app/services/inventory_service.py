@@ -70,7 +70,10 @@ class InventoryService:
                     name=resource_name,
                     quantity=resource_data.get("quantity", 0),
                     unit=resource_data.get("unit", "units"),
-                    consumption_per_day=resource_data.get("consumption_per_day", 0)
+                    consumption_per_day=resource_data.get(
+                        "daily_consumption_rate",
+                        resource_data.get("consumption_per_day", 0)
+                    )
                 )
             else:
                 continue
@@ -98,8 +101,8 @@ class InventoryService:
                 days_until_depletion=depletion.days_until_depletion,
                 depletion_status=depletion.depletion_status,
                 resupply=resupply,
-                supply_criticality_score=round(score, 1),
-                supply_status=status,
+                supply_criticality_score=round(criticality_score, 1),
+                supply_status=supply_status,
                 criticality_components=components
             )
             
@@ -124,14 +127,12 @@ class InventoryService:
         """Determine overall facility supply status."""
         if not resources:
             return "STABLE"
-        
-        statuses = [r.supply_status for r in resources]
-        
-        if any(s == "CRITICAL" for s in resources):
+
+        if any(r.supply_status == SupplyStatus.CRITICAL for r in resources):
             return "CRITICAL"
-        elif any(s == "HIGH_RISK" for s in resources):
+        elif any(r.supply_status == SupplyStatus.HIGH_RISK for r in resources):
             return "HIGH_RISK"
-        elif any(s == "WATCH" for s in resources):
+        elif any(r.supply_status == SupplyStatus.WATCH for r in resources):
             return "WATCH"
         else:
             return "STABLE"

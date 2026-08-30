@@ -1,5 +1,6 @@
 // CriticalSupplyPanel — Displays critical supply intelligence for the Command Center.
 
+import { useEffect, useRef } from 'react'
 import { useTwinStore } from '../../state/useTwinStore'
 import { fetchAllDepletion, fetchRegionalSupplySummary } from '../../api/depletionApi'
 
@@ -56,21 +57,20 @@ function renderVillageRows(supplyData) {
 }
 
 export default function CriticalSupplyPanel() {
-  const {
-    loadDepletion,
-    fetchRegionalSummary,
-    supplyData,
-    supplySummary,
-    supplyBusy,
-    supplyError,
-  } = useTwinStore((s) => ({
-    supplyData: s.supplyData,
-    supplySummary: s.supplySummary,
-    supplyBusy: s.supplyBusy,
-    supplyError: s.supplyError,
-    loadDepletion: s.loadDepletion,
-    fetchRegionalSummary: s.fetchRegionalSummary,
-  }))
+  const supplyData = useTwinStore((s) => s.supplyData)
+  const supplySummary = useTwinStore((s) => s.supplySummary)
+  const supplyBusy = useTwinStore((s) => s.supplyBusy)
+  const supplyError = useTwinStore((s) => s.supplyError)
+
+  const loadedRef = useRef(false)
+
+  useEffect(() => {
+    if (!loadedRef.current) {
+      loadedRef.current = true
+      fetchAllDepletion()
+      fetchRegionalSupplySummary()
+    }
+  }, [])
 
   // We'll load on mount or when needed
   return (

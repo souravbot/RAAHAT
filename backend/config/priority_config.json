@@ -1,0 +1,14 @@
+{
+  "scoring_weights": {
+    "depletion_urgency": 0.40,
+    "accessibility_vulnerability": 0.25,
+    "resupply_risk": 0.20,
+    "resource_importance": 0.15
+  },
+  "priority_levels": [
+    { "level": "CRITICAL", "min": 80.0, "max": 100.0 },
+    { "level": "HIGH", "min": 60.0, "max": 79.9 },
+    { "level": "MODERATE", "min": 30.0, "max": 59.9 },
+    { "level": "LOW", "min": 0.0, "max": 29.9 }
+  ]
+}
