@@ -82,14 +82,21 @@ function AppContent() {
   useEffect(() => {
     const checkRoute = () => {
       const isAuth = localStorage.getItem('raahat_auth') === 'true'
+      const path = window.location.pathname
       const pathView = getPathView()
 
       if (!isAuth) {
-        if (window.location.pathname !== '/login') {
+        // Unauthenticated users visiting root/landing go directly to landing page
+        if (path === '/' || path === '' || path === '/landing') {
+          window.location.replace('/landing.html')
+          return
+        }
+        if (path !== '/login') {
           window.history.replaceState(null, '', '/login')
         }
       } else {
-        if (window.location.pathname === '/login') {
+        // Authenticated users visiting root/login/landing go to dashboard
+        if (path === '/' || path === '/login' || path === '/landing' || path === '/landing.html') {
           window.history.replaceState(null, '', '/dashboard')
           setActiveView('dashboard')
         } else {
@@ -189,7 +196,7 @@ function AppContent() {
   }
 
   // If not authenticated, render Login Page
-  if (!isAuthenticated || window.location.pathname === '/login') {
+  if (!isAuthenticated) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />
   }
 

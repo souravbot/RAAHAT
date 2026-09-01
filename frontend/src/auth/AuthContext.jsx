@@ -31,14 +31,17 @@ export function AuthProvider({ children }) {
   }, [userEmail])
 
   const login = (selectedRole, email = 'operator@raahat.gov.in') => {
+    localStorage.setItem('raahat_role', selectedRole)
+    localStorage.setItem('raahat_email', email)
+    localStorage.setItem('raahat_auth', 'true')
     setRole(selectedRole)
     setUserEmail(email)
     setIsAuthenticated(true)
   }
 
   const logout = () => {
-    setIsAuthenticated(false)
     localStorage.removeItem('raahat_auth')
+    setIsAuthenticated(false)
   }
 
   const switchRole = (newRole) => {
