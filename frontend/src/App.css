@@ -618,31 +618,52 @@ body {
   border: none;
 }
 
+/* ============================================================
+   NODE MARKERS (Leaflet divIcon with SVG Glyphs)
+   ============================================================ */
+.node-marker-wrap {
+  background: transparent;
+  border: none;
+}
+
 .node-marker {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--marker-color, #94a3b8);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  border: 2.5px solid #fff;
+  border: 2px solid #fff;
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.15s ease;
+  box-shadow: 0 2px 8px rgba(5, 25, 96, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .node-marker:hover {
-  transform: scale(1.15);
+  transform: scale(1.18);
+  z-index: 1000 !important;
 }
 
 .node-marker.is-selected {
-  box-shadow: 0 0 0 3px var(--navy), 0 2px 8px rgba(5, 25, 96, 0.3);
+  box-shadow: 0 0 0 3px var(--navy-500), 0 2px 10px rgba(5, 25, 96, 0.4);
+  transform: scale(1.15);
+}
+
+.node-marker-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #ffffff;
+}
+
+.node-marker-glyph svg {
+  display: block;
 }
 
 /* Village accessibility ring */
@@ -653,6 +674,99 @@ body {
   border: 3px solid var(--access-color, #94a3b8);
   pointer-events: none;
   z-index: -1;
+}
+
+/* ============================================================
+   MARKER CLUSTERING (Brand --navy-500 Cluster Badge)
+   ============================================================ */
+.custom-marker-cluster-wrap {
+  background: transparent;
+  border: none;
+}
+
+.raahat-cluster-badge {
+  width: 34px;
+  height: 34px;
+  background: var(--navy-500, #051960);
+  border: 2.5px solid #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 2px 10px rgba(5, 25, 96, 0.45), 0 0 0 2px rgba(5, 25, 96, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.raahat-cluster-badge:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 18px rgba(5, 25, 96, 0.6), 0 0 0 3px rgba(232, 135, 30, 0.4);
+}
+
+/* ============================================================
+   ANIMATED ROUTE EDGES (Smooth color & flowing At-Risk dashes)
+   ============================================================ */
+.raahat-edge-line {
+  transition: stroke 0.35s ease, stroke-width 0.35s ease, opacity 0.35s ease;
+}
+
+.raahat-edge-line.edge-at_risk {
+  animation: route-dash-flow 1.2s linear infinite;
+  stroke-dasharray: 8, 8;
+}
+
+.raahat-edge-line.edge-closed {
+  filter: drop-shadow(0 0 4px rgba(196, 54, 43, 0.5));
+}
+
+@keyframes route-dash-flow {
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ============================================================
+   LEAFLET ZOOM CONTROLS (Design System Refinement)
+   ============================================================ */
+.leaflet-control-zoom {
+  border: 1px solid var(--border-subtle, #D9DEE3) !important;
+  border-radius: var(--radius-card, 10px) !important;
+  box-shadow: var(--shadow-card, 0 2px 8px rgba(5, 25, 96, 0.08)) !important;
+  overflow: hidden;
+  margin-top: 14px !important;
+  margin-left: 14px !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--bg-card, #FFFFFF) !important;
+  color: var(--navy-900, #050B18) !important;
+  font-family: var(--font-body) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s var(--ease) !important;
+  border-bottom: 1px solid var(--border-light, #E8ECF1) !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--navy-500, #051960) !important;
+  color: #FFFFFF !important;
 }
 
 /* ============================================================
@@ -704,10 +818,25 @@ body {
 }
 
 .legend-swatch {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+.legend-swatch-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border-radius: 50%;
+}
+
+.legend-swatch-icon svg {
+  width: 11px;
+  height: 11px;
 }
 
 .legend-line {

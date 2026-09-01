@@ -1,15 +1,15 @@
-// MapView — assembles the Leaflet map: tile layer, edges, nodes, legend.
-// Auto-fits bounds from twin node coordinates and supports selection.
+// MapView — assembles the Leaflet map: ESRI Light Gray tile layer, animated edges,
+// marker clustering with custom navy badges, accessibility rings, and auto-fit bounds.
 
 import { useEffect } from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap } from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 import L from 'leaflet'
 import { useTwinStore } from '../state/useTwinStore'
 import NodeMarker from './NodeMarker'
 import EdgeLine from './EdgeLine'
 import MapLegend from './MapLegend'
 import RouteOverlay from './RouteOverlay'
-import { NODE_META } from './icons'
 
 // Fix default marker icon paths (react-leaflet + bundlers)
 delete L.Icon.Default.prototype._getIconUrl
@@ -19,15 +19,40 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
-function useFitBounds(map) {
+// Custom Cluster Badge in brand --navy-500
+const createClusterCustomIcon = function (cluster) {
+  const count = cluster.getChildCount()
+  return L.divIcon({
+    html: `<div class="raahat-cluster-badge"><span>${count}</span></div>`,
+    className: 'custom-marker-cluster-wrap',
+    iconSize: L.point(34, 34, true),
+  })
+}
+
+// Auto-fit bounds on load and node state changes
+function FitBoundsLayer() {
+  const map = useMap()
   const nodes = useTwinStore((s) => s.nodes)
+  const setMapRef = useTwinStore((s) => s.setMapRef)
+
   useEffect(() => {
-    if (map && nodes.length > 0) {
-      const bounds = []
-      nodes.forEach((n) => bounds.push([n.lat, n.lng]))
-      map.fitBounds(bounds, { padding: [50, 50] })
+    if (map) {
+      setMapRef(map)
+    }
+  }, [map, setMapRef])
+
+  useEffect(() => {
+    if (map && nodes && nodes.length > 0) {
+      const bounds = nodes.map((n) => [n.lat, n.lng])
+      map.fitBounds(bounds, {
+        padding: [40, 40],
+        maxZoom: 11,
+        animate: false,
+      })
     }
   }, [map, nodes])
+
+  return null
 }
 
 export default function MapView() {
@@ -38,20 +63,16 @@ export default function MapView() {
   const selectedEdgeId = useTwinStore((s) => s.selectedEdgeId)
   const selectNode = useTwinStore((s) => s.selectNode)
   const selectEdge = useTwinStore((s) => s.selectEdge)
-  const setMapRef = useTwinStore((s) => s.setMapRef)
   const villageAccessibility = useTwinStore((s) => s.villageAccessibility)
 
   const byId = nodesById()
-  const getVillageAccess = (villageId) => 
-    villageAccessibility?.find(v => v.village_id === villageId)?.accessibility_score
 
   return (
     <div className="map-host">
       <MapContainer
         className="map"
         center={[26.14, 92.0]}
-        zoom={7}
-        ref={setMapRef}
+        zoom={9}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
@@ -60,6 +81,8 @@ export default function MapView() {
           maxZoom={16}
         />
         <FitBoundsLayer />
+        
+        {/* Render animated route lines */}
         {edges.map((edge) => (
           <EdgeLine
             key={edge.id}
@@ -70,32 +93,39 @@ export default function MapView() {
             onSelect={selectEdge}
           />
         ))}
-        {nodes.map((node) => {
-          const accessibilityScore = node.type === 'VILLAGE' 
-            ? villageAccessibility?.find(v => v.village_id === node.id)?.accessibility_score
-            : undefined
-          
-          return (
-            <NodeMarker
-              key={node.id}
-              node={node}
-              selected={selectedNodeId === node.id}
-              onSelect={selectNode}
-              accessibilityScore={accessibilityScore}
-            />
-          )
-        })}
+
+        {/* Marker Clustering Group — collapses dense clusters (e.g. Guwahati) */}
+        <MarkerClusterGroup
+          chunkedLoading
+          iconCreateFunction={createClusterCustomIcon}
+          maxClusterRadius={28}
+          disableClusteringAtZoom={12}
+          spiderfyOnMaxZoom={true}
+          showCoverageOnHover={false}
+          zoomToBoundsOnClick={true}
+          spiderLegPolylineOptions={{ weight: 1.5, color: '#051960', opacity: 0.6 }}
+        >
+          {nodes.map((node) => {
+            const accessibilityScore = node.type === 'VILLAGE' 
+              ? villageAccessibility?.find(v => v.village_id === node.id)?.accessibility_score
+              : undefined
+            
+            return (
+              <NodeMarker
+                key={node.id}
+                node={node}
+                selected={selectedNodeId === node.id}
+                onSelect={selectNode}
+                accessibilityScore={accessibilityScore}
+              />
+            )
+          })}
+        </MarkerClusterGroup>
+
         {/* Phase 8: recommended action route overlay */}
         <RouteOverlay />
       </MapContainer>
       <MapLegend />
     </div>
   )
-}
-
-// Internal component to hydrate fitBounds via the map instance.
-function FitBoundsLayer() {
-  const map = useTwinStore((s) => s.mapRef)
-  useFitBounds(map)
-  return null
 }

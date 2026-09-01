@@ -1,4 +1,4 @@
-// MapLegend — small overlay explaining marker colors, edge statuses, and village accessibility.
+// MapLegend — small overlay explaining marker colors, glyph icons, edge statuses, and village accessibility.
 
 import { NODE_META, EDGE_STATUS_META } from './icons'
 
@@ -20,8 +20,9 @@ export default function MapLegend() {
           {nodeEntries.map(([type, meta]) => (
             <div className="legend-item" key={type}>
               <span
-                className="legend-swatch"
+                className="legend-swatch legend-swatch-icon"
                 style={{ background: meta.color }}
+                dangerouslySetInnerHTML={{ __html: meta.glyphSvg || meta.glyph }}
               />
               <span>{meta.label}</span>
             </div>

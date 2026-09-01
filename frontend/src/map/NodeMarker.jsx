@@ -14,7 +14,7 @@ function getAccessibilityColor(score) {
 
 function makeIcon(node, selected, accessibilityScore) {
   const meta = nodeMeta(node.type)
-  const selectedStyle = selected ? ' box-shadow: 0 0 0 3px #0369a1;' : ''
+  const selectedClass = selected ? 'is-selected' : ''
   
   // For villages, add accessibility ring
   let accessibilityRing = ''
@@ -25,17 +25,18 @@ function makeIcon(node, selected, accessibilityScore) {
     accessibilityStyle = `--access-color:${color};`
   }
   
+  const glyphContent = meta.glyphSvg || meta.glyph
   const html = `
-    <div class="node-marker ${selected ? 'is-selected' : ''}" style="--marker-color:${meta.color};${selectedStyle}${accessibilityStyle}">
+    <div class="node-marker ${selectedClass}" style="--marker-color:${meta.color};${accessibilityStyle}" title="${node.name} (${node.id})">
       ${accessibilityRing}
-      <span class="node-marker-glyph">${meta.glyph}</span>
+      <span class="node-marker-glyph">${glyphContent}</span>
     </div>`
   return L.divIcon({
     html,
     className: 'node-marker-wrap',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -20],
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -18],
   })
 }
 
