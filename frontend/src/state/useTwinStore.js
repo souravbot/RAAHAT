@@ -9,6 +9,7 @@ import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionA
 import { fetchPriorities } from '../api/priorityApi'
 import { recommendAction, confirmDispatch } from '../api/actionPlanApi'
 import { runScenario, compareScenarios } from '../api/scenarioApi'
+import { resetDemoScenario, runDemoScenario } from '../api/demoApi'
 import { askQuestion, getAssistantInfo } from '../api/assistantApi'
 
 export const useTwinStore = create((set, get) => ({
@@ -63,6 +64,11 @@ export const useTwinStore = create((set, get) => ({
   scenarioError: null,
   scenarioResult: null,
   scenarioComparison: null,
+
+  // ---- judge-ready demo flow ----
+  demoBusy: false,
+  demoError: null,
+  demoResult: null,
 
   // ---- impact analysis UI state ----
   impactBusy: false,
@@ -168,6 +174,35 @@ export const useTwinStore = create((set, get) => ({
 
   clearScenarioResult: () => set({ scenarioResult: null, scenarioComparison: null }),
   clearScenarioError: () => set({ scenarioError: null }),
+
+  runDemoNow: async () => {
+    set({ demoBusy: true, demoError: null })
+    try {
+      const result = await runDemoScenario()
+      set({ demoBusy: false, demoResult: result })
+      return result
+    } catch (err) {
+      set({ demoBusy: false, demoError: err.message })
+      throw err
+    }
+  },
+
+  resetDemoFlow: async () => {
+    set({ demoBusy: true, demoError: null })
+    try {
+      const result = await resetDemoScenario()
+      set({ demoBusy: false, demoResult: null })
+      await get().refreshTwin()
+      await Promise.allSettled([
+        get().loadDepletion(),
+        get().loadPriorities(),
+      ])
+      return result
+    } catch (err) {
+      set({ demoBusy: false, demoError: err.message })
+      throw err
+    }
+  },
 
   resetDemo: async () => {
     set({ disruptionBusy: true, disruptionError: null })

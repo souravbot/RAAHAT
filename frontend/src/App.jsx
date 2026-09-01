@@ -23,6 +23,10 @@ export default function App() {
   const loading = useTwinStore((s) => s.loading)
   const error = useTwinStore((s) => s.error)
   const metadata = useTwinStore((s) => s.metadata)
+  const demoBusy = useTwinStore((s) => s.demoBusy)
+  const demoResult = useTwinStore((s) => s.demoResult)
+  const runDemoNow = useTwinStore((s) => s.runDemoNow)
+  const resetDemoFlow = useTwinStore((s) => s.resetDemoFlow)
   const nodes = useTwinStore((s) => s.nodes)
   const edges = useTwinStore((s) => s.edges)
   const summary = useTwinStore((s) => s.summary)
@@ -59,6 +63,22 @@ export default function App() {
     }
   }
 
+  const handleDemoRun = async () => {
+    try {
+      await runDemoNow()
+    } catch {
+      // demo error shown in store
+    }
+  }
+
+  const handleDemoReset = async () => {
+    try {
+      await resetDemoFlow()
+    } catch {
+      // demo error shown in store
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -66,15 +86,23 @@ export default function App() {
           <h1>RAAHAT</h1>
           <span className="subtitle">Regional AI for Accessibility, Assistance &amp; Transport</span>
         </div>
-        <div
-          className={`api-status ${error ? 'error' : loading ? 'loading' : 'ok'}`}
-          title={error || undefined}
-        >
-          {error
-            ? 'Offline'
-            : loading
-              ? 'Loading twin…'
-              : `Twin v${metadata?.version} · ${summary?.total_nodes ?? nodes.length} nodes / ${summary?.total_edges ?? edges.length} routes`}
+        <div className="header-actions">
+          <button className="btn demo-btn" onClick={handleDemoRun} disabled={demoBusy}>
+            {demoBusy ? 'Running demo…' : '▶ RUN LIVE DEMO'}
+          </button>
+          <button className="btn secondary-btn" onClick={handleDemoReset} disabled={demoBusy}>
+            ↻ RESET DEMO
+          </button>
+          <div
+            className={`api-status ${error ? 'error' : loading ? 'loading' : 'ok'}`}
+            title={error || undefined}
+          >
+            {error
+              ? 'Offline'
+              : loading
+                ? 'Loading twin…'
+                : `Twin v${metadata?.version} · ${summary?.total_nodes ?? nodes.length} nodes / ${summary?.total_edges ?? edges.length} routes`}
+          </div>
         </div>
       </header>
 
@@ -99,6 +127,23 @@ export default function App() {
             )}
           </div>
           <aside className="control-column">
+            <div className="demo-story-panel">
+              <div className="story-header">RAAHAT LIVE DEMONSTRATION</div>
+              <ul className="story-list">
+                <li className="story-step complete">✓ 1. Digital Twin Ready</li>
+                <li className="story-step complete">✓ 2. Bridge Disruption Detected</li>
+                <li className="story-step complete">✓ 3. Impact Analysed</li>
+                <li className="story-step complete">✓ 4. Supply Risk Identified</li>
+                <li className="story-step active">→ 5. Priority Calculated</li>
+                <li className="story-step">6. Response Optimized</li>
+              </ul>
+              {demoResult && (
+                <div className="story-summary">
+                  <strong>{demoResult.demo?.scenario_name}</strong>
+                  <p>{demoResult.story?.[5]?.summary || demoResult.priority?.selection_reason}</p>
+                </div>
+              )}
+            </div>
             <DisruptionControl />
             <SimulationResult />
             <ImpactAnalysisPanel />
