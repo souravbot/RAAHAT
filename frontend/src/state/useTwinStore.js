@@ -3,7 +3,7 @@
 
 import { create } from 'zustand'
 import { fetchTwin } from '../api/twin'
-import { applyDisruption, runSimulation, resetDemo } from '../api/disruptionApi'
+import { applyDisruption, runSimulation, resetDemo, fetchEvents } from '../api/disruptionApi'
 import { analyzeImpact } from '../api/impactApi'
 import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionApi'
 import { fetchPriorities } from '../api/priorityApi'
@@ -76,6 +76,8 @@ export const useTwinStore = create((set, get) => ({
   disruptionBusy: false,
   disruptionError: null,
   simResult: null,
+  events: [],
+  eventsBusy: false,
 
   // ---- scenario analysis (Phase 9) ----
   scenarioBusy: false,
@@ -216,6 +218,28 @@ export const useTwinStore = create((set, get) => ({
     }
   },
 
+  loadEvents: async () => {
+    set({ eventsBusy: true })
+    try {
+      const data = await fetchEvents()
+      set({ events: data || [], eventsBusy: false })
+      return data
+    } catch {
+      set({ eventsBusy: false })
+    }
+  },
+
+  clearSimulationState: () => {
+    set({
+      simResult: null,
+      scenarioResult: null,
+      scenarioComparison: null,
+      disruptionError: null,
+      scenarioError: null,
+    })
+  },
+
+  clearSimResult: () => set({ simResult: null }),
   clearScenarioResult: () => set({ scenarioResult: null, scenarioComparison: null }),
   clearScenarioError: () => set({ scenarioError: null }),
 

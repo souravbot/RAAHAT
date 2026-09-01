@@ -6,9 +6,9 @@ import { useState } from 'react'
 const NAV_ITEMS = [
   { id: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
   { id: 'map', icon: 'map', label: 'Map' },
+  { id: 'disruptions', icon: 'bolt', label: 'Disruption Control' },
   { id: 'impact', icon: 'query_stats', label: 'Impact Analysis' },
   { id: 'queue', icon: 'priority_high', label: 'Priority Queue' },
-  { id: 'simulations', icon: 'science', label: 'Simulations' },
   { id: 'workflow', icon: 'account_tree', label: 'Response Workflow' },
 ]
 

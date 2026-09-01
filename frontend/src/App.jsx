@@ -18,6 +18,7 @@ import LoginPage from './views/LoginPage'
 import MapFocusView from './views/MapFocusView'
 import ImpactAnalysisView from './views/ImpactAnalysisView'
 import PriorityQueueView from './views/PriorityQueueView'
+import DisruptionsView from './views/DisruptionsView'
 import SimulationsView from './views/SimulationsView'
 import FieldOfficerDashboard from './views/FieldOfficerDashboard'
 import { AuthProvider, useAuth } from './auth/AuthContext'
@@ -41,7 +42,7 @@ function getPathView() {
   if (path === '/map') return 'map'
   if (path === '/impact-analysis' || path === '/impact') return 'impact'
   if (path === '/priority-queue' || path === '/queue') return 'queue'
-  if (path === '/simulations') return 'simulations'
+  if (path === '/disruptions' || path === '/simulations') return 'disruptions'
   if (path === '/workflow') return 'workflow'
   return 'dashboard'
 }
@@ -135,7 +136,7 @@ function AppContent() {
 
   const handleNavigate = (viewId) => {
     // Restrict Field Officers from admin simulation pages
-    if (role === ROLES.FIELD_OFFICER && viewId === 'simulations') {
+    if (role === ROLES.FIELD_OFFICER && (viewId === 'simulations' || viewId === 'disruptions')) {
       alert('Simulations & Disruption Control are restricted to Command Center personnel.')
       return
     }
@@ -143,9 +144,11 @@ function AppContent() {
     const pathMap = {
       dashboard: '/dashboard',
       map: '/map',
+      disruptions: '/disruptions',
+      simulations: '/disruptions',
       impact: '/impact-analysis',
       queue: '/priority-queue',
-      simulations: '/simulations',
+      workflow: '/workflow',
       login: '/login',
     }
     const targetPath = pathMap[viewId] || '/dashboard'
@@ -389,8 +392,8 @@ function AppContent() {
             <PriorityQueueView />
           )}
 
-          {activeView === 'simulations' && (
-            <SimulationsView />
+          {(activeView === 'disruptions' || activeView === 'simulations') && (
+            <DisruptionsView />
           )}
 
           {activeView === 'workflow' && (

@@ -8,21 +8,9 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // Forward backend API routes to the FastAPI backend during dev.
-      '/api': 'http://localhost:8000',
-      '/twin': 'http://localhost:8000',
-      '/disruption': 'http://localhost:8000',
-      '/simulate': 'http://localhost:8000',
-      '/events': 'http://localhost:8000',
-      '/reset': 'http://localhost:8000',
-      '/demo': 'http://localhost:8000',
-      '/health': 'http://localhost:8000',
-      '/accessibility': 'http://localhost:8000',
-      '/impact': 'http://localhost:8000',
-      '/depletion': 'http://localhost:8000',
-      '/priority': 'http://localhost:8000',
-      '/recommend-action': 'http://localhost:8000',
-      '/scenario': 'http://localhost:8000',
-      '/ask': 'http://localhost:8000',
+      // Use explicit path regex so frontend routes like /disruptions are served as SPA.
+      '^/disruption($|/.*)': 'http://localhost:8000',
+      '^/(api|twin|simulate|events|reset|demo|health|accessibility|impact|depletion|priority|recommend-action|scenario|ask)($|/.*)': 'http://localhost:8000',
     },
   },
 })
