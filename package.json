@@ -1,0 +1,16 @@
+{
+  "name": "raahat",
+  "version": "1.0.0",
+  "description": "RAAHAT — Regional AI for Accessibility, Assistance & Transport",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c \"cyan.bold,magenta.bold\" \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && (test -f .venv/bin/python && .venv/bin/python -m uvicorn app.main:app --port 8000 --reload || python3 -m uvicorn app.main:app --port 8000 --reload)",
+    "frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
