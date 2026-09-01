@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     # Data directory holding regional_state.json
     data_dir: Path = BACKEND_DIR / "data"
 
+    # LLM Configuration
+    llm_provider: str = "openai"  # or "anthropic", "ollama"
+    llm_model: str = "gpt-4o-mini"
+    llm_api_key: str = ""
+    llm_base_url: str = ""  # for ollama or custom endpoints
+    llm_temperature: float = 0.1
+    llm_max_tokens: int = 2000
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

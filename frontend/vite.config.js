@@ -22,6 +22,7 @@ export default defineConfig({
       '/priority': 'http://localhost:8000',
       '/recommend-action': 'http://localhost:8000',
       '/scenario': 'http://localhost:8000',
+      '/ask': 'http://localhost:8000',
     },
   },
 })

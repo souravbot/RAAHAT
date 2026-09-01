@@ -16,6 +16,7 @@ from app.api import depletion
 from app.api import priority
 from app.api import recommendations
 from app.api import scenario
+from app.api import assistant
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -51,6 +52,7 @@ app.include_router(depletion.router)
 app.include_router(priority.router)
 app.include_router(recommendations.router)
 app.include_router(scenario.router)
+app.include_router(assistant.router)
 app.include_router(events.router)
 app.include_router(reset.router)
 app.include_router(accessibility.router)

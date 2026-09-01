@@ -13,6 +13,7 @@ import PriorityPanel from './components/disruption/PriorityPanel'
 import ActionPlanPanel from './components/disruption/ActionPlanPanel'
 import ScenarioPreview from './components/disruption/ScenarioPreview'
 import ScenarioComparison from './components/disruption/ScenarioComparison'
+import AssistantPanel from './components/disruption/AssistantPanel'
 import './App.css'
 
 export default function App() {
@@ -106,6 +107,7 @@ export default function App() {
             <ActionPlanPanel />
             <ScenarioPreview />
             <ScenarioComparison />
+            <AssistantPanel />
             <AccessibilityDashboard />
             <button
               className={`btn reset-btn ${confirmReset ? 'reset-confirm' : ''}`}

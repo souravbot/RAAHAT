@@ -9,6 +9,7 @@ import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionA
 import { fetchPriorities } from '../api/priorityApi'
 import { recommendAction, confirmDispatch } from '../api/actionPlanApi'
 import { runScenario, compareScenarios } from '../api/scenarioApi'
+import { askQuestion, getAssistantInfo } from '../api/assistantApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
