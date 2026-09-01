@@ -935,8 +935,8 @@
       </div>
 
       <div class="nav-actions">
-        <button class="btn-signin">Sign In</button>
-        <a href="/" class="btn-launch">
+        <a href="/login" class="btn-signin">Sign In</a>
+        <a href="/dashboard" class="btn-launch" onclick="handleLaunchClick(event)">
           <span class="material-symbols-outlined">dashboard</span>
           Launch Dashboard
         </a>
@@ -971,7 +971,7 @@
       </p>
 
       <div class="hero-actions">
-        <a href="/" class="btn-hero-primary">
+        <a href="/dashboard" class="btn-hero-primary" onclick="handleLaunchClick(event)">
           <span class="material-symbols-outlined">rocket_launch</span>
           Launch Dashboard
         </a>
@@ -1408,7 +1408,14 @@
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-    });
+    // ===============================
+    // 5. Auth check for Launch Dashboard buttons
+    // ===============================
+    function handleLaunchClick(e) {
+      e.preventDefault();
+      const isAuth = localStorage.getItem('raahat_auth') === 'true';
+      window.location.href = isAuth ? '/dashboard' : '/login';
+    }
   </script>
 
 </body>
