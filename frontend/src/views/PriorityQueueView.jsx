@@ -57,7 +57,8 @@ export default function PriorityQueueView() {
   const facilityTypes = useMemo(() => {
     const types = new Set()
     priorities.forEach(p => {
-      if (p.facility_type) types.add(p.facility_type)
+      const t = p.facility?.type || p.facility_type
+      if (t) types.add(t)
     })
     return Array.from(types)
   }, [priorities])
@@ -66,11 +67,17 @@ export default function PriorityQueueView() {
   const filtered = useMemo(() => {
     let list = [...priorities]
     if (filterLevel !== 'ALL') list = list.filter(p => p.priority_level === filterLevel)
-    if (filterType !== 'ALL') list = list.filter(p => p.facility_type === filterType)
+    if (filterType !== 'ALL') list = list.filter(p => (p.facility?.type || p.facility_type) === filterType)
 
     list.sort((a, b) => {
-      let aVal = a[sortCol]
-      let bVal = b[sortCol]
+      let aVal = sortCol === 'facility_name' ? (a.facility?.name || a.facility_name)
+               : sortCol === 'resource_name' ? (a.resource?.type || a.resource_name)
+               : sortCol === 'days_to_depletion' ? (a.inputs?.hours_until_depletion ?? a.days_to_depletion)
+               : a[sortCol]
+      let bVal = sortCol === 'facility_name' ? (b.facility?.name || b.facility_name)
+               : sortCol === 'resource_name' ? (b.resource?.type || b.resource_name)
+               : sortCol === 'days_to_depletion' ? (b.inputs?.hours_until_depletion ?? b.days_to_depletion)
+               : b[sortCol]
       if (typeof aVal === 'string') aVal = aVal.toLowerCase()
       if (typeof bVal === 'string') bVal = bVal.toLowerCase()
       if (aVal == null) return 1
@@ -203,31 +210,37 @@ export default function PriorityQueueView() {
           <tbody>
             {filtered.map((item, i) => {
               const lvl = LEVEL_META[(item.priority_level || '').toUpperCase()] || LEVEL_META.LOW
+              const facName = item.facility?.name || item.facility_name || item.facility?.id || item.facility_id || '—'
+              const facId = item.facility?.id || item.facility_id || ''
+              const facType = item.facility?.type || item.facility_type || '—'
+              const resName = item.resource?.type || item.resource_name || '—'
+              const hoursLeft = item.inputs?.hours_until_depletion ?? (item.days_to_depletion != null ? item.days_to_depletion * 24 : null)
+              const scoreStr = item.priority_score != null ? item.priority_score.toFixed(1) : '—'
               return (
                 <tr
-                  key={`${item.facility_id}-${item.resource_name}-${i}`}
+                  key={`${facId}-${resName}-${i}`}
                   className="queue-table-row"
-                  onClick={() => item.facility_id && focusNode(item.facility_id)}
+                  onClick={() => facId && focusNode(facId)}
                 >
-                  <td className="qt-rank">{i + 1}</td>
+                  <td className="qt-rank">{item.rank || (i + 1)}</td>
                   <td className="qt-facility">
-                    <span className="qt-facility-name">{item.facility_name || item.facility_id || '—'}</span>
-                    <span className="qt-facility-id">{item.facility_id}</span>
+                    <span className="qt-facility-name">{facName}</span>
+                    <span className="qt-facility-id">{facId}</span>
                   </td>
-                  <td>{item.resource_name || '—'}</td>
-                  <td className="qt-score">{item.priority_score?.toFixed(0) ?? '—'}</td>
+                  <td>{resName}</td>
+                  <td className="qt-score">{scoreStr}</td>
                   <td>
                     <span className="qt-level-badge" style={{ background: lvl.bg, color: lvl.color }}>
                       {item.priority_level || '—'}
                     </span>
                   </td>
                   <td className="qt-depletion">
-                    {item.days_to_depletion != null
-                      ? formatDepletion(item.days_to_depletion * 24)
+                    {hoursLeft != null
+                      ? formatDepletion(hoursLeft)
                       : '—'}
                   </td>
                   <td>{item.current_stock ?? '—'} {item.unit || ''}</td>
-                  <td>{item.facility_type || '—'}</td>
+                  <td>{facType}</td>
                 </tr>
               )
             })}

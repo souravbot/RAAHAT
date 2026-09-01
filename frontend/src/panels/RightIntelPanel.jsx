@@ -194,36 +194,43 @@ export default function RightIntelPanel() {
         </div>
 
         <div className="priority-queue-list" id="priority-queue-list">
-          {queue.length > 0 ? queue.map((item, i) => (
-            <button
-              key={item.facility_id + '-' + item.resource_name + '-' + i}
-              className="queue-item"
-              onClick={() => item.facility_id && focusNode(item.facility_id)}
-              id={`queue-item-${i}`}
-            >
-              <span className="queue-rank">#{i + 1}</span>
-              <div className="queue-item-body">
-                <div className="queue-item-title">
-                  {item.facility_name || item.facility_id || `Facility ${i + 1}`}
+          {queue.length > 0 ? queue.map((item, i) => {
+            const facName = item.facility?.name || item.facility_name || item.facility?.id || item.facility_id || `Facility ${i + 1}`
+            const facId = item.facility?.id || item.facility_id
+            const resName = item.resource?.type || item.resource_name || 'Resource'
+            const hoursLeft = item.inputs?.hours_until_depletion ?? (item.days_to_depletion != null ? item.days_to_depletion * 24 : null)
+            const scoreVal = item.priority_score != null ? item.priority_score.toFixed(1) : '—'
+            return (
+              <button
+                key={`${facId}-${resName}-${i}`}
+                className="queue-item"
+                onClick={() => facId && focusNode(facId)}
+                id={`queue-item-${i}`}
+              >
+                <span className="queue-rank">#{item.rank || (i + 1)}</span>
+                <div className="queue-item-body">
+                  <div className="queue-item-title">
+                    {facName}
+                  </div>
+                  <div className="queue-item-meta">
+                    {resName} ·{' '}
+                    {hoursLeft != null
+                      ? `${(hoursLeft / 24).toFixed(1)}d remaining`
+                      : 'depleted'}
+                  </div>
                 </div>
-                <div className="queue-item-meta">
-                  {item.resource_name || 'Resource'} ·{' '}
-                  {item.days_to_depletion != null
-                    ? `${item.days_to_depletion.toFixed(1)}d remaining`
-                    : 'depleted'}
+                <div className="queue-item-right">
+                  <span
+                    className="queue-level-badge"
+                    style={{ background: severityColor(item.priority_level?.toLowerCase()) }}
+                  >
+                    {item.priority_level || 'WATCH'}
+                  </span>
+                  <span className="queue-score">{scoreVal}</span>
                 </div>
-              </div>
-              <div className="queue-item-right">
-                <span
-                  className="queue-level-badge"
-                  style={{ background: severityColor(item.priority_level?.toLowerCase()) }}
-                >
-                  {item.priority_level || 'WATCH'}
-                </span>
-                <span className="queue-score">{item.priority_score?.toFixed(0) ?? '—'}</span>
-              </div>
-            </button>
-          )) : (
+              </button>
+            )
+          }) : (
             <div className="intel-empty">
               <span className="material-symbols-outlined">playlist_add_check</span>
               <span>Queue empty — run analysis to populate</span>

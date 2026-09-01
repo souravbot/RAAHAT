@@ -123,41 +123,39 @@ class PriorityService:
         """Normalized resource importance score (0-100)."""
         return max(0.0, min(100.0, self.resource_weight(resource_name) * 100.0))
 
-    # ------------------------------------------------ depletion urgency (0-100)
     def depletion_urgency_score(
         self,
         hours_until_depletion: Optional[float],
         depletion_status: str,
     ) -> float:
-        """Convert hours-until-depletion into a normalized urgency score (0-100).
-
-        Deterministic + explainable bucket mapping:
-          DEPLETED           -> 100
-          0-24 hours         -> 92.5 (very high)
-          24-72 hours        -> 75 (high)
-          72-168 hours       -> 50 (moderate)
-          >168 hours         -> 25 (low)
-          NOT_CONSUMING      -> 0
-          UNKNOWN data       -> 0 (no fake urgency)
+        """Convert hours-until-depletion into a continuous urgency score (0-100).
+        
+        Smooth continuous mapping ensures distinct, location-specific scores:
+          0h (or DEPLETED)   -> 100.0
+          24h                -> 90.0
+          72h                -> 75.0
+          168h (7 days)      -> 50.0
+          336h (14 days)     -> 10.0
         """
         if depletion_status == DepletionStatus.DEPLETED.value:
             return 100.0
         if depletion_status == DepletionStatus.NOT_CONSUMING.value:
             return 0.0
         if hours_until_depletion is None:
-            # Unknown data: never fabricate urgency.
             return 0.0
 
         hours = float(hours_until_depletion)
         if hours <= 0:
             return 100.0
-        if hours <= 24:
-            return 92.5
-        if hours <= 72:
-            return 75.0
-        if hours <= 168:
-            return 50.0
-        return 25.0
+        if hours <= 24.0:
+            return round(100.0 - (hours / 24.0) * 10.0, 2)
+        if hours <= 72.0:
+            return round(90.0 - ((hours - 24.0) / 48.0) * 15.0, 2)
+        if hours <= 168.0:
+            return round(75.0 - ((hours - 72.0) / 96.0) * 25.0, 2)
+        if hours <= 336.0:
+            return round(50.0 - ((hours - 168.0) / 168.0) * 40.0, 2)
+        return 10.0
 
     # ------------------------------------------------- resupply risk (0-100)
     def resupply_risk_score(
