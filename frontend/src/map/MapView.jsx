@@ -21,6 +21,36 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
+// Read CARTO API key from frontend environment configuration
+const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY
+
+function getBasemapConfig() {
+  const hasKey = cartoApiKey && typeof cartoApiKey === 'string' && cartoApiKey.trim() !== '' && !cartoApiKey.includes('THE_CARTO_KEY')
+
+  if (hasKey) {
+    const trimmedKey = encodeURIComponent(cartoApiKey.trim())
+    return {
+      url: `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${trimmedKey}`,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20,
+    }
+  }
+
+  // Graceful fallback when CARTO key is not configured:
+  // Uses unmetered light grayscale basemap with zero watermarks
+  if (import.meta.env.DEV) {
+    console.warn('[RAAHAT Map] VITE_CARTO_API_KEY not configured in .env. Using unmetered light canvas basemap.')
+  }
+
+  return {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+    subdomains: 'abc',
+    maxZoom: 16,
+  }
+}
+
 // Custom Cluster Badge in brand --navy-500
 const createClusterCustomIcon = function (cluster) {
   const count = cluster.getChildCount()
@@ -69,6 +99,7 @@ export default function MapView() {
   const mapLayers = useTwinStore((s) => s.mapLayers)
 
   const byId = nodesById()
+  const basemap = getBasemapConfig()
 
   return (
     <div className="map-host">
@@ -79,10 +110,10 @@ export default function MapView() {
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          subdomains="abcd"
-          maxZoom={20}
+          attribution={basemap.attribution}
+          url={basemap.url}
+          subdomains={basemap.subdomains}
+          maxZoom={basemap.maxZoom}
         />
         <FitBoundsLayer />
         
