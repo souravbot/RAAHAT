@@ -619,7 +619,7 @@ body {
 }
 
 /* ============================================================
-   NODE MARKERS (Leaflet divIcon with SVG Glyphs)
+   NODE MARKERS (Leaflet divIcon with SVG Glyphs & Hierarchy)
    ============================================================ */
 .node-marker-wrap {
   background: transparent;
@@ -627,8 +627,8 @@ body {
 }
 
 .node-marker {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--marker-color, #94a3b8);
   display: flex;
@@ -640,17 +640,65 @@ body {
   cursor: pointer;
   position: relative;
   box-shadow: 0 2px 8px rgba(5, 25, 96, 0.28);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+
+/* Marker Size Hierarchy */
+.node-category-critical {
+  width: 34px !important;
+  height: 34px !important;
+  border-width: 2.5px !important;
+  box-shadow: 0 3px 10px rgba(5, 25, 96, 0.35) !important;
+}
+
+.node-category-important {
+  width: 28px !important;
+  height: 28px !important;
+  border-width: 2px !important;
+}
+
+.node-category-regional {
+  width: 26px !important;
+  height: 26px !important;
+  border-width: 1.8px !important;
 }
 
 .node-marker:hover {
-  transform: scale(1.18);
+  transform: scale(1.22) !important;
   z-index: 1000 !important;
 }
 
 .node-marker.is-selected {
-  box-shadow: 0 0 0 3px var(--navy-500), 0 2px 10px rgba(5, 25, 96, 0.4);
-  transform: scale(1.15);
+  box-shadow: 0 0 0 3.5px var(--navy-500), 0 4px 14px rgba(5, 25, 96, 0.45) !important;
+  transform: scale(1.18);
+  z-index: 999 !important;
+}
+
+/* Node Operational States */
+.node-marker.is-critical {
+  animation: node-critical-pulse 2s infinite;
+}
+
+.node-marker.is-isolated {
+  border-color: #ff8888 !important;
+  box-shadow: 0 0 0 3px var(--red-600), 0 2px 12px rgba(196, 54, 43, 0.6) !important;
+  animation: node-isolated-pulse 1.6s infinite;
+}
+
+.node-marker.is-watch {
+  box-shadow: 0 0 0 2.5px var(--amber-500), 0 2px 8px rgba(232, 135, 30, 0.35) !important;
+}
+
+@keyframes node-critical-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(196, 54, 43, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(196, 54, 43, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(196, 54, 43, 0); }
+}
+
+@keyframes node-isolated-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.8), 0 0 0 2px var(--red-600); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0), 0 0 0 2px var(--red-600); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0), 0 0 0 2px var(--red-600); }
 }
 
 .node-marker-glyph {
@@ -674,6 +722,244 @@ body {
   border: 3px solid var(--access-color, #94a3b8);
   pointer-events: none;
   z-index: -1;
+}
+
+/* ============================================================
+   DISRUPTION HAZARD PIN (Midpoint on Closed Routes)
+   ============================================================ */
+.disruption-hazard-wrap {
+  background: transparent;
+  border: none;
+}
+
+.disruption-hazard-pin {
+  width: 24px;
+  height: 24px;
+  background: var(--red-600);
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-weight: 900;
+  font-size: 11px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(196, 54, 43, 0.5);
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.disruption-hazard-pin:hover {
+  transform: scale(1.2);
+}
+
+.hazard-ripple {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--red-600);
+  animation: hazard-ripple-anim 1.5s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes hazard-ripple-anim {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ============================================================
+   ACTION RECOMMENDATION MARKERS & OVERLAYS (Phase 8 / 16)
+   ============================================================ */
+.action-marker-wrap {
+  background: transparent;
+  border: none;
+}
+
+.action-warehouse-marker,
+.action-vehicle-marker,
+.action-target-marker,
+.action-isolated-marker {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border: 2.5px solid #fff;
+  box-sizing: border-box;
+  cursor: pointer;
+  position: relative;
+}
+
+.action-warehouse-marker {
+  width: 32px;
+  height: 32px;
+  background: #2563EB;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.5);
+}
+
+.action-vehicle-marker {
+  width: 30px;
+  height: 30px;
+  background: var(--navy-500);
+  box-shadow: 0 2px 8px rgba(5, 25, 96, 0.4);
+}
+
+.action-target-marker {
+  width: 34px;
+  height: 34px;
+  background: var(--red-600);
+  box-shadow: 0 2px 12px rgba(196, 54, 43, 0.6);
+}
+
+.action-isolated-marker {
+  width: 34px;
+  height: 34px;
+  background: #7F1D1D;
+  border-color: #EF4444;
+  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.6);
+}
+
+.action-marker-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #2563EB;
+  animation: action-ring-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.action-marker-ring.ring-target {
+  border-color: var(--red-600);
+  animation: action-ring-pulse 1.5s ease-out infinite;
+}
+
+.action-marker-ring.ring-isolated {
+  border-color: #EF4444;
+  animation: action-ring-pulse 1.2s ease-out infinite;
+}
+
+@keyframes action-ring-pulse {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Recommended route directional animation */
+.raahat-recommended-route {
+  stroke: #0284c7 !important;
+  stroke-dasharray: 10, 6;
+  animation: route-flow-anim 1.4s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(2, 132, 199, 0.5));
+  transition: stroke 0.35s ease, stroke-width 0.35s ease;
+}
+
+.raahat-vehicle-approach-route {
+  stroke: #7c3aed !important;
+  stroke-dasharray: 6, 6;
+  animation: route-flow-anim 2s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(124, 58, 237, 0.4));
+}
+
+@keyframes route-flow-anim {
+  from { stroke-dashoffset: 16; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ============================================================
+   MAP HOVER TOOLTIPS (Operational Intelligence Cards)
+   ============================================================ */
+.leaflet-tooltip.raahat-map-tooltip {
+  background: var(--bg-card, #FFFFFF) !important;
+  border: 1px solid var(--border-subtle, #D9DEE3) !important;
+  border-radius: var(--radius-card, 10px) !important;
+  box-shadow: var(--shadow-md, 0 4px 16px rgba(5, 25, 96, 0.14)) !important;
+  padding: 8px 12px !important;
+  color: var(--text-primary, #17212B) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.8rem !important;
+  line-height: var(--leading-snug) !important;
+  pointer-events: none !important;
+}
+
+.leaflet-tooltip.raahat-map-tooltip::before {
+  border-top-color: var(--bg-card, #FFFFFF) !important;
+}
+
+.tooltip-node-header,
+.tooltip-hazard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.tooltip-node-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+.tooltip-status-pill {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+
+.tooltip-status-pill.status-open { background: var(--green-600); }
+.tooltip-status-pill.status-at_risk { background: var(--amber-500); }
+.tooltip-status-pill.status-closed { background: var(--red-600); }
+
+.tooltip-node-id {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.tooltip-node-title {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin-bottom: 4px;
+}
+
+.tooltip-node-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+.tooltip-node-line {
+  line-height: 1.35;
+}
+
+.tooltip-node-line.line-isolated {
+  color: var(--red-600) !important;
+  font-weight: 700;
+}
+
+.hazard-alert-tag {
+  background: var(--red-bg);
+  color: var(--red-600);
+  border: 1px solid var(--red-border);
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: var(--tracking-wider);
 }
 
 /* ============================================================
