@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light;
 }
 
@@ -13,4 +13,3 @@ body,
   height: 100%;
   margin: 0;
 }
-

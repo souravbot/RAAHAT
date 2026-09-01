@@ -237,6 +237,19 @@ export const useTwinStore = create((set, get) => ({
   clearImpactResult: () => set({ impactResult: null }),
   clearImpactError: () => set({ impactError: null }),
 
+  // Runs cascading impact analysis for a specific edge.
+  runImpactAnalysis: async (edgeId) => {
+    set({ impactBusy: true, impactError: null })
+    try {
+      const result = await analyzeImpact(edgeId)
+      set({ impactBusy: false, impactResult: result })
+      return result
+    } catch (err) {
+      set({ impactBusy: false, impactError: err.message })
+      throw err
+    }
+  },
+
   // Runs supply depletion analysis for all facilities.
   loadDepletion: async () => {
     set({ supplyBusy: true, supplyError: null })
