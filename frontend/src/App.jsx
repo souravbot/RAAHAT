@@ -20,6 +20,11 @@ import MapFocusView from './views/MapFocusView'
 import ImpactAnalysisView from './views/ImpactAnalysisView'
 import PriorityQueueView from './views/PriorityQueueView'
 import SimulationsView from './views/SimulationsView'
+import FieldOfficerDashboard from './views/FieldOfficerDashboard'
+import { AuthProvider, useAuth } from './auth/AuthContext'
+import RoleBadge from './components/auth/RoleBadge'
+import DemoBar from './components/auth/DemoBar'
+import { ROLES, PERMISSIONS } from './auth/permissions'
 import './App.css'
 
 /* ---------- region options ---------- */
@@ -40,7 +45,9 @@ function getPathView() {
   return 'dashboard'
 }
 
-export default function App() {
+function AppContent() {
+  const { role, roleMeta, isAuthenticated, userEmail, login, logout, switchRole, hasPermission } = useAuth()
+
   const loadTwin = useTwinStore((s) => s.loadTwin)
   const loadDepletion = useTwinStore((s) => s.loadDepletion)
   const resetDemo = useTwinStore((s) => s.resetDemo)
@@ -57,9 +64,6 @@ export default function App() {
   const selectedNodeId = useTwinStore((s) => s.selectedNodeId)
   const selectedEdgeId = useTwinStore((s) => s.selectedEdgeId)
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('raahat_auth') === 'true'
-  })
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
   const [depletionLoaded, setDepletionLoaded] = useState(false)
@@ -79,12 +83,10 @@ export default function App() {
       const pathView = getPathView()
 
       if (!isAuth) {
-        setIsAuthenticated(false)
         if (window.location.pathname !== '/login') {
           window.history.replaceState(null, '', '/login')
         }
       } else {
-        setIsAuthenticated(true)
         if (window.location.pathname === '/login') {
           window.history.replaceState(null, '', '/dashboard')
           setActiveView('dashboard')
@@ -98,7 +100,7 @@ export default function App() {
     const onPop = () => checkRoute()
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
-  }, [])
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -120,6 +122,12 @@ export default function App() {
   }, [])
 
   const handleNavigate = (viewId) => {
+    // Restrict Field Officers from admin simulation pages
+    if (role === ROLES.FIELD_OFFICER && viewId === 'simulations') {
+      alert('Simulations & Disruption Control are restricted to Command Center personnel.')
+      return
+    }
+
     const pathMap = {
       dashboard: '/dashboard',
       map: '/map',
@@ -135,18 +143,23 @@ export default function App() {
     setActiveView(viewId)
   }
 
-  const handleLoginSuccess = () => {
-    localStorage.setItem('raahat_auth', 'true')
-    setIsAuthenticated(true)
+  const handleLoginSuccess = (selectedRole, email) => {
+    login(selectedRole, email)
     window.history.pushState(null, '', '/dashboard')
     setActiveView('dashboard')
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('raahat_auth')
-    setIsAuthenticated(false)
+    logout()
     setUserMenuOpen(false)
     window.history.pushState(null, '', '/login')
+  }
+
+  const handleRoleSwitch = (newRole) => {
+    switchRole(newRole)
+    setUserMenuOpen(false)
+    window.history.pushState(null, '', '/dashboard')
+    setActiveView('dashboard')
   }
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId)
@@ -162,22 +175,6 @@ export default function App() {
       await resetDemo()
     } catch {
       // error surfaced via disruptionError
-    }
-  }
-
-  const handleDemoRun = async () => {
-    try {
-      await runDemoNow()
-    } catch {
-      // demo error shown in store
-    }
-  }
-
-  const handleDemoReset = async () => {
-    try {
-      await resetDemoFlow()
-    } catch {
-      // demo error shown in store
     }
   }
 
@@ -256,34 +253,64 @@ export default function App() {
             <span className="status-text">{isLive ? 'LIVE' : 'SIMULATION'}</span>
           </div>
 
-          {/* Simulate Disruption button */}
-          <button
-            className="btn-simulate"
-            id="btn-simulate-disruption"
-            onClick={handleSimulateDisruption}
-          >
-            <span className="material-symbols-outlined btn-simulate-icon">bolt</span>
-            Simulate Disruption
-          </button>
+          {/* Simulate Disruption button (Command Center & Demo Mode only) */}
+          {hasPermission(PERMISSIONS.TRIGGER_DISRUPTION) && (
+            <button
+              className="btn-simulate"
+              id="btn-simulate-disruption"
+              onClick={handleSimulateDisruption}
+            >
+              <span className="material-symbols-outlined btn-simulate-icon">bolt</span>
+              Simulate Disruption
+            </button>
+          )}
 
-          {/* Signed in user indicator */}
+          {/* Role & User Indicator */}
           <div className="user-menu-container" id="user-menu-container">
             <button
               className="user-indicator-btn"
               onClick={() => setUserMenuOpen((v) => !v)}
               id="btn-user-menu"
             >
-              <span className="material-symbols-outlined user-avatar-icon">account_circle</span>
-              <span>Signed in as Regional Command</span>
+              <RoleBadge role={role} showSubLabel={false} />
               <span className="material-symbols-outlined user-chevron">expand_more</span>
             </button>
+
             {userMenuOpen && (
               <div className="user-dropdown-menu" id="user-dropdown-menu">
                 <div className="user-dropdown-header">
-                  <strong>Regional Command</strong>
-                  <span>operator@raahat.gov.in</span>
+                  <strong>{roleMeta.label}</strong>
+                  <span>{userEmail}</span>
+                  <span className="role-sub-desc">{roleMeta.subLabel}</span>
                 </div>
+
                 <div className="user-dropdown-divider" />
+
+                <div className="user-role-switch-title">Switch Mode (Demo):</div>
+                <button
+                  className={`user-dropdown-item ${role === ROLES.COMMAND_CENTER ? 'is-active' : ''}`}
+                  onClick={() => handleRoleSwitch(ROLES.COMMAND_CENTER)}
+                >
+                  <span className="material-symbols-outlined">shield_person</span>
+                  Command Center
+                </button>
+                <button
+                  className={`user-dropdown-item ${role === ROLES.FIELD_OFFICER ? 'is-active' : ''}`}
+                  onClick={() => handleRoleSwitch(ROLES.FIELD_OFFICER)}
+                >
+                  <span className="material-symbols-outlined">badge</span>
+                  Field Officer
+                </button>
+                <button
+                  className={`user-dropdown-item ${role === ROLES.DEMO ? 'is-active' : ''}`}
+                  onClick={() => handleRoleSwitch(ROLES.DEMO)}
+                >
+                  <span className="material-symbols-outlined">sports_score</span>
+                  Hackathon Demo Mode
+                </button>
+
+                <div className="user-dropdown-divider" />
+
                 <button className="user-dropdown-item logout-btn" onClick={handleLogout} id="btn-logout">
                   <span className="material-symbols-outlined">logout</span>
                   Log Out
@@ -299,6 +326,9 @@ export default function App() {
         </div>
       </header>
 
+      {/* Demo Mode Progress Banner */}
+      {role === ROLES.DEMO && <DemoBar />}
+
       {/* =============== BODY =============== */}
       {error ? (
         <div className="error-screen" id="error-screen">
@@ -309,7 +339,11 @@ export default function App() {
             Start the RAAHAT backend (<code>uvicorn app.main:app --port 8000</code>) and refresh.
           </p>
         </div>
+      ) : role === ROLES.FIELD_OFFICER ? (
+        /* Field Officer Experience */
+        <FieldOfficerDashboard />
       ) : (
+        /* Command Center & Demo Mode Experience */
         <div className={`app-body ${drawerOpen ? 'drawer-open' : ''}`} id="app-body">
           {/* Left icon sidebar */}
           <IconSidebar activeView={activeView} onNavigate={handleNavigate} />
@@ -333,128 +367,114 @@ export default function App() {
 
           {activeView === 'dashboard' && (
             <>
-              {/* Map region (center-right) */}
-              <div className="map-region" id="map-region">
-                <MapView />
+              {/* Center Map */}
+              <main className="map-region" id="map-region">
+                <div className="map-host">
+                  <MapView />
+                </div>
 
-                {/* Map overlay stats */}
+                {/* Floating Map Stats Overlay */}
                 <div className="map-overlay-stats" id="map-overlay-stats">
                   <div className="map-stat">
-                    <span className="material-symbols-outlined map-stat-icon">hub</span>
+                    <span className="material-symbols-outlined map-stat-icon">location_city</span>
                     <span className="map-stat-value">{summary?.total_nodes ?? nodes.length}</span>
-                    <span className="map-stat-label">nodes</span>
+                    <span className="map-stat-label">Nodes</span>
                   </div>
                   <div className="map-stat">
-                    <span className="material-symbols-outlined map-stat-icon">route</span>
+                    <span className="material-symbols-outlined map-stat-icon">alt_route</span>
                     <span className="map-stat-value">{summary?.total_edges ?? edges.length}</span>
-                    <span className="map-stat-label">routes</span>
+                    <span className="map-stat-label">Routes</span>
                   </div>
                 </div>
 
-                {/* Drawer toggle button */}
-                <button
-                  className="drawer-toggle"
-                  id="drawer-toggle"
-                  onClick={() => setDrawerOpen((v) => !v)}
-                  title={drawerOpen ? 'Close Controls' : 'Open Controls'}
-                >
-                  <span className="material-symbols-outlined">
-                    {drawerOpen ? 'right_panel_close' : 'right_panel_open'}
-                  </span>
-                  {drawerOpen ? 'Close' : 'Controls'}
-                </button>
-
-                {/* Node/Edge detail overlay */}
-                {(selectedNode || selectedEdge) && (
-                  <div className="detail-overlay" id="detail-overlay">
-                    {selectedNode && <NodeDetailPanel node={selectedNode} />}
-                    {selectedEdge && <EdgeDetailPanel edge={selectedEdge} />}
+                {/* Selected Node / Edge details */}
+                {selectedNode && (
+                  <div className="detail-overlay" id="node-detail-overlay">
+                    <NodeDetailPanel node={selectedNode} />
                   </div>
                 )}
-              </div>
+                {selectedEdge && !selectedNode && (
+                  <div className="detail-overlay" id="edge-detail-overlay">
+                    <EdgeDetailPanel edge={selectedEdge} />
+                  </div>
+                )}
 
-              {/* Right Intelligence Panel */}
-              <RightIntelPanel />
-
-              {/* Controls overlay (slides out from right edge, behind intel panel) */}
-              <div className="controls-drawer" id="controls-drawer">
-                <div className="drawer-scroll">
-                  {/* Demo story panel */}
-                  <div className="demo-story-panel">
-                    <div className="story-header">
-                      <span className="material-symbols-outlined story-header-icon">auto_awesome</span>
-                      RAAHAT LIVE DEMONSTRATION
-                    </div>
-                    <ul className="story-list">
-                      <li className="story-step complete">
-                        <span className="material-symbols-outlined story-check">check_circle</span>
-                        1. Digital Twin Ready
-                      </li>
-                      <li className="story-step complete">
-                        <span className="material-symbols-outlined story-check">check_circle</span>
-                        2. Bridge Disruption Detected
-                      </li>
-                      <li className="story-step complete">
-                        <span className="material-symbols-outlined story-check">check_circle</span>
-                        3. Impact Analysed
-                      </li>
-                      <li className="story-step complete">
-                        <span className="material-symbols-outlined story-check">check_circle</span>
-                        4. Supply Risk Identified
-                      </li>
-                      <li className="story-step active">
-                        <span className="material-symbols-outlined story-arrow">arrow_forward</span>
-                        5. Priority Calculated
-                      </li>
-                      <li className="story-step">
-                        <span className="material-symbols-outlined story-pending">radio_button_unchecked</span>
-                        6. Response Optimized
-                      </li>
-                    </ul>
-                    {demoResult && (
-                      <div className="story-summary">
-                        <strong>{demoResult.demo?.scenario_name}</strong>
-                        <p>{demoResult.story?.[5]?.summary || demoResult.priority?.selection_reason}</p>
+                {/* Map Legend */}
+                <div className="map-legend" id="map-legend">
+                  <div className="legend-section">
+                    <div className="legend-title">Nodes</div>
+                    <div className="legend-grid">
+                      <div className="legend-item">
+                        <span className="legend-swatch" style={{ background: '#0284c7' }} />
+                        <span>Village</span>
                       </div>
-                    )}
-                    <div className="demo-actions">
-                      <button className="btn-demo-run" onClick={handleDemoRun} disabled={demoBusy}>
-                        <span className="material-symbols-outlined">{demoBusy ? 'hourglass_top' : 'play_arrow'}</span>
-                        {demoBusy ? 'Running…' : 'Run Demo'}
-                      </button>
-                      <button className="btn-demo-reset" onClick={handleDemoReset} disabled={demoBusy}>
-                        <span className="material-symbols-outlined">restart_alt</span>
-                        Reset
-                      </button>
+                      <div className="legend-item">
+                        <span className="legend-swatch" style={{ background: '#dc2626' }} />
+                        <span>Hospital</span>
+                      </div>
+                      <div className="legend-item">
+                        <span className="legend-swatch" style={{ background: '#16a34a' }} />
+                        <span>Warehouse</span>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Disruption + existing panels */}
-                  <DisruptionControl />
-                  <SimulationResult />
-                  <ImpactAnalysisPanel />
-                  <CriticalSupplyPanel />
-                  <PriorityPanel />
-                  <ActionPlanPanel />
-                  <ScenarioPreview />
-                  <ScenarioComparison />
-                  <AssistantPanel />
-                  <AccessibilityDashboard />
-
-                  <button
-                    className={`btn-reset-full ${confirmReset ? 'reset-confirm' : ''}`}
-                    onClick={handleReset}
-                    id="btn-reset-demo"
-                  >
-                    <span className="material-symbols-outlined">delete_forever</span>
-                    {confirmReset ? 'Confirm Reset?' : 'Reset All Data'}
-                  </button>
+                  <div className="legend-section">
+                    <div className="legend-title">Routes</div>
+                    <div className="legend-grid">
+                      <div className="legend-item">
+                        <span className="legend-line" style={{ background: '#16a34a' }} />
+                        <span>Open</span>
+                      </div>
+                      <div className="legend-item">
+                        <span className="legend-line" style={{ background: '#E8871E' }} />
+                        <span>At Risk</span>
+                      </div>
+                      <div className="legend-item">
+                        <span className="legend-line" style={{ background: '#dc2626' }} />
+                        <span>Closed</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </main>
+
+              {/* Right Panel */}
+              <RightIntelPanel />
             </>
+          )}
+
+          {/* Slide-out Controls Drawer */}
+          {drawerOpen && (
+            <div className="controls-drawer" id="controls-drawer">
+              <div className="drawer-header">
+                <h3 className="drawer-title">Disruption Control Center</h3>
+                <button
+                  className="drawer-close"
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+              <div className="drawer-content">
+                <DisruptionControl />
+                <SimulationResult />
+                <ActionPlanPanel />
+                <ScenarioComparison />
+                <AssistantPanel />
+              </div>
+            </div>
           )}
         </div>
       )}
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }

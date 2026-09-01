@@ -3,13 +3,25 @@
 // Right: Navy panel with brand wordmark and animated network background.
 
 import { useState, useEffect, useRef } from 'react'
+import RoleSelector from '../components/auth/RoleSelector'
+import { ROLES } from '../auth/permissions'
 
 export default function LoginPage({ onLoginSuccess }) {
+  const [selectedRole, setSelectedRole] = useState(ROLES.COMMAND_CENTER)
   const [email, setEmail] = useState('command@raahat.gov.in')
   const [password, setPassword] = useState('demo1234')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const canvasRef = useRef(null)
+
+  const handleRoleSelect = (roleKey) => {
+    setSelectedRole(roleKey)
+    if (roleKey === ROLES.FIELD_OFFICER) {
+      setEmail('field.officer@raahat.gov.in')
+    } else {
+      setEmail('command@raahat.gov.in')
+    }
+  }
 
   // Animated network graph background on the right navy panel
   useEffect(() => {
@@ -25,7 +37,6 @@ export default function LoginPage({ onLoginSuccess }) {
     resize()
     window.addEventListener('resize', resize)
 
-    // Nodes setup
     const nodeCount = 28
     const nodes = []
     for (let i = 0; i < nodeCount; i++) {
@@ -38,7 +49,6 @@ export default function LoginPage({ onLoginSuccess }) {
       })
     }
 
-    // Pulses traveling along connected lines
     const pulses = [
       { from: 0, to: 5, progress: 0.1, speed: 0.005 },
       { from: 3, to: 12, progress: 0.5, speed: 0.004 },
@@ -47,8 +57,6 @@ export default function LoginPage({ onLoginSuccess }) {
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // Move nodes
       nodes.forEach((n) => {
         n.x += n.vx
         n.y += n.vy
@@ -56,7 +64,6 @@ export default function LoginPage({ onLoginSuccess }) {
         if (n.y < 0 || n.y > canvas.height) n.vy *= -1
       })
 
-      // Draw connections
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x
@@ -74,7 +81,6 @@ export default function LoginPage({ onLoginSuccess }) {
         }
       }
 
-      // Draw nodes
       nodes.forEach((n) => {
         ctx.beginPath()
         ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2)
@@ -82,7 +88,6 @@ export default function LoginPage({ onLoginSuccess }) {
         ctx.fill()
       })
 
-      // Draw pulses
       pulses.forEach((p) => {
         p.progress += p.speed
         if (p.progress >= 1) {
@@ -126,14 +131,27 @@ export default function LoginPage({ onLoginSuccess }) {
 
     setLoading(true)
     setTimeout(() => {
-      localStorage.setItem('raahat_auth', 'true')
       setLoading(false)
       if (onLoginSuccess) {
-        onLoginSuccess()
+        onLoginSuccess(selectedRole, email)
       } else {
+        localStorage.setItem('raahat_auth', 'true')
+        localStorage.setItem('raahat_role', selectedRole)
+        localStorage.setItem('raahat_email', email)
         window.location.pathname = '/dashboard'
       }
-    }, 400)
+    }, 300)
+  }
+
+  const handleLaunchDemoMode = () => {
+    if (onLoginSuccess) {
+      onLoginSuccess(ROLES.DEMO, 'demo.judge@raahat.gov.in')
+    } else {
+      localStorage.setItem('raahat_auth', 'true')
+      localStorage.setItem('raahat_role', ROLES.DEMO)
+      localStorage.setItem('raahat_email', 'demo.judge@raahat.gov.in')
+      window.location.pathname = '/dashboard'
+    }
   }
 
   return (
@@ -153,6 +171,12 @@ export default function LoginPage({ onLoginSuccess }) {
           </div>
 
           <form className="login-form" onSubmit={handleSubmit}>
+            {/* Role Selector above inputs */}
+            <RoleSelector
+              selectedRole={selectedRole}
+              onSelectRole={handleRoleSelect}
+            />
+
             {error && (
               <div className="login-error">
                 <span className="material-symbols-outlined">error</span>
@@ -168,7 +192,7 @@ export default function LoginPage({ onLoginSuccess }) {
                   id="login-email"
                   type="email"
                   className="login-input"
-                  placeholder="operator@raahat.gov.in"
+                  placeholder={selectedRole === ROLES.FIELD_OFFICER ? 'field.officer@raahat.gov.in' : 'command@raahat.gov.in'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -213,14 +237,30 @@ export default function LoginPage({ onLoginSuccess }) {
               <span className="material-symbols-outlined">
                 {loading ? 'progress_activity' : 'login'}
               </span>
-              {loading ? 'Authenticating…' : 'Sign In to Command Center'}
+              {loading
+                ? 'Authenticating…'
+                : selectedRole === ROLES.FIELD_OFFICER
+                ? 'Sign In as Field Officer'
+                : 'Sign In to Command Center'}
             </button>
 
-            <div className="login-demo-notice">
-              <span className="material-symbols-outlined">info</span>
-              <span>
-                <strong>Hackathon Demo:</strong> Enter any credentials to access mission control.
-              </span>
+            {/* Separate Hackathon Demo Mode launch card */}
+            <div className="login-demo-card" id="login-demo-card">
+              <div className="demo-card-header">
+                <span className="demo-card-icon">🎯</span>
+                <div className="demo-card-text">
+                  <strong>Hackathon Demo Mode</strong>
+                  <span>Explore the complete RAAHAT disaster response workflow</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-launch-demo-mode"
+                onClick={handleLaunchDemoMode}
+                id="btn-launch-demo-mode"
+              >
+                Launch Demo Mode →
+              </button>
             </div>
           </form>
         </div>
