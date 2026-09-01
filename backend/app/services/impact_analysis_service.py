@@ -7,6 +7,7 @@ from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
 import copy
 import uuid
+from datetime import datetime
 
 from app.models.impact import (
     ImpactConfig,
@@ -56,23 +57,38 @@ class ImpactAnalysisEngine:
         self.accessibility_engine = AccessibilityEngine(config=self.config)
         self.disruption_service = DisruptionService()
     
-    def analyze_edge_closure(self, edge_id: str) -> Dict[str, Any]:
-        """Run full impact analysis for a hypothetical edge closure."""
+    def analyze_edge_closure(
+        self,
+        edge_id: str,
+        hypothetical_state: Optional[RegionalState] = None,
+        baseline_state: Optional[RegionalState] = None,
+    ) -> Dict[str, Any]:
+        """Run impact analysis for an edge closure.
+
+        When ``hypothetical_state`` is provided, it is treated as an already
+        mutated clone. ``baseline_state`` can be supplied by simulations so
+        the comparison is always live baseline versus hypothetical state.
+        The default behavior remains unchanged for POST /impact/{edge_id}.
+        """
         # 1. Get live baseline state
-        live_state = self.state_service.state
-        
+        live_state = baseline_state or self.state_service.state
+
         # 2. Calculate baseline accessibility
         baseline_result = calculate_accessibility(live_state)
         baseline_by_village = {v.village_id: v for v in baseline_result.villages}
-        
-        # 2. Create hypothetical state with edge closed
-        hypothetical_state = live_state.clone()
-        from app.models.disruption import DisruptionRequest
-        event, updated_edge = DisruptionService.apply(hypothetical_state, DisruptionRequest(
-            edge_id=edge_id,
-            type="closure",
-            risk_delta=0
-        ))
+
+        # 3. Create/use hypothetical state with edge closed
+        if hypothetical_state is None:
+            hypothetical_state = live_state.clone()
+            from app.models.disruption import DisruptionRequest
+            _, updated_edge = DisruptionService.apply(
+                hypothetical_state,
+                DisruptionRequest(edge_id=edge_id, type="closure", risk_delta=0),
+            )
+        else:
+            updated_edge = hypothetical_state.edge_map().get(edge_id)
+            if updated_edge is None:
+                raise ValueError(f"Edge {edge_id} does not exist in hypothetical state")
         
         # 3. Calculate hypothetical accessibility
         hypothetical_result = calculate_accessibility(hypothetical_state)

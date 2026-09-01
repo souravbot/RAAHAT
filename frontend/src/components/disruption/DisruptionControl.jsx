@@ -12,11 +12,15 @@ export default function DisruptionControl() {
   const applyLiveDisruption = useTwinStore((s) => s.applyLiveDisruption)
   const runSimulationNow = useTwinStore((s) => s.runSimulationNow)
   const runImpactAnalysis = useTwinStore((s) => s.runImpactAnalysis)
+  const runScenarioNow = useTwinStore((s) => s.runScenarioNow)
+  const runCompareScenarios = useTwinStore((s) => s.compareScenariosNow)
   const disruptionBusy = useTwinStore((s) => s.disruptionBusy)
   const disruptionError = useTwinStore((s) => s.disruptionError)
   const impactBusy = useTwinStore((s) => s.impactBusy)
+  const scenarioBusy = useTwinStore((s) => s.scenarioBusy)
   const clearDisruptionError = useTwinStore((s) => s.clearDisruptionError)
   const clearImpactError = useTwinStore((s) => s.clearImpactError)
+  const clearScenarioError = useTwinStore((s) => s.clearScenarioError)
 
   const [edgeId, setEdgeId] = useState('')
   const [type, setType] = useState('closure')
@@ -83,6 +87,38 @@ export default function DisruptionControl() {
       })
     } catch (err) {
       // error surfaced via impactError
+    }
+  }
+
+  const handleScenario = async () => {
+    if (!edgeId) return
+    clearScenarioError()
+    setActionMsg(null)
+    try {
+      const res = await runScenarioNow(payload())
+      setActionMsg({
+        kind: 'sim',
+        text: `Scenario ${res.scenario?.simulation_id} complete. Impact: ${res.hypothetical_impact?.impact_score}, Recommendations: ${res.hypothetical_recommendations?.success ? 'Available' : 'None'}`,
+      })
+    } catch (err) {
+      // error surfaced via scenarioError
+    }
+  }
+
+  const handleCompare = async () => {
+    if (!edgeId) return
+    clearScenarioError()
+    setActionMsg(null)
+    try {
+      const closurePayload = { ...payload(), type: 'closure' }
+      const riskPayload = { ...payload(), type: 'risk_increase', risk_delta: 50 }
+      const res = await runCompareScenarios(closurePayload, riskPayload)
+      setActionMsg({
+        kind: 'sim',
+        text: `Comparison complete: ${res.scenario_a?.simulation_id} vs ${res.scenario_b?.simulation_id}`,
+      })
+    } catch (err) {
+      // error surfaced via scenarioError
     }
   }
 
@@ -177,6 +213,22 @@ export default function DisruptionControl() {
           title="Analyze cascading impact of closing this edge"
         >
           {impactBusy ? 'Analyzing…' : 'ANALYZE IMPACT'}
+        </button>
+        <button
+          className="btn btn-scenario"
+          onClick={handleScenario}
+          disabled={!edgeId || scenarioBusy}
+          title="Run full scenario: simulate + impact + recommendations"
+        >
+          {scenarioBusy ? 'Working…' : 'SCENARIO PREVIEW'}
+        </button>
+        <button
+          className="btn btn-compare"
+          onClick={handleCompare}
+          disabled={!edgeId || scenarioBusy}
+          title="Compare two scenarios side-by-side"
+        >
+          {scenarioBusy ? 'Working…' : 'COMPARE SCENARIOS'}
         </button>
       </div>
       <div className="control-hint">

@@ -1626,6 +1626,104 @@ body {
 }
 
 /* ===========================
+   PHASE 9 — Scenario Preview & Comparison
+   =========================== */
+
+.btn-scenario {
+  background: #0f766e;
+}
+
+.btn-compare {
+  background: #7c3aed;
+}
+
+.scenario-preview,
+.scenario-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.scenario-header,
+.scenario-comp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.scenario-meta,
+.scenario-id {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.scenario-tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.scenario-tab {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.scenario-tab.active {
+  background: #fff;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.scenario-comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.scenario-comp-col,
+.comp-impact-col,
+.comp-recs-col {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem;
+}
+
+.comp-col-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+  font-size: 0.75rem;
+}
+
+.comp-metrics,
+.comp-recs-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.comp-metric-value,
+.comp-fact-value {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.comp-metric-label,
+.comp-fact-label {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ===========================
    PHASE 8 — Action Plan & Route Visualization
    =========================== */
 

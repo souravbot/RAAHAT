@@ -10,10 +10,15 @@ from app.models.disruption import DisruptionRequest, SimulationResult
 from app.services.disruption_service import DisruptionService
 from app.services.accessibility_service import calculate_accessibility
 from app.services.regional_state_service import RegionalStateService
+from app.services.impact_analysis_service import ImpactAnalysisEngine, ImpactConfig
+from app.services.priority_service import PriorityService
+from app.services.recommendation_service import RecommendationService
+from app.services.route_optimizer import RouteOptimizer
+from app.services.warehouse_selector import WarehouseSelector
+from app.services.vehicle_selector import VehicleSelector
 
 
 def _next_sim_id() -> str:
-    # Simple monotonic id for the session; survives module import.
     SimulationService._counter += 1
     return f"SIM{SimulationService._counter:03d}"
 
@@ -35,12 +40,51 @@ class SimulationService:
         accessibility_result = calculate_accessibility(hypothetical)
 
         # Calculate hypothetical priorities for the simulated state (Phase 7).
-        # These are SEPARATE from live priorities and never overwrite them.
-        from app.services.priority_service import PriorityService
         priority_service = PriorityService(self._state_service)
         simulated_priorities = priority_service.get_simulated_priority_result(
             hypothetical, simulation_id
         )
+
+        # Calculate impact analysis for the hypothetical state (Phase 9).
+        impact_config = ImpactConfig.default()
+        hypothetical_impact_engine = ImpactAnalysisEngine(
+            state_service=type('MockStateService', (), {'state': hypothetical})(),
+            config=impact_config
+        )
+        impact_result = hypothetical_impact_engine.analyze_edge_closure(
+            updated_edge.id,
+            hypothetical_state=hypothetical,
+            baseline_state=self._state_service.state,
+        )
+
+        # Calculate recommendations for the hypothetical state.
+        # Build a full recommendation service that operates on the hypothetical state.
+        hypothetical_route_optimizer = RouteOptimizer()
+        hypothetical_warehouse_selector = WarehouseSelector(hypothetical_route_optimizer)
+        hypothetical_vehicle_selector = VehicleSelector(hypothetical_route_optimizer)
+        hypothetical_rec_service = RecommendationService(
+            type('MockStateService', (), {'state': hypothetical})(),
+            route_optimizer=hypothetical_route_optimizer,
+            warehouse_selector=hypothetical_warehouse_selector,
+            vehicle_selector=hypothetical_vehicle_selector,
+        )
+
+        simulated_recommendations = None
+        try:
+            top_priority = simulated_priorities.priorities[0] if simulated_priorities.priorities else None
+            if top_priority:
+                from app.models.vehicles import RecommendActionRequest
+                req = RecommendActionRequest(
+                    target_node=top_priority.facility.id,
+                    resource=top_priority.resource.type,
+                    required_quantity=200,
+                    priority=top_priority.priority_level
+                )
+                simulated_recommendations = hypothetical_rec_service.recommend(req, state=hypothetical)
+                simulated_recommendations["is_simulated"] = True
+                simulated_recommendations["simulation_id"] = simulation_id
+        except Exception:
+            simulated_recommendations = None
 
         return SimulationResult(
             simulation_id=simulation_id,
@@ -49,6 +93,8 @@ class SimulationService:
             hypothetical_state=hypothetical.to_payload(),
             hypothetical_accessibility=[v.model_dump() for v in accessibility_result.villages],
             hypothetical_priorities=simulated_priorities,
+            hypothetical_impact=impact_result,
+            hypothetical_recommendations=simulated_recommendations,
         )
 
 

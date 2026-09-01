@@ -54,3 +54,14 @@ class SimulationResult(BaseModel):
     # Simulated priorities are clearly labeled and never overwrite live
     # priority results.
     hypothetical_priorities: Optional[Any] = None
+    # Impact analysis for the hypothetical scenario (Phase 9).
+    hypothetical_impact: Optional[Any] = None
+    # Recommended action plan for the hypothetical scenario (Phase 9).
+    hypothetical_recommendations: Optional[Any] = None
+
+
+class ScenarioCompareRequest(BaseModel):
+    """Payload accepted by POST /scenario/compare."""
+
+    request_a: DisruptionRequest
+    request_b: DisruptionRequest

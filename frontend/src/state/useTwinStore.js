@@ -8,6 +8,7 @@ import { analyzeImpact } from '../api/impactApi'
 import { fetchAllDepletion, fetchRegionalSupplySummary } from '../api/depletionApi'
 import { fetchPriorities } from '../api/priorityApi'
 import { recommendAction, confirmDispatch } from '../api/actionPlanApi'
+import { runScenario, compareScenarios } from '../api/scenarioApi'
 
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
@@ -55,6 +56,12 @@ export const useTwinStore = create((set, get) => ({
   disruptionBusy: false,
   disruptionError: null,
   simResult: null,
+
+  // ---- scenario analysis (Phase 9) ----
+  scenarioBusy: false,
+  scenarioError: null,
+  scenarioResult: null,
+  scenarioComparison: null,
 
   // ---- impact analysis UI state ----
   impactBusy: false,
@@ -132,6 +139,35 @@ export const useTwinStore = create((set, get) => ({
     }
   },
 
+  // Phase 9: Runs a complete what-if scenario (simulate + impact + recommendations).
+  runScenarioNow: async (payload) => {
+    set({ scenarioBusy: true, scenarioError: null })
+    try {
+      const result = await runScenario(payload)
+      set({ scenarioBusy: false, scenarioResult: result })
+      return result
+    } catch (err) {
+      set({ scenarioBusy: false, scenarioError: err.message })
+      throw err
+    }
+  },
+
+  // Phase 9: Compare two scenarios side-by-side.
+  compareScenariosNow: async (payloadA, payloadB) => {
+    set({ scenarioBusy: true, scenarioError: null })
+    try {
+      const result = await compareScenarios(payloadA, payloadB)
+      set({ scenarioBusy: false, scenarioComparison: result })
+      return result
+    } catch (err) {
+      set({ scenarioBusy: false, scenarioError: err.message })
+      throw err
+    }
+  },
+
+  clearScenarioResult: () => set({ scenarioResult: null, scenarioComparison: null }),
+  clearScenarioError: () => set({ scenarioError: null }),
+
   resetDemo: async () => {
     set({ disruptionBusy: true, disruptionError: null })
     try {
@@ -145,6 +181,8 @@ export const useTwinStore = create((set, get) => ({
       set({
         disruptionBusy: false,
         simResult: null,
+        scenarioResult: null,
+        scenarioComparison: null,
         selectedNodeId: null,
         selectedEdgeId: null,
         actionPlan: null,
@@ -159,19 +197,6 @@ export const useTwinStore = create((set, get) => ({
 
   clearDisruptionError: () => set({ disruptionError: null }),
   clearSimResult: () => set({ simResult: null }),
-
-  // Runs impact analysis for a selected edge.
-  runImpactAnalysis: async (edgeId) => {
-    set({ impactBusy: true, impactError: null })
-    try {
-      const result = await analyzeImpact(edgeId)
-      set({ impactBusy: false, impactResult: result })
-      return result
-    } catch (err) {
-      set({ impactBusy: false, impactError: err.message })
-      throw err
-    }
-  },
 
   clearImpactResult: () => set({ impactResult: null }),
   clearImpactError: () => set({ impactError: null }),

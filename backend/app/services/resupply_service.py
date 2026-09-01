@@ -66,7 +66,7 @@ class ResupplyService:
                 status=ResupplyStatus.BLOCKED
             )
         
-        warehouses = self.get_warehouses(self.state_service.state)
+        warehouses = self.get_warehouses(state)
         warehouse_ids = [w.id for w in warehouses if w.id in G]
         
         if not warehouse_ids:

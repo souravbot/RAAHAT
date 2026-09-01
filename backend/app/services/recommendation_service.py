@@ -78,19 +78,24 @@ class RecommendationService:
         self.vehicle_selector = vehicle_selector or VehicleSelector(self.route_optimizer)
 
     # ------------------------------------------------------------- main entry
-    def recommend(self, request) -> Dict:
-        """Build a full action plan for a shortage request.
+    def recommend(
+        self,
+        request,
+        state: Optional[RegionalState] = None,
+    ) -> Dict:
+        """Build an action plan against live or explicitly supplied state.
 
-        Raises RecommendationError when no feasible plan exists; the API route
-        converts it to a `success: false` structured response.
+        ``state`` is used by simulations to keep every warehouse, route, and
+        vehicle decision inside the cloned hypothetical state. The normal API
+        omits it and continues to use the live RegionalState.
         """
-        state = self.state_service.state
+        current_state = state or self.state_service.state
         target_node = request.target_node
         resource = request.resource
         required_quantity = float(request.required_quantity)
 
         # Validate target node exists.
-        if target_node not in state.node_map():
+        if target_node not in current_state.node_map():
             raise RecommendationError(
                 f"Target node {target_node} does not exist.",
                 reasons=[f"Target node {target_node} is not present in the regional twin."],
@@ -98,10 +103,10 @@ class RecommendationService:
 
         # --- 1. Warehouse candidates with sufficient stock + reachable route ---
         candidates = self.warehouse_selector.find_candidates_to_target(
-            state, resource, required_quantity, target_node
+            current_state, resource, required_quantity, target_node
         )
         if not candidates:
-            raise self._no_warehouse_error(state, resource, required_quantity, target_node)
+            raise self._no_warehouse_error(current_state, resource, required_quantity, target_node)
 
         # --- 2. Best warehouse (lowest accessibility-adjusted route cost) ---
         best_warehouse = self.warehouse_selector.select_best_warehouse(candidates)
@@ -118,7 +123,7 @@ class RecommendationService:
 
         # --- 3. Best available vehicle (capacity + availability + nearest) ---
         vehicle_result = self.vehicle_selector.select_vehicle(
-            state, required_quantity, wh.id
+            current_state, required_quantity, wh.id
         )
         if vehicle_result is None:
             raise RecommendationError(
@@ -135,7 +140,7 @@ class RecommendationService:
             wh_route=wh_route,
             vehicle_result=vehicle_result,
             vehicle_route=vehicle_route,
-            target_name=self._node_name(state, target_node),
+            target_name=self._node_name(current_state, target_node),
         )
 
         # --- 5. Numbered action steps ---
@@ -146,14 +151,14 @@ class RecommendationService:
             resource=resource,
             quantity=required_quantity,
             target_node=target_node,
-            target_name=self._node_name(state, target_node),
+            target_name=self._node_name(current_state, target_node),
         )
 
         return {
             "success": True,
             "request": {
                 "target_node": target_node,
-                "target_name": self._node_name(state, target_node),
+                "target_name": self._node_name(current_state, target_node),
                 "resource": resource,
                 "required_quantity": required_quantity,
                 "priority": getattr(request, "priority", None),
