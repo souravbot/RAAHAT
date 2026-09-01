@@ -21,7 +21,12 @@ export default function DemoBar() {
   const runDemoNow = useTwinStore((s) => s.runDemoNow)
   const resetDemoFlow = useTwinStore((s) => s.resetDemoFlow)
 
-  const activeStepId = demoResult ? 10 : 1
+  const storySteps = demoResult?.story?.length || 0
+  const activeStepId = demoBusy
+    ? Math.min(Math.max(storySteps, 1), 10)
+    : demoResult
+      ? 10
+      : 1
 
   const handleRun = async () => {
     try {
@@ -74,8 +79,8 @@ export default function DemoBar() {
       {/* 10-Step Workflow Progress Indicator */}
       <div className="demo-workflow-strip">
         {DEMO_STEPS.map((step, idx) => {
-          const isComplete = demoResult || activeStepId > step.id
-          const isActive = !demoResult && activeStepId === step.id
+          const isComplete = demoResult ? true : activeStepId > step.id
+          const isActive = demoBusy ? step.id === activeStepId : (!demoResult && activeStepId === step.id)
           return (
             <div
               key={step.id}

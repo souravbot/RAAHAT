@@ -22,26 +22,34 @@ export default function ActionPlanPanel() {
   const clearActionPlan = useTwinStore((s) => s.clearActionPlan)
   const clearActionError = useTwinStore((s) => s.clearActionError)
   const priorities = useTwinStore((s) => s.priorities)
+  const selectedPriorityTarget = useTwinStore((s) => s.selectedPriorityTarget)
   const vehicles = useTwinStore((s) => s.vehicles)
 
   // Manual / prefilled request fields.
   const [targetNode, setTargetNode] = useState('')
   const [resource, setResource] = useState('')
-  const [quantity, setQuantity] = useState('')
+  const [quantity, setQuantity] = useState('200')
 
   const [source, setSource] = useState('priority') // 'priority' | 'manual'
 
-  // Use the top priority as a convenient default shortage trigger.
+  // Active target is either explicitly selected priority or top priority fallback
   const topPriority = priorities && priorities.length > 0 ? priorities[0] : null
+  const activeTarget = selectedPriorityTarget || (topPriority ? {
+    facility_id: topPriority.facility?.id || topPriority.facility_id,
+    facility_name: topPriority.facility?.name || topPriority.facility_name,
+    resource: topPriority.resource?.type || topPriority.resource_name || 'medicine',
+    priority_level: topPriority.priority_level,
+    required_quantity: 200,
+  } : null)
 
   const handleGenerate = async () => {
     let payload
-    if (source === 'priority' && topPriority) {
+    if (source === 'priority' && activeTarget) {
       payload = {
-        target_node: topPriority.facility.id,
-        resource: topPriority.resource.type,
-        required_quantity: 200, // demo default quantity
-        priority: topPriority.priority_level,
+        target_node: activeTarget.facility_id,
+        resource: activeTarget.resource,
+        required_quantity: Number(activeTarget.required_quantity) || 200,
+        priority: activeTarget.priority_level,
       }
     } else {
       if (!targetNode || !resource || !quantity) {
@@ -67,10 +75,10 @@ export default function ActionPlanPanel() {
   const failed = actionPlan?.success === false
 
   return (
-    <div className="action-plan-panel control-panel">
+    <div className="action-plan-panel control-panel" id="action-plan-panel">
       <div className="control-header">
         <span className="control-title">RECOMMENDED ACTION</span>
-        <span className="live-badge action-badge">PLANNING</span>
+        <span className="live-badge action-badge">OPTIMIZATION ENGINE</span>
       </div>
 
       {actionError && (
@@ -95,11 +103,11 @@ export default function ActionPlanPanel() {
         </button>
       </div>
 
-      {source === 'priority' && topPriority ? (
+      {source === 'priority' && activeTarget ? (
         <div className="action-source-note">
-          Shortage from top priority: <strong>{topPriority.facility.id}</strong> —{' '}
-          <strong>{topPriority.resource.type.toUpperCase()}</strong> (
-          {topPriority.priority_level})
+          Shortage Target: <strong>{activeTarget.facility_name || activeTarget.facility_id}</strong> ({activeTarget.facility_id}) —{' '}
+          <strong>{activeTarget.resource.toUpperCase()}</strong> (
+          {activeTarget.priority_level || 'HIGH'})
         </div>
       ) : source === 'priority' ? (
         <div className="action-source-note">No priority detected yet.</div>
@@ -107,13 +115,13 @@ export default function ActionPlanPanel() {
         <div className="action-manual-fields">
           <input
             className="control-input"
-            placeholder="Target node (e.g. H003)"
+            placeholder="Target node (e.g. H001)"
             value={targetNode}
             onChange={(e) => setTargetNode(e.target.value)}
           />
           <input
             className="control-input"
-            placeholder="Resource (e.g. food)"
+            placeholder="Resource (e.g. medicine)"
             value={resource}
             onChange={(e) => setResource(e.target.value)}
           />
@@ -130,9 +138,9 @@ export default function ActionPlanPanel() {
       <button
         className="btn btn-live action-generate-btn"
         onClick={handleGenerate}
-        disabled={actionBusy || (source === 'priority' && !topPriority)}
+        disabled={actionBusy || (source === 'priority' && !activeTarget)}
       >
-        {actionBusy ? 'Generating…' : 'GENERATE RECOMMENDED ACTION'}
+        {actionBusy ? 'Generating…' : activeTarget && source === 'priority' ? `GENERATE ACTION PLAN FOR ${activeTarget.facility_name || activeTarget.facility_id}` : 'GENERATE RECOMMENDED ACTION'}
       </button>
 
       {failed && (
@@ -167,7 +175,7 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
   const dispatchable = selectedVehicle?.status === 'available'
 
   return (
-    <div className="action-plan-card">
+    <div className="action-plan-card" id="action-plan-card">
       <div className="action-card-header">
         <span className="action-card-title">🚨 RECOMMENDED ACTION PLAN</span>
         <button className="icon-btn" onClick={onClose} aria-label="Dismiss">
@@ -195,39 +203,39 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
       </div>
 
       <div className="action-card-section">
-        <div className="action-card-step-label">1 · Selected Warehouse</div>
+        <div className="action-card-step-label">WHERE SHOULD THE RESOURCE COME FROM?</div>
         <div className="action-card-value">
-          {plan.selected_warehouse?.id}
-          <span className="action-sub">{plan.selected_warehouse?.name}</span>
+          📦 {plan.selected_warehouse?.name || plan.selected_warehouse?.id}
+          <span className="action-sub">Warehouse ID: {plan.selected_warehouse?.id}</span>
         </div>
       </div>
 
       <div className="action-card-section">
-        <div className="action-card-step-label">2 · Selected Vehicle</div>
+        <div className="action-card-step-label">WHICH VEHICLE SHOULD BE USED?</div>
         <div className="action-card-value">
-          {selectedVehicle?.id}
+          🚚 {selectedVehicle?.id} ({selectedVehicle?.type})
           <span className="action-sub">
-            {selectedVehicle?.type} · cap {selectedVehicle?.capacity}
+            Capacity: {selectedVehicle?.capacity} units · Current location: {selectedVehicle?.current_node}
           </span>
         </div>
       </div>
 
       <div className="action-card-section">
-        <div className="action-card-step-label">3 · Recommended Route</div>
+        <div className="action-card-step-label">WHICH ROUTE SHOULD IT TAKE?</div>
         <div className="action-card-route">
           <span className="action-route-node">{plan.selected_route?.start}</span>
           <span className="action-route-arrow">→</span>
           <span className="action-route-node">{plan.selected_route?.end}</span>
         </div>
         <div className="action-route-meta">
-          Distance: {plan.selected_route?.total_distance} km · Weighted cost:{' '}
-          {plan.selected_route?.weighted_cost}
+          Distance: <strong>{plan.selected_route?.total_distance} km</strong> · Weighted cost:{' '}
+          <strong>{plan.selected_route?.weighted_cost}</strong>
         </div>
       </div>
 
       {/* Numbered steps */}
       <div className="action-card-section">
-        <div className="action-card-step-label">Execution Steps</div>
+        <div className="action-card-step-label">WHAT SHOULD WE DO? (Execution Steps)</div>
         <ol className="action-steps">
           {(plan.steps || []).map((step, i) => (
             <li key={i}>{step}</li>
@@ -238,7 +246,7 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
       {/* Why this recommendation */}
       {plan.reasons?.length > 0 && (
         <div className="action-card-section">
-          <div className="action-card-step-label">Why this recommendation?</div>
+          <div className="action-card-step-label">WHY WAS THIS DECISION MADE?</div>
           <ul className="action-checks">
             {plan.reasons.map((r, i) => (
               <li key={i}>✓ {r}</li>
@@ -251,6 +259,7 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
         className="btn action-dispatch-btn"
         onClick={onConfirm}
         disabled={!dispatchable || dispatching}
+        id="btn-confirm-dispatch"
       >
         {dispatching
           ? 'Dispatching…'

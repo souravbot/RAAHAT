@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { id: 'impact', icon: 'query_stats', label: 'Impact Analysis' },
   { id: 'queue', icon: 'priority_high', label: 'Priority Queue' },
   { id: 'simulations', icon: 'science', label: 'Simulations' },
+  { id: 'workflow', icon: 'account_tree', label: 'Response Workflow' },
 ]
 
 export default function IconSidebar({ activeView = 'dashboard', onNavigate }) {

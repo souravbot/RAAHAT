@@ -9,12 +9,11 @@ import DisruptionControl from './components/disruption/DisruptionControl'
 import SimulationResult from './components/disruption/SimulationResult'
 import AccessibilityDashboard from './components/disruption/AccessibilityDashboard'
 import ImpactAnalysisPanel from './components/disruption/ImpactAnalysisPanel'
-import CriticalSupplyPanel from './components/disruption/CriticalSupplyPanel'
-import PriorityPanel from './components/disruption/PriorityPanel'
 import ActionPlanPanel from './components/disruption/ActionPlanPanel'
 import ScenarioPreview from './components/disruption/ScenarioPreview'
 import ScenarioComparison from './components/disruption/ScenarioComparison'
 import AssistantPanel from './components/disruption/AssistantPanel'
+import OperationalIntelligenceWorkflow from './components/workflow/OperationalIntelligenceWorkflow'
 import LoginPage from './views/LoginPage'
 import MapFocusView from './views/MapFocusView'
 import ImpactAnalysisView from './views/ImpactAnalysisView'
@@ -42,6 +41,7 @@ function getPathView() {
   if (path === '/impact-analysis' || path === '/impact') return 'impact'
   if (path === '/priority-queue' || path === '/queue') return 'queue'
   if (path === '/simulations') return 'simulations'
+  if (path === '/workflow') return 'workflow'
   return 'dashboard'
 }
 
@@ -50,6 +50,7 @@ function AppContent() {
 
   const loadTwin = useTwinStore((s) => s.loadTwin)
   const loadDepletion = useTwinStore((s) => s.loadDepletion)
+  const loadPriorities = useTwinStore((s) => s.loadPriorities)
   const resetDemo = useTwinStore((s) => s.resetDemo)
   const loading = useTwinStore((s) => s.loading)
   const error = useTwinStore((s) => s.error)
@@ -66,7 +67,7 @@ function AppContent() {
 
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
-  const [depletionLoaded, setDepletionLoaded] = useState(false)
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false)
   const [activeView, setActiveView] = useState(() => {
     const v = getPathView()
     return v === 'login' ? 'dashboard' : v
@@ -103,17 +104,20 @@ function AppContent() {
   }, [isAuthenticated])
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadTwin()
+    if (isAuthenticated && !initialDataLoaded) {
+      setInitialDataLoaded(true)
+      loadTwin().catch(() => {})
+      loadDepletion().catch(() => {})
+      loadPriorities().catch(() => {})
     }
-  }, [loadTwin, isAuthenticated])
+  }, [isAuthenticated, initialDataLoaded, loadTwin, loadDepletion, loadPriorities])
 
+  // Open the control drawer when a demo scenario completes so impact/action panels are visible.
   useEffect(() => {
-    if (isAuthenticated && !depletionLoaded) {
-      setDepletionLoaded(true)
-      loadDepletion()
+    if (demoResult?.success) {
+      setDrawerOpen(true)
     }
-  }, [loadDepletion, depletionLoaded, isAuthenticated])
+  }, [demoResult])
 
   // Live clock
   useEffect(() => {
@@ -365,6 +369,10 @@ function AppContent() {
             <SimulationsView />
           )}
 
+          {activeView === 'workflow' && (
+            <OperationalIntelligenceWorkflow />
+          )}
+
           {activeView === 'dashboard' && (
             <>
               {/* Center Map */}
@@ -457,8 +465,11 @@ function AppContent() {
               </div>
 
               <div className="drawer-content">
+                <AccessibilityDashboard />
                 <DisruptionControl />
                 <SimulationResult />
+                <ImpactAnalysisPanel />
+                <ScenarioPreview />
                 <ActionPlanPanel />
                 <ScenarioComparison />
                 <AssistantPanel />

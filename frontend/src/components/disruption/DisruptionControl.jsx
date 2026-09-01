@@ -1,7 +1,7 @@
 // DisruptionControl — lets the operator apply a live disruption or run a
 // What-If simulation against a selected transport edge.
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTwinStore } from '../../state/useTwinStore'
 
 const EDGE_META = { ROAD: 'Road', BRIDGE: 'Bridge' }
@@ -9,6 +9,7 @@ const EDGE_META = { ROAD: 'Road', BRIDGE: 'Bridge' }
 export default function DisruptionControl() {
   const nodes = useTwinStore((s) => s.nodes)
   const edges = useTwinStore((s) => s.edges)
+  const selectedEdgeId = useTwinStore((s) => s.selectedEdgeId)
   const applyLiveDisruption = useTwinStore((s) => s.applyLiveDisruption)
   const runSimulationNow = useTwinStore((s) => s.runSimulationNow)
   const runImpactAnalysis = useTwinStore((s) => s.runImpactAnalysis)
@@ -22,10 +23,17 @@ export default function DisruptionControl() {
   const clearImpactError = useTwinStore((s) => s.clearImpactError)
   const clearScenarioError = useTwinStore((s) => s.clearScenarioError)
 
-  const [edgeId, setEdgeId] = useState('')
+  const [edgeId, setEdgeId] = useState(selectedEdgeId || '')
   const [type, setType] = useState('closure')
   const [riskDelta, setRiskDelta] = useState(20)
   const [actionMsg, setActionMsg] = useState(null)
+
+  // Sync with map edge selection
+  useEffect(() => {
+    if (selectedEdgeId && selectedEdgeId !== edgeId) {
+      setEdgeId(selectedEdgeId)
+    }
+  }, [selectedEdgeId])
 
   const byId = new Map(nodes.map((n) => [n.id, n]))
 
@@ -186,7 +194,19 @@ export default function DisruptionControl() {
       )}
 
       {actionMsg && (
-        <div className={`action-msg ${actionMsg.kind}`}>{actionMsg.text}</div>
+        <div className={`action-msg ${actionMsg.kind}`}>
+          <div>{actionMsg.text}</div>
+          {actionMsg.kind === 'live' && (
+            <button
+              className="btn btn-impact action-next-btn"
+              onClick={handleImpact}
+              disabled={impactBusy}
+              style={{ marginTop: '0.45rem', width: '100%', fontSize: '0.75rem' }}
+            >
+              {impactBusy ? 'Analyzing cascading impact…' : `ANALYZE REGIONAL IMPACT FOR ${edgeId} →`}
+            </button>
+          )}
+        </div>
       )}
 
       <div className="control-actions">

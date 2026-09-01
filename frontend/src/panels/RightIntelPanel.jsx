@@ -1,6 +1,7 @@
 // RightIntelPanel — stacked right panel with Critical Alerts feed
-// above a Priority Queue list. Consumes existing store data.
+// above a Priority Queue list. Consumes real backend store data.
 
+import { useMemo } from 'react'
 import { useTwinStore } from '../state/useTwinStore'
 
 /* ---------- severity helpers ---------- */
@@ -22,106 +23,55 @@ function timeSince(minutesAgo) {
   return `${Math.round(minutesAgo / 60)}h ago`
 }
 
-/* ---------- static mock alerts for visual completeness ---------- */
-const MOCK_ALERTS = [
-  {
-    id: 'alert-1',
-    severity: 'critical',
-    title: 'Bridge BRG-04 Collapsed',
-    subtitle: 'Route NH-37 segment impassable',
-    time: 12,
-    icon: 'warning',
-  },
-  {
-    id: 'alert-2',
-    severity: 'high',
-    title: 'Medical Supplies < 48h',
-    subtitle: 'Dhemaji District Hospital — insulin depleting',
-    time: 34,
-    icon: 'local_pharmacy',
-  },
-  {
-    id: 'alert-3',
-    severity: 'high',
-    title: 'Flood Risk — Brahmaputra Tributary',
-    subtitle: '3 villages in projected inundation zone',
-    time: 51,
-    icon: 'flood',
-  },
-  {
-    id: 'alert-4',
-    severity: 'moderate',
-    title: 'Road RD-12 At Risk',
-    subtitle: 'Landslide warning — alternate route available',
-    time: 78,
-    icon: 'landslide',
-  },
-  {
-    id: 'alert-5',
-    severity: 'moderate',
-    title: 'Warehouse W-03 Low Stock',
-    subtitle: 'Rice reserves below 30% threshold',
-    time: 120,
-    icon: 'inventory_2',
-  },
-]
-
 export default function RightIntelPanel() {
   const priorities = useTwinStore((s) => s.priorities)
   const prioritySummary = useTwinStore((s) => s.prioritySummary)
+  const priorityBusy = useTwinStore((s) => s.priorityBusy)
+  const priorityError = useTwinStore((s) => s.priorityError)
   const supplyData = useTwinStore((s) => s.supplyData)
+  const supplyBusy = useTwinStore((s) => s.supplyBusy)
+  const supplyError = useTwinStore((s) => s.supplyError)
   const focusNode = useTwinStore((s) => s.focusNode)
 
-  // Build alerts from supply data if available, else fall back to mock
-  const alerts = (() => {
-    if (!supplyData || supplyData.length === 0) return MOCK_ALERTS
+  // Build real alerts strictly from live supply data
+  const alerts = useMemo(() => {
+    if (!supplyData || supplyData.length === 0) return []
     const list = []
     supplyData.forEach((d, i) => {
       if (Array.isArray(d.resources) && d.resources.length > 0) {
         d.resources.forEach((r, j) => {
+          const status = r.supply_status || 'STABLE'
+          if (status === 'STABLE') return
+
           const stockVal = r.current_stock ?? r.stock ?? r.quantity
           const stockStr = (stockVal !== undefined && stockVal !== null) ? stockVal.toLocaleString() : 'Unknown'
           const unitStr = r.unit || 'units'
-          const severity = r.supply_status || d.overall_supply_status || 'moderate'
+          const severity = status.toLowerCase()
+
           list.push({
-            id: `supply-${i}-${j}`,
+            id: `supply-${d.facility_id || i}-${r.resource_name || j}`,
             facilityId: d.facility_id,
-            severity: severity.toLowerCase(),
-            title: `${r.resource_name || 'Resource'} — ${severity}`,
+            severity,
+            title: `${r.resource_name ? r.resource_name.toUpperCase() : 'RESOURCE'} — ${status.replace('_', ' ')}`,
             subtitle: `${d.facility_name || d.facility_id} · ${stockStr} ${unitStr} remaining`,
             time: r.days_until_depletion ? r.days_until_depletion * 24 * 60 : (r.hours_until_depletion ? r.hours_until_depletion * 60 : 0),
-            icon: severity.toLowerCase().includes('critical') ? 'warning' : 'local_pharmacy',
+            icon: severity.includes('critical') ? 'warning' : 'local_pharmacy',
             score: r.supply_criticality_score || 0,
           })
-        })
-      } else {
-        const stockVal = d.current_stock ?? d.stock ?? d.quantity
-        const stockStr = (stockVal !== undefined && stockVal !== null) ? stockVal.toLocaleString() : 'Unknown'
-        const unitStr = d.unit || 'units'
-        const severity = d.criticality_level || d.overall_supply_status || 'moderate'
-        list.push({
-          id: `supply-${i}`,
-          facilityId: d.facility_id || d.id,
-          severity: severity.toLowerCase(),
-          title: `${d.resource_name || (d.critical_resources?.[0]) || 'Resource'} — ${severity}`,
-          subtitle: `${d.facility_name || d.facility_id || 'Facility'} · ${stockStr} ${unitStr} remaining`,
-          time: d.days_to_depletion ? d.days_to_depletion * 24 * 60 : 0,
-          icon: severity.toLowerCase().includes('critical') ? 'warning' : 'local_pharmacy',
-          score: 0,
         })
       }
     })
     list.sort((a, b) => b.score - a.score)
-    return list.length > 0 ? list.slice(0, 5) : MOCK_ALERTS
-  })()
+    return list.slice(0, 10)
+  }, [supplyData])
 
-  // Use real priorities if available
+  // Real priority queue from backend
   const queue = priorities && priorities.length > 0
     ? priorities.slice(0, 8)
     : []
 
-  const criticalCount = prioritySummary?.critical ?? queue.filter(p => p.priority_level === 'CRITICAL').length
-  const highCount = prioritySummary?.high ?? queue.filter(p => p.priority_level === 'HIGH').length
+  const criticalCount = prioritySummary?.critical_priorities ?? queue.filter(p => p.priority_level === 'CRITICAL').length
+  const highCount = prioritySummary?.high_priorities ?? queue.filter(p => p.priority_level === 'HIGH').length
 
   return (
     <aside className="right-intel-panel" id="right-intel-panel">
@@ -140,6 +90,24 @@ export default function RightIntelPanel() {
         </div>
 
         <div className="alerts-feed" id="alerts-feed">
+          {supplyBusy && alerts.length === 0 && (
+            <div className="intel-empty">
+              <span className="material-symbols-outlined">hourglass_top</span>
+              <span>Analyzing regional supply status...</span>
+            </div>
+          )}
+          {supplyError && (
+            <div className="intel-empty error-text">
+              <span className="material-symbols-outlined">error</span>
+              <span>Unable to load supply intelligence.</span>
+            </div>
+          )}
+          {!supplyBusy && !supplyError && alerts.length === 0 && (
+            <div className="intel-empty">
+              <span className="material-symbols-outlined">check_circle</span>
+              <span>No critical supply alerts detected.</span>
+            </div>
+          )}
           {alerts.map((alert) => (
             <div
               key={alert.id}
@@ -165,12 +133,6 @@ export default function RightIntelPanel() {
               </div>
             </div>
           ))}
-          {alerts.length === 0 && (
-            <div className="intel-empty">
-              <span className="material-symbols-outlined">check_circle</span>
-              <span>No critical alerts</span>
-            </div>
-          )}
         </div>
       </section>
 
@@ -194,7 +156,25 @@ export default function RightIntelPanel() {
         </div>
 
         <div className="priority-queue-list" id="priority-queue-list">
-          {queue.length > 0 ? queue.map((item, i) => {
+          {priorityBusy && queue.length === 0 && (
+            <div className="intel-empty">
+              <span className="material-symbols-outlined">hourglass_top</span>
+              <span>Calculating regional priorities...</span>
+            </div>
+          )}
+          {priorityError && (
+            <div className="intel-empty error-text">
+              <span className="material-symbols-outlined">error</span>
+              <span>Unable to load priority intelligence.</span>
+            </div>
+          )}
+          {!priorityBusy && !priorityError && queue.length === 0 && (
+            <div className="intel-empty">
+              <span className="material-symbols-outlined">playlist_add_check</span>
+              <span>No active priorities</span>
+            </div>
+          )}
+          {queue.map((item, i) => {
             const facName = item.facility?.name || item.facility_name || item.facility?.id || item.facility_id || `Facility ${i + 1}`
             const facId = item.facility?.id || item.facility_id
             const resName = item.resource?.type || item.resource_name || 'Resource'
@@ -230,12 +210,7 @@ export default function RightIntelPanel() {
                 </div>
               </button>
             )
-          }) : (
-            <div className="intel-empty">
-              <span className="material-symbols-outlined">playlist_add_check</span>
-              <span>Queue empty — run analysis to populate</span>
-            </div>
-          )}
+          })}
         </div>
       </section>
     </aside>

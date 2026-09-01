@@ -1,10 +1,12 @@
 // Shared API client for the RAAHAT backend.
-// The Vite dev server proxies /api/* to the FastAPI backend during dev.
+// In development, the Vite dev server proxies root-level routes (/twin, /priority, /demo, etc.) to FastAPI.
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+const rawBase = import.meta.env.VITE_API_BASE_URL || ''
+const API_BASE = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase
 
 async function request(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const url = `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`
+  const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     ...options,
   })

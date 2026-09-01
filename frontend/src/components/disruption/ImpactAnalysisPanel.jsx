@@ -16,6 +16,14 @@ export default function ImpactAnalysisPanel() {
   const impactError = useTwinStore((s) => s.impactError)
   const clearImpactResult = useTwinStore((s) => s.clearImpactResult)
 
+  if (impactBusy && !impactResult) {
+    return (
+      <div className="impact-panel">
+        <div className="loading-indicator">Analyzing infrastructure impact...</div>
+      </div>
+    )
+  }
+
   if (!impactResult) return null
 
   const { impact_score, impact_level, impact_components, regional_metrics, affected_villages, affected_hospitals, affected_warehouses, newly_isolated_nodes, impact_summary, scenario } = impactResult
@@ -147,6 +155,22 @@ export default function ImpactAnalysisPanel() {
       <div className="impact-summary-block">
         <h4 className="section-title">WHY THIS MATTERS</h4>
         <p className="impact-summary-text">{impact_summary}</p>
+      </div>
+
+      <div className="impact-next-actions">
+        <button
+          className="btn btn-live"
+          onClick={() => {
+            const top = useTwinStore.getState().priorities?.[0]
+            if (top) {
+              useTwinStore.getState().selectPriorityTarget(top)
+            }
+          }}
+          style={{ width: '100%', marginTop: '0.6rem', fontSize: '0.78rem' }}
+          id="btn-impact-to-priorities"
+        >
+          VIEW PRIORITIES & PREPARE ACTION PLAN →
+        </button>
       </div>
     </div>
   )
