@@ -93,19 +93,19 @@ export default function RightIntelPanel() {
           {supplyBusy && alerts.length === 0 && (
             <div className="intel-empty">
               <span className="material-symbols-outlined">hourglass_top</span>
-              <span>Analyzing regional supply status...</span>
+              <span>Evaluating supply availability…</span>
             </div>
           )}
           {supplyError && (
             <div className="intel-empty error-text">
-              <span className="material-symbols-outlined">error</span>
+              <span className="material-symbols-outlined">error_outline</span>
               <span>Unable to load supply intelligence.</span>
             </div>
           )}
           {!supplyBusy && !supplyError && alerts.length === 0 && (
             <div className="intel-empty">
               <span className="material-symbols-outlined">check_circle</span>
-              <span>No critical supply alerts detected.</span>
+              <span>No active supply risk detected.</span>
             </div>
           )}
           {alerts.map((alert) => (
@@ -159,19 +159,19 @@ export default function RightIntelPanel() {
           {priorityBusy && queue.length === 0 && (
             <div className="intel-empty">
               <span className="material-symbols-outlined">hourglass_top</span>
-              <span>Calculating regional priorities...</span>
+              <span>Calculating operational priorities…</span>
             </div>
           )}
           {priorityError && (
             <div className="intel-empty error-text">
-              <span className="material-symbols-outlined">error</span>
+              <span className="material-symbols-outlined">error_outline</span>
               <span>Unable to load priority intelligence.</span>
             </div>
           )}
           {!priorityBusy && !priorityError && queue.length === 0 && (
             <div className="intel-empty">
               <span className="material-symbols-outlined">playlist_add_check</span>
-              <span>No active priorities</span>
+              <span>No critical priorities currently require action.</span>
             </div>
           )}
           {queue.map((item, i) => {
@@ -180,10 +180,11 @@ export default function RightIntelPanel() {
             const resName = item.resource?.type || item.resource_name || 'Resource'
             const hoursLeft = item.inputs?.hours_until_depletion ?? (item.days_to_depletion != null ? item.days_to_depletion * 24 : null)
             const scoreVal = item.priority_score != null ? item.priority_score.toFixed(1) : '—'
+            const level = (item.priority_level || 'moderate').toLowerCase()
             return (
               <button
                 key={`${facId}-${resName}-${i}`}
-                className="queue-item"
+                className={`queue-item priority-${level}`}
                 onClick={() => facId && focusNode(facId)}
                 id={`queue-item-${i}`}
               >
@@ -193,10 +194,10 @@ export default function RightIntelPanel() {
                     {facName}
                   </div>
                   <div className="queue-item-meta">
-                    {resName} ·{' '}
+                    {resName.toUpperCase()} ·{' '}
                     {hoursLeft != null
                       ? `${(hoursLeft / 24).toFixed(1)}d remaining`
-                      : 'depleted'}
+                      : 'supply depleted'}
                   </div>
                 </div>
                 <div className="queue-item-right">

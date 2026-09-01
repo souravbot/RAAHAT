@@ -160,10 +160,10 @@ export default function LoginPage({ onLoginSuccess }) {
       <div className="login-left">
         <div className="login-form-wrap">
           <div className="login-header">
-            <div className="login-badge">
+            <a href="/landing.html" className="login-badge" style={{ textDecoration: 'none', cursor: 'pointer' }} title="Back to landing page">
               <span className="material-symbols-outlined">shield_person</span>
               Command Portal
-            </div>
+            </a>
             <h1 className="login-title">Sign in to RAAHAT</h1>
             <p className="login-subtitle">
               Regional Logistics & Accessibility Intelligence System
@@ -270,10 +270,10 @@ export default function LoginPage({ onLoginSuccess }) {
       <div className="login-right">
         <canvas ref={canvasRef} className="login-canvas" />
         <div className="login-brand-content">
-          <div className="login-wordmark-group">
+          <a href="/landing.html" className="login-wordmark-group" style={{ textDecoration: 'none' }} title="Back to landing page">
             <h2 className="login-wordmark">RAAHAT</h2>
             <div className="login-wordmark-tag">COMMAND CENTER</div>
-          </div>
+          </a>
           <p className="login-brand-tagline">
             Predicts disruption. Understands impact. Keeps essential resources moving.
           </p>

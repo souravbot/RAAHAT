@@ -1,0 +1,135 @@
+/* ============================================================
+   RAAHAT — Typography System
+   Single Source of Truth for App Typography
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ── Font Families ── */
+  --font-heading: 'Cambria', 'Georgia', 'Playfair Display', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Roboto Mono', Menlo, Monaco, monospace;
+
+  /* ── Type Scale (Font Sizes & Heights) ── */
+  --text-display: 2.5rem;     /* RAAHAT wordmark, main hero titles */
+  --text-h1: 1.75rem;         /* Page titles, major section headers */
+  --text-h2: 1.25rem;         /* Section headers (Critical Alerts, Priority Queue) */
+  --text-h3: 1rem;            /* Card & panel subsection titles */
+  --text-body: 0.95rem;       /* Default body text & primary rows */
+  --text-small: 0.8rem;       /* Secondary/meta text, timestamps */
+  --text-label: 0.75rem;      /* Section labels (NODES, ROUTES, ACTIVE DISRUPTION) */
+
+  /* ── Line Heights ── */
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* ── Letter Spacings ── */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.18em;
+}
+
+/* ── Base Typography Styles ── */
+body, input, textarea, select, button {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  color: var(--text-primary, #17212B);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Editorial Serif Headings ── */
+h1, h2, h3, .heading-serif, .brand-wordmark, .login-wordmark, .demo-badge-title {
+  font-family: var(--font-heading);
+  letter-spacing: var(--tracking-normal);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: var(--text-h1);
+  line-height: var(--leading-tight);
+}
+
+h2 {
+  font-size: var(--text-h2);
+  line-height: var(--leading-snug);
+}
+
+h3 {
+  font-size: var(--text-h3);
+  line-height: var(--leading-snug);
+}
+
+/* ── Numbers & Data (Tabular Numerals) ── */
+.kpi-value,
+.map-stat-value,
+.queue-score,
+.queue-rank,
+.stat-value,
+.impact-score-num,
+.summary-value,
+.priority-card-value,
+.topbar-time,
+.fo-kpi-val,
+.tabular-nums,
+[data-tabular="true"] {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* ── Monospace Technical Data ── */
+code, pre, .font-mono, .detail-id, .node-link-id, .action-route-node, .sim-id {
+  font-family: var(--font-mono);
+  font-feature-settings: 'zero' 1;
+}
+
+/* ── Operational Uppercase Labels ── */
+.section-label,
+.map-stat-label,
+.legend-title,
+.sit-label-upper,
+.action-card-step-label,
+.sim-state-label,
+.control-legend-label,
+.avg-label,
+.summary-label,
+.priority-card-label {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--text-secondary, #5A6472);
+}
+
+/* Header Labels (on Dark Backgrounds) */
+.kpi-label {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--text-on-dark, #E7ECF2);
+}
+
+/* ── Modern Sans-Serif Buttons (Always Sans) ── */
+button,
+.btn,
+.btn-simulate,
+.btn-demo-action,
+.login-submit-btn,
+.view-toggle-btn,
+.action-dispatch-btn,
+.drawer-toggle {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+}

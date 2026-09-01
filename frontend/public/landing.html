@@ -883,6 +883,113 @@
     .reveal-delay-5 { transition-delay: 0.4s; }
 
     /* ============================================================
+       PHASE 15 — LANDING PAGE POLISH
+       ============================================================ */
+    .navbar {
+      background: rgba(5, 11, 24, 0.88);
+      background-image: linear-gradient(135deg, rgba(5, 11, 24, 0.98), rgba(19, 41, 75, 0.86));
+    }
+
+    .nav-wordmark,
+    .hero-wordmark,
+    .footer-wordmark,
+    .section-title,
+    .feature-title,
+    .stats-title {
+      font-family: var(--font-heading);
+    }
+
+    .hero {
+      background:
+        radial-gradient(ellipse 520px 420px at 78% 42%, rgba(28, 114, 147, 0.12), transparent 70%),
+        linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-dark) 100%);
+    }
+
+    .hero::before,
+    .core-loop::before,
+    .features::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cpath d='M36 4L68 36 36 68 4 36Z' fill='none' stroke='rgba(231,236,242,0.045)' stroke-width='1'/%3E%3Ccircle cx='36' cy='36' r='2' fill='rgba(232,135,30,0.16)'/%3E%3Ccircle cx='4' cy='36' r='1.5' fill='rgba(231,236,242,0.1)'/%3E%3Ccircle cx='68' cy='36' r='1.5' fill='rgba(231,236,242,0.1)'/%3E%3C/svg%3E");
+      opacity: 0.75;
+    }
+
+    .hero .container,
+    .core-loop .container,
+    .features .container { position: relative; z-index: 1; }
+
+    .hero-wordmark {
+      font-size: clamp(76px, 12vw, 154px);
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 60px rgba(232, 135, 30, 0.16);
+    }
+
+    .hero-tagline {
+      font-size: clamp(1.5rem, 2.8vw, 2.15rem);
+      color: var(--text-primary);
+    }
+
+    .hero-subtext,
+    .section-subtitle,
+    .feature-desc,
+    .stat-desc {
+      color: rgba(231, 236, 242, 0.78);
+    }
+
+    .hero-frame {
+      border-color: rgba(232, 135, 30, 0.22);
+      box-shadow: 0 0 50px rgba(28, 114, 147, 0.1), 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+
+    .feature-card,
+    .loop-pill {
+      background: rgba(15, 29, 58, 0.78);
+      border-color: rgba(231, 236, 242, 0.11);
+      box-shadow: 0 2px 12px rgba(5, 25, 96, 0.16);
+    }
+
+    .feature-card:hover,
+    .loop-pill:hover {
+      border-color: rgba(232, 135, 30, 0.42);
+    }
+
+    .operational-proof {
+      position: relative;
+      z-index: 2;
+      padding: 1.15rem 0;
+      background: var(--navy-900);
+      border-top: 1px solid var(--border-card);
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .proof-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .proof-item .material-symbols-outlined { color: var(--amber-400); font-size: 19px; }
+    .proof-item strong { color: var(--text-primary); font-family: var(--font-mono); font-size: 0.82rem; }
+
+    .feature-card,
+    .loop-pill,
+    .proof-item,
+    .stat-number { font-variant-numeric: tabular-nums lining-nums; }
+
+    /* ============================================================
        RESPONSIVE
        ============================================================ */
     @media (max-width: 1024px) {
@@ -997,6 +1104,32 @@
     <div class="scroll-cue">
       <span class="scroll-cue-text">Scroll</span>
       <span class="material-symbols-outlined">expand_more</span>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       OPERATIONAL PROOF STRIP
+       ============================================================ -->
+  <section class="operational-proof">
+    <div class="container">
+      <div class="proof-grid">
+        <div class="proof-item">
+          <span class="material-symbols-outlined">hub</span>
+          <span><strong>25</strong> Nodes &amp; <strong>29</strong> Routes Graph</span>
+        </div>
+        <div class="proof-item">
+          <span class="material-symbols-outlined">speed</span>
+          <span><strong>&lt;200ms</strong> Cascade Impact Execution</span>
+        </div>
+        <div class="proof-item">
+          <span class="material-symbols-outlined">local_shipping</span>
+          <span><strong>100%</strong> Explainable AI Dispatch</span>
+        </div>
+        <div class="proof-item">
+          <span class="material-symbols-outlined">verified</span>
+          <span><strong>SIH 2026</strong> Disaster Intelligence</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1408,6 +1541,8 @@
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
+    });
+
     // ===============================
     // 5. Auth check for Launch Dashboard buttons
     // ===============================

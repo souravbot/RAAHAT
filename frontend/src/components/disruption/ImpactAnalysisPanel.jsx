@@ -19,7 +19,10 @@ export default function ImpactAnalysisPanel() {
   if (impactBusy && !impactResult) {
     return (
       <div className="impact-panel">
-        <div className="loading-indicator">Analyzing infrastructure impact...</div>
+        <div className="loading-indicator">
+          <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '0.35rem', verticalAlign: 'middle' }}>hourglass_top</span>
+          Analyzing infrastructure impact…
+        </div>
       </div>
     )
   }
@@ -153,7 +156,7 @@ export default function ImpactAnalysisPanel() {
       )}
 
       <div className="impact-summary-block">
-        <h4 className="section-title">WHY THIS MATTERS</h4>
+        <h4 className="section-title">OPERATIONAL SIGNIFICANCE</h4>
         <p className="impact-summary-text">{impact_summary}</p>
       </div>
 

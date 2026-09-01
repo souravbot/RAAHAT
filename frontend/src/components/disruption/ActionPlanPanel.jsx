@@ -140,7 +140,11 @@ export default function ActionPlanPanel() {
         onClick={handleGenerate}
         disabled={actionBusy || (source === 'priority' && !activeTarget)}
       >
-        {actionBusy ? 'Generating…' : activeTarget && source === 'priority' ? `GENERATE ACTION PLAN FOR ${activeTarget.facility_name || activeTarget.facility_id}` : 'GENERATE RECOMMENDED ACTION'}
+        {actionBusy
+          ? 'Generating response recommendation…'
+          : activeTarget && source === 'priority'
+            ? `GENERATE ACTION PLAN — ${activeTarget.facility_name || activeTarget.facility_id}`
+            : 'GENERATE RECOMMENDED ACTION'}
       </button>
 
       {failed && (
@@ -177,9 +181,12 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
   return (
     <div className="action-plan-card" id="action-plan-card">
       <div className="action-card-header">
-        <span className="action-card-title">🚨 RECOMMENDED ACTION PLAN</span>
+        <span className="action-card-title">
+          <span className="material-symbols-outlined" style={{ fontSize: '16px', color: 'var(--navy)' }}>assignment_turned_in</span>
+          RECOMMENDED ACTION PLAN
+        </span>
         <button className="icon-btn" onClick={onClose} aria-label="Dismiss">
-          ✕
+          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>close</span>
         </button>
       </div>
 
@@ -203,39 +210,51 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
       </div>
 
       <div className="action-card-section">
-        <div className="action-card-step-label">WHERE SHOULD THE RESOURCE COME FROM?</div>
+        <div className="action-card-step-label">
+          <span className="material-symbols-outlined" style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '0.25rem' }}>warehouse</span>
+          SOURCE WAREHOUSE
+        </div>
         <div className="action-card-value">
-          📦 {plan.selected_warehouse?.name || plan.selected_warehouse?.id}
-          <span className="action-sub">Warehouse ID: {plan.selected_warehouse?.id}</span>
+          {plan.selected_warehouse?.name || plan.selected_warehouse?.id}
+          <span className="action-sub">ID: {plan.selected_warehouse?.id}</span>
         </div>
       </div>
 
       <div className="action-card-section">
-        <div className="action-card-step-label">WHICH VEHICLE SHOULD BE USED?</div>
+        <div className="action-card-step-label">
+          <span className="material-symbols-outlined" style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '0.25rem' }}>local_shipping</span>
+          ASSIGNED VEHICLE
+        </div>
         <div className="action-card-value">
-          🚚 {selectedVehicle?.id} ({selectedVehicle?.type})
+          {selectedVehicle?.id} <span style={{ fontWeight: 400, fontSize: '0.78rem', color: 'var(--text-secondary)' }}>({selectedVehicle?.type})</span>
           <span className="action-sub">
-            Capacity: {selectedVehicle?.capacity} units · Current location: {selectedVehicle?.current_node}
+            Capacity: {selectedVehicle?.capacity} units · At: {selectedVehicle?.current_node}
           </span>
         </div>
       </div>
 
       <div className="action-card-section">
-        <div className="action-card-step-label">WHICH ROUTE SHOULD IT TAKE?</div>
+        <div className="action-card-step-label">
+          <span className="material-symbols-outlined" style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '0.25rem' }}>alt_route</span>
+          RECOMMENDED ROUTE
+        </div>
         <div className="action-card-route">
           <span className="action-route-node">{plan.selected_route?.start}</span>
           <span className="action-route-arrow">→</span>
           <span className="action-route-node">{plan.selected_route?.end}</span>
         </div>
         <div className="action-route-meta">
-          Distance: <strong>{plan.selected_route?.total_distance} km</strong> · Weighted cost:{' '}
+          Distance: <strong>{plan.selected_route?.total_distance} km</strong> · Risk cost:{' '}
           <strong>{plan.selected_route?.weighted_cost}</strong>
         </div>
       </div>
 
       {/* Numbered steps */}
       <div className="action-card-section">
-        <div className="action-card-step-label">WHAT SHOULD WE DO? (Execution Steps)</div>
+        <div className="action-card-step-label">
+          <span className="material-symbols-outlined" style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '0.25rem' }}>task_alt</span>
+          EXECUTION STEPS
+        </div>
         <ol className="action-steps">
           {(plan.steps || []).map((step, i) => (
             <li key={i}>{step}</li>
@@ -246,10 +265,13 @@ function ActionPlanCard({ plan, vehicles, dispatching, onConfirm, onClose }) {
       {/* Why this recommendation */}
       {plan.reasons?.length > 0 && (
         <div className="action-card-section">
-          <div className="action-card-step-label">WHY WAS THIS DECISION MADE?</div>
+          <div className="action-card-step-label">
+            <span className="material-symbols-outlined" style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '0.25rem' }}>insights</span>
+            WHY THIS DECISION
+          </div>
           <ul className="action-checks">
             {plan.reasons.map((r, i) => (
-              <li key={i}>✓ {r}</li>
+              <li key={i}>{r}</li>
             ))}
           </ul>
         </div>

@@ -23,6 +23,7 @@ import FieldOfficerDashboard from './views/FieldOfficerDashboard'
 import { AuthProvider, useAuth } from './auth/AuthContext'
 import RoleBadge from './components/auth/RoleBadge'
 import DemoBar from './components/auth/DemoBar'
+import SituationSummary from './components/SituationSummary'
 import { ROLES, PERMISSIONS } from './auth/permissions'
 import './App.css'
 
@@ -337,11 +338,19 @@ function AppContent() {
       {error ? (
         <div className="error-screen" id="error-screen">
           <span className="material-symbols-outlined error-icon-large">cloud_off</span>
-          <h2>Unable to load the Regional Twin</h2>
-          <p>{error}</p>
+          <h2>Unable to connect to the Regional Intelligence System</h2>
+          <p>The RAAHAT backend service is not responding.</p>
           <p className="error-hint">
-            Start the RAAHAT backend (<code>uvicorn app.main:app --port 8000</code>) and refresh.
+            Start the backend (<code>uvicorn app.main:app --port 8000</code>) and refresh.
           </p>
+          <button
+            className="btn btn-sim"
+            style={{ marginTop: '0.5rem', flex: 'none', width: 'auto', padding: '0.55rem 1.5rem' }}
+            onClick={() => window.location.reload()}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '16px', marginRight: '0.35rem' }}>refresh</span>
+            Retry Connection
+          </button>
         </div>
       ) : role === ROLES.FIELD_OFFICER ? (
         /* Field Officer Experience */
@@ -352,7 +361,15 @@ function AppContent() {
           {/* Left icon sidebar */}
           <IconSidebar activeView={activeView} onNavigate={handleNavigate} />
 
-          {/* ============ VIEW SWITCHER ============ */}
+          {/* ============ MAIN CONTENT AREA ============ */}
+          <div className="app-main-area" id="app-main-area">
+            {/* Situation Summary Bar — command center & demo only */}
+            {(activeView === 'dashboard') && (
+              <SituationSummary />
+            )}
+
+            {/* Inner view area (below situation bar) */}
+            <div className="app-views-area">
           {activeView === 'map' && (
             <MapFocusView />
           )}
@@ -395,6 +412,18 @@ function AppContent() {
                   </div>
                 </div>
 
+                {/* Open Disruption Controls button when drawer is closed */}
+                {!drawerOpen && hasPermission(PERMISSIONS.TRIGGER_DISRUPTION) && (
+                  <button
+                    className="drawer-toggle"
+                    onClick={() => setDrawerOpen(true)}
+                    id="btn-open-drawer"
+                  >
+                    <span className="material-symbols-outlined">flash_on</span>
+                    Controls
+                  </button>
+                )}
+
                 {/* Selected Node / Edge details */}
                 {selectedNode && (
                   <div className="detail-overlay" id="node-detail-overlay">
@@ -406,59 +435,27 @@ function AppContent() {
                     <EdgeDetailPanel edge={selectedEdge} />
                   </div>
                 )}
-
-                {/* Map Legend */}
-                <div className="map-legend" id="map-legend">
-                  <div className="legend-section">
-                    <div className="legend-title">Nodes</div>
-                    <div className="legend-grid">
-                      <div className="legend-item">
-                        <span className="legend-swatch" style={{ background: '#0284c7' }} />
-                        <span>Village</span>
-                      </div>
-                      <div className="legend-item">
-                        <span className="legend-swatch" style={{ background: '#dc2626' }} />
-                        <span>Hospital</span>
-                      </div>
-                      <div className="legend-item">
-                        <span className="legend-swatch" style={{ background: '#16a34a' }} />
-                        <span>Warehouse</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="legend-section">
-                    <div className="legend-title">Routes</div>
-                    <div className="legend-grid">
-                      <div className="legend-item">
-                        <span className="legend-line" style={{ background: '#16a34a' }} />
-                        <span>Open</span>
-                      </div>
-                      <div className="legend-item">
-                        <span className="legend-line" style={{ background: '#E8871E' }} />
-                        <span>At Risk</span>
-                      </div>
-                      <div className="legend-item">
-                        <span className="legend-line" style={{ background: '#dc2626' }} />
-                        <span>Closed</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </main>
 
               {/* Right Panel */}
               <RightIntelPanel />
             </>
           )}
+            </div>{/* end app-views-area */}
+          </div>{/* end app-main-area */}
 
           {/* Slide-out Controls Drawer */}
           {drawerOpen && (
             <div className="controls-drawer" id="controls-drawer">
               <div className="drawer-header">
-                <h3 className="drawer-title">Disruption Control Center</h3>
+                <h3 className="drawer-title">
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px', marginRight: '0.4rem', verticalAlign: 'middle', color: 'var(--amber)' }}>flash_on</span>
+                  Disruption Control
+                </h3>
                 <button
                   className="drawer-close"
                   onClick={() => setDrawerOpen(false)}
+                  aria-label="Close controls"
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>
