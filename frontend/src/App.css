@@ -6666,5 +6666,876 @@ body {
   .d-map-canvas-wrap { min-height: 400px; }
 }
 
+/* ============================================================
+   PHASE 17 — IMPACT ANALYSIS & REACHABILITY CENTER
+   ============================================================ */
+.impact-view-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--bg-page, #F4F6F8);
+  overflow: hidden;
+}
+
+.impact-header-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem 0.65rem;
+  background: var(--bg-card, #FFFFFF);
+  border-bottom: 1px solid var(--border-subtle, #D9DEE3);
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+.impact-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.impact-view-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.impact-main-icon {
+  font-size: 28px;
+  color: var(--teal, #1C7293);
+}
+
+.impact-page-heading {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy-900, #050B18);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.impact-page-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #5A6472);
+}
+
+.impact-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.impact-context-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.impact-corridor-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--surface-2, #EEF1F5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-btn, 8px);
+  padding: 0.25rem 0.55rem;
+}
+
+.impact-corridor-select-wrap .select-icon {
+  font-size: 17px;
+  color: var(--navy-500);
+}
+
+.impact-corridor-select {
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+  max-width: 240px;
+}
+
+/* Error banner with retry */
+.impact-error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.5rem;
+  background: var(--red-bg);
+  border-bottom: 1px solid var(--red-border);
+  color: var(--red-600);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.btn-retry-impact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  background: #FFFFFF;
+  color: var(--red-600);
+  border: 1px solid var(--red-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-retry-impact:hover {
+  background: var(--red-600);
+  color: #FFFFFF;
+}
+
+/* Loading skeleton */
+.impact-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-subtle);
+  margin: 1rem 1.5rem;
+  gap: 0.5rem;
+}
+
+.spin-loading {
+  font-size: 36px;
+  color: var(--teal);
+  animation: spin 1.5s linear infinite;
+}
+
+.impact-loading-skeleton h3 {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.impact-loading-skeleton p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Impact KPI Summary Strip (Area B) */
+.impact-kpi-strip {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  flex-shrink: 0;
+  background: var(--bg-page);
+}
+
+.impact-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-card, 10px);
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-subtle, #D9DEE3);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease;
+}
+
+.impact-kpi-card:hover {
+  transform: translateY(-1px);
+}
+
+.level-card-critical { border-left: 4px solid var(--red-600) !important; }
+.level-card-high { border-left: 4px solid var(--amber-500) !important; }
+.level-card-moderate { border-left: 4px solid var(--teal) !important; }
+
+.ikpi-top {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ikpi-icon { font-size: 18px; color: var(--text-secondary); }
+.kpi-score .ikpi-icon { color: var(--navy-500); }
+
+.ikpi-label {
+  font-size: var(--text-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--text-secondary);
+}
+
+.ikpi-val-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+}
+
+.ikpi-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--navy-900);
+}
+
+.ikpi-max {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.ikpi-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  letter-spacing: var(--tracking-wider);
+  width: fit-content;
+  margin-top: 2px;
+}
+
+.ikpi-badge.level-critical { background: var(--red-bg); color: var(--red-600); }
+.ikpi-badge.level-high { background: var(--amber-bg); color: #9A5500; }
+.ikpi-badge.level-moderate { background: var(--teal-bg); color: var(--teal); }
+
+.ikpi-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* Impact Workspace Split Layout */
+.impact-workspace {
+  display: grid;
+  grid-template-columns: 520px 1fr;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
+  padding: 0 1.5rem 1.25rem;
+}
+
+/* Left Details Column */
+.impact-details-col {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.impact-content-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.impact-panel-card {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card, 10px);
+  padding: 1.15rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ip-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ip-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.ip-header-icon {
+  font-size: 20px;
+}
+
+.ip-card-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.corridor-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--red-600);
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+/* 5-Step Cascade Strip */
+.cascade-steps-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-2);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+
+.c-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1px;
+}
+
+.c-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.c-step-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.c-step-desc {
+  font-size: 0.64rem;
+  color: var(--text-secondary);
+}
+
+.c-arrow {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+/* 4 Components Mini Grid */
+.impact-components-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.icomp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.55rem 0.35rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  text-align: center;
+}
+
+.icomp-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--navy-900);
+}
+
+.icomp-lbl {
+  font-size: 0.58rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  font-weight: 600;
+}
+
+/* Operational Significance Box */
+.operational-significance-box {
+  background: var(--surface-2);
+  border-left: 3.5px solid var(--teal);
+  border-radius: 6px;
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sig-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--navy-900);
+}
+
+.sig-text {
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Tabs Card */
+.impact-tabs-header {
+  display: flex;
+  gap: 0.35rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.itab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.42rem 0.45rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.itab-btn .material-symbols-outlined { font-size: 15px; }
+
+.itab-btn:hover { color: var(--navy-900); background: rgba(255, 255, 255, 0.6); }
+
+.itab-btn.is-active {
+  background: #FFFFFF;
+  color: var(--navy-900);
+  box-shadow: 0 1px 3px rgba(5, 25, 96, 0.08);
+}
+
+.itab-content {
+  margin-top: 0.25rem;
+}
+
+.empty-tab-state {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 1.5rem 1rem;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  justify-content: center;
+}
+
+/* Affected Villages List */
+.affected-villages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.village-impact-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-left: 3.5px solid transparent;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.village-impact-card:hover {
+  transform: translateX(2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--navy-500);
+}
+
+.village-impact-card.level-critical { border-left-color: var(--red-600); }
+.village-impact-card.level-high { border-left-color: var(--amber-500); }
+.village-impact-card.level-moderate { border-left-color: var(--teal); }
+
+.vic-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vic-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.vic-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.vic-id {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.vic-badge {
+  font-size: 0.58rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: var(--tracking-wider);
+}
+
+.vic-badge.level-critical { background: var(--red-bg); color: var(--red-600); }
+.vic-badge.level-high { background: var(--amber-bg); color: #9A5500; }
+.vic-badge.level-moderate { background: var(--teal-bg); color: var(--teal); }
+
+.vic-metrics-row {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.vic-drop {
+  margin-left: auto;
+  color: var(--red-600);
+  font-weight: 700;
+}
+
+.vic-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 2px;
+}
+
+.vic-reason-tag {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+}
+
+/* Isolated Nodes List */
+.isolated-nodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.isolated-node-card {
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.isolated-node-card:hover {
+  transform: translateX(2px);
+}
+
+.inc-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.inc-icon { font-size: 16px; color: var(--red-600); }
+.inc-name { font-size: 0.82rem; font-weight: 700; color: var(--red-600); }
+.inc-id { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-secondary); }
+
+.inc-reason {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.72rem;
+  color: var(--text-primary);
+}
+
+/* Service Impact Split */
+.service-impact-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.service-impact-block {
+  background: var(--surface-2);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sib-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sib-header h4 {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.sib-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.sib-item {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+}
+
+.sib-item:hover {
+  border-color: var(--navy-500);
+}
+
+.sib-name {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sib-loss {
+  font-size: 0.68rem;
+  color: var(--red-600);
+}
+
+.sib-empty {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+}
+
+/* Priority Handoff Banner (Step 9) */
+.impact-handoff-banner {
+  background: linear-gradient(135deg, rgba(5, 25, 96, 0.05), rgba(232, 135, 30, 0.08));
+  border: 1.5px solid var(--amber-border);
+  border-radius: var(--radius-card, 10px);
+  padding: 0.85rem 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.handoff-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.handoff-icon {
+  font-size: 26px;
+  color: var(--amber-500);
+}
+
+.handoff-info strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.86rem;
+  color: var(--navy-900);
+}
+
+.handoff-info p {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.btn-handoff-priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.15rem;
+  background: var(--amber-500);
+  color: #050B18;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(232, 135, 30, 0.35);
+  transition: all 0.15s ease;
+}
+
+.btn-handoff-priority:hover {
+  background: var(--amber-400);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(232, 135, 30, 0.45);
+}
+
+/* Empty State Guide */
+.impact-empty-guide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-card);
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.empty-guide-icon {
+  font-size: 48px;
+  color: var(--teal);
+}
+
+.impact-empty-guide h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--navy-900);
+  margin: 0;
+}
+
+.impact-empty-guide p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  max-width: 380px;
+  margin: 0 0 0.5rem 0;
+}
+
+.btn-select-corridor-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--amber-500);
+  color: #050B18;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(232, 135, 30, 0.35);
+  transition: all 0.15s ease;
+}
+
+.btn-select-corridor-guide:hover {
+  background: var(--amber-400);
+  transform: translateY(-1px);
+}
+
+/* Right Map Column */
+.impact-map-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.impact-map-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card, 10px);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.impact-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.imap-title {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy-900);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.imap-legend-strip {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.imap-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.imap-pill.pill-isolated { background: var(--red-bg); color: var(--red-600); }
+.imap-pill.pill-reduced { background: var(--amber-bg); color: #9A5500; }
+.imap-pill.pill-closed { background: var(--navy-05); color: var(--navy-900); }
+
+.imap-host-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 520px;
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .impact-workspace { grid-template-columns: 1fr; }
+  .impact-kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  .imap-host-wrap { min-height: 400px; }
+}
+
+
 
 
