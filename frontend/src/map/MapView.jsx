@@ -1,5 +1,5 @@
-// MapView — assembles the Leaflet map: ESRI Light Gray tile layer, animated edges,
-// marker clustering with custom navy badges, accessibility rings, and auto-fit bounds.
+// MapView — assembles the Leaflet map: CartoDB Positron basemap, optional geographic overlays
+// (rivers, terrain, flood/landslide hazards), animated edges, marker clustering, and layers control.
 
 import { useEffect } from 'react'
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
@@ -10,6 +10,8 @@ import NodeMarker from './NodeMarker'
 import EdgeLine from './EdgeLine'
 import MapLegend from './MapLegend'
 import RouteOverlay from './RouteOverlay'
+import MapLayersControl from './MapLayersControl'
+import GeographicOverlays from './GeographicOverlays'
 
 // Fix default marker icon paths (react-leaflet + bundlers)
 delete L.Icon.Default.prototype._getIconUrl
@@ -64,6 +66,7 @@ export default function MapView() {
   const selectNode = useTwinStore((s) => s.selectNode)
   const selectEdge = useTwinStore((s) => s.selectEdge)
   const villageAccessibility = useTwinStore((s) => s.villageAccessibility)
+  const mapLayers = useTwinStore((s) => s.mapLayers)
 
   const byId = nodesById()
 
@@ -83,8 +86,11 @@ export default function MapView() {
         />
         <FitBoundsLayer />
         
-        {/* Render animated route lines */}
-        {edges.map((edge) => (
+        {/* Geographic & Hazard Overlays (Rivers, Terrain, Flood & Landslide Zones) */}
+        <GeographicOverlays />
+
+        {/* Render animated route lines (Operational Layer) */}
+        {mapLayers.transport && edges.map((edge) => (
           <EdgeLine
             key={edge.id}
             edge={edge}
@@ -95,37 +101,44 @@ export default function MapView() {
           />
         ))}
 
-        {/* Marker Clustering Group — collapses dense clusters (e.g. Guwahati) */}
-        <MarkerClusterGroup
-          chunkedLoading
-          iconCreateFunction={createClusterCustomIcon}
-          maxClusterRadius={28}
-          disableClusteringAtZoom={12}
-          spiderfyOnMaxZoom={true}
-          showCoverageOnHover={false}
-          zoomToBoundsOnClick={true}
-          spiderLegPolylineOptions={{ weight: 1.5, color: '#051960', opacity: 0.6 }}
-        >
-          {nodes.map((node) => {
-            const accessibilityScore = node.type === 'VILLAGE' 
-              ? villageAccessibility?.find(v => v.village_id === node.id)?.accessibility_score
-              : undefined
-            
-            return (
-              <NodeMarker
-                key={node.id}
-                node={node}
-                selected={selectedNodeId === node.id}
-                onSelect={selectNode}
-                accessibilityScore={accessibilityScore}
-              />
-            )
-          })}
-        </MarkerClusterGroup>
+        {/* Marker Clustering Group — collapses dense clusters (Operational Layer) */}
+        {mapLayers.facilities && (
+          <MarkerClusterGroup
+            chunkedLoading
+            iconCreateFunction={createClusterCustomIcon}
+            maxClusterRadius={28}
+            disableClusteringAtZoom={12}
+            spiderfyOnMaxZoom={true}
+            showCoverageOnHover={false}
+            zoomToBoundsOnClick={true}
+            spiderLegPolylineOptions={{ weight: 1.5, color: '#051960', opacity: 0.6 }}
+          >
+            {nodes.map((node) => {
+              const accessibilityScore = node.type === 'VILLAGE' 
+                ? villageAccessibility?.find(v => v.village_id === node.id)?.accessibility_score
+                : undefined
+              
+              return (
+                <NodeMarker
+                  key={node.id}
+                  node={node}
+                  selected={selectedNodeId === node.id}
+                  onSelect={selectNode}
+                  accessibilityScore={accessibilityScore}
+                />
+              )
+            })}
+          </MarkerClusterGroup>
+        )}
 
         {/* Phase 8: recommended action route overlay */}
         <RouteOverlay />
       </MapContainer>
+
+      {/* Floating Map Layers Control Panel */}
+      <MapLayersControl />
+
+      {/* Map Legend */}
       <MapLegend />
     </div>
   )

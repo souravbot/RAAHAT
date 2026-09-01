@@ -12,6 +12,23 @@ import { runScenario, compareScenarios } from '../api/scenarioApi'
 import { resetDemoScenario, runDemoScenario } from '../api/demoApi'
 import { askQuestion, getAssistantInfo } from '../api/assistantApi'
 
+const SAVED_LAYERS_KEY = 'raahat_map_layers'
+
+const getInitialMapLayers = () => {
+  try {
+    const saved = localStorage.getItem(SAVED_LAYERS_KEY)
+    if (saved) return JSON.parse(saved)
+  } catch {}
+  return {
+    waterBodies: false,   // Rivers & Water Bodies (Geography)
+    terrain: false,       // Terrain / Elevation Hillshade (Geography)
+    facilities: true,     // Locations & Facilities (Operational)
+    transport: true,      // Transport Network Routes (Operational)
+    floodZones: false,    // Flood Inundation Zones (Hazards)
+    landslideRisk: false, // Mountain Landslide Zones (Hazards)
+  }
+}
+
 export const useTwinStore = create((set, get) => ({
   // ---- twin state ----
   metadata: null,
@@ -80,6 +97,9 @@ export const useTwinStore = create((set, get) => ({
   workflowStage: null, // 'disruption' | 'accessibility' | 'impact' | 'supply' | 'priority' | 'action' | 'route'
   workflowHistory: [], // Track which stages have been completed in current incident
   stageStartedAt: null, // Timestamp when current stage began
+
+  // ---- Map Layers Context State (Persisted) ----
+  mapLayers: getInitialMapLayers(),
 
   // ---- actions ----
   loadTwin: async () => {
@@ -570,6 +590,48 @@ export const useTwinStore = create((set, get) => ({
     const map = new Map()
     for (const e of get().edges) map.set(e.id, e)
     return map
+  },
+
+  // ---- Map Layers Control Actions (Persisted) ----
+  toggleMapLayer: (layerKey) => {
+    set((state) => {
+      const updated = {
+        ...state.mapLayers,
+        [layerKey]: !state.mapLayers[layerKey],
+      }
+      try {
+        localStorage.setItem(SAVED_LAYERS_KEY, JSON.stringify(updated))
+      } catch {}
+      return { mapLayers: updated }
+    })
+  },
+
+  setMapLayer: (layerKey, value) => {
+    set((state) => {
+      const updated = {
+        ...state.mapLayers,
+        [layerKey]: value,
+      }
+      try {
+        localStorage.setItem(SAVED_LAYERS_KEY, JSON.stringify(updated))
+      } catch {}
+      return { mapLayers: updated }
+    })
+  },
+
+  resetMapLayers: () => {
+    const defaults = {
+      waterBodies: false,
+      terrain: false,
+      facilities: true,
+      transport: true,
+      floodZones: false,
+      landslideRisk: false,
+    }
+    try {
+      localStorage.setItem(SAVED_LAYERS_KEY, JSON.stringify(defaults))
+    } catch {}
+    set({ mapLayers: defaults })
   },
 
   // ---- Phase 14: Workflow progression methods ----

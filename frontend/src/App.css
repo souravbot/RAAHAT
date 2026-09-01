@@ -1019,6 +1019,239 @@ body {
 }
 
 /* ============================================================
+   MAP LAYERS CONTROL (Floating Panel for Geo & Operational Layers)
+   ============================================================ */
+.map-layers-control-wrap {
+  position: absolute;
+  top: 92px;
+  left: 14px;
+  z-index: 500;
+}
+
+.map-layers-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 6px 12px;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-subtle, #D9DEE3);
+  border-radius: var(--radius-card, 10px);
+  box-shadow: var(--shadow-card, 0 2px 8px rgba(5, 25, 96, 0.08));
+  color: var(--navy-900, #050B18);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+  letter-spacing: 0.02em;
+}
+
+.map-layers-btn:hover {
+  background: var(--navy-500, #051960);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.map-layers-btn:hover .map-layers-icon {
+  color: var(--amber-400);
+}
+
+.map-layers-btn.is-open {
+  background: var(--navy-500, #051960);
+  color: #FFFFFF;
+  border-color: var(--navy-500);
+}
+
+.map-layers-icon {
+  font-size: 16px;
+  color: var(--navy-500);
+  transition: color 0.15s ease;
+}
+
+.map-layers-badge {
+  background: var(--amber-500);
+  color: #050B18;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 2px;
+}
+
+/* Floating Layers Panel */
+.map-layers-panel {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  width: 280px;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-subtle, #D9DEE3);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(5, 25, 96, 0.14));
+  padding: 12px 14px;
+  z-index: 600;
+  animation: dropdown-in 0.15s var(--ease);
+}
+
+.layers-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light, #E8ECF1);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.layers-panel-title {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy-900, #050B18);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.layers-panel-close {
+  background: transparent;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.12s ease;
+}
+
+.layers-panel-close:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.layers-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.layers-section-heading {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.layer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  margin-bottom: 2px;
+}
+
+.layer-item:hover {
+  background: var(--surface-2);
+}
+
+.layer-item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.layer-icon {
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.layer-name {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.layer-desc {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+/* Custom Switch Toggle */
+.layer-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 32px;
+  height: 18px;
+  background: var(--border, #D9DEE3);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.layer-switch::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  background: #ffffff;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.layer-switch:checked {
+  background: var(--navy-500, #051960);
+}
+
+.layer-switch:checked::before {
+  transform: translateX(14px);
+}
+
+.layers-panel-footer {
+  border-top: 1px solid var(--border-light, #E8ECF1);
+  padding-top: 8px;
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-reset-layers {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: all 0.12s ease;
+}
+
+.btn-reset-layers:hover {
+  color: var(--navy-900);
+  background: var(--surface-2);
+}
+
+/* ============================================================
    LEAFLET ZOOM CONTROLS (Design System Refinement)
    ============================================================ */
 .leaflet-control-zoom {
