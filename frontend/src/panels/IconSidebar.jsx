@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { id: 'queue', icon: 'priority_high', label: 'Priority Queue' },
   { id: 'action-plan', icon: 'assignment_turned_in', label: 'Action Plan' },
   { id: 'compare', icon: 'compare_arrows', label: 'Scenario Comparison' },
+  { id: 'assistant', icon: 'psychology', label: 'AI Assistant' },
   { id: 'workflow', icon: 'account_tree', label: 'Response Workflow' },
 ]
 

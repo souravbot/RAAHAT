@@ -21,6 +21,7 @@ import PriorityQueueView from './views/PriorityQueueView'
 import ActionPlanView from './views/ActionPlanView'
 import DisruptionsView from './views/DisruptionsView'
 import ScenarioComparisonView from './views/ScenarioComparisonView'
+import AssistantView from './views/AssistantView'
 import SimulationsView from './views/SimulationsView'
 import FieldOfficerDashboard from './views/FieldOfficerDashboard'
 import { AuthProvider, useAuth } from './auth/AuthContext'
@@ -47,6 +48,7 @@ function getPathView() {
   if (path === '/action-plan' || path === '/action') return 'action-plan'
   if (path === '/disruptions' || path === '/simulations') return 'disruptions'
   if (path === '/scenario-comparison' || path === '/compare' || path === '/scenarios') return 'compare'
+  if (path === '/assistant' || path === '/ask') return 'assistant'
   if (path === '/workflow') return 'workflow'
   return 'dashboard'
 }
@@ -157,6 +159,8 @@ function AppContent() {
       action: '/action-plan',
       compare: '/scenario-comparison',
       'scenario-comparison': '/scenario-comparison',
+      assistant: '/assistant',
+      ask: '/assistant',
       workflow: '/workflow',
       login: '/login',
     }
@@ -407,6 +411,10 @@ function AppContent() {
 
           {(activeView === 'compare' || activeView === 'scenario-comparison') && (
             <ScenarioComparisonView />
+          )}
+
+          {(activeView === 'assistant' || activeView === 'ask') && (
+            <AssistantView />
           )}
 
           {(activeView === 'disruptions' || activeView === 'simulations') && (
