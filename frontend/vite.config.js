@@ -7,10 +7,17 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Forward backend API routes to the FastAPI backend during dev.
-      // Use explicit path regex so frontend routes like /disruptions are served as SPA.
-      '^/disruption($|/.*)': 'http://localhost:8000',
-      '^/(api|twin|simulate|events|reset|demo|health|accessibility|impact|depletion|priority|recommend-action|scenario|ask)($|/.*)': 'http://localhost:8000',
+      // Forward backend API requests to the FastAPI backend while allowing
+      // direct browser navigation (Accept: text/html) to load the React SPA.
+      '^/(api|twin|disruption|simulate|events|reset|demo|health|accessibility|impact|depletion|priority|recommend-action|scenario|ask)($|/.*)': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        bypass: (req) => {
+          if (req.headers.accept && req.headers.accept.includes('text/html')) {
+            return '/index.html'
+          }
+        },
+      },
     },
   },
 })

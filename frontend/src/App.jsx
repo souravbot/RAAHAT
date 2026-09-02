@@ -41,7 +41,7 @@ function getPathView() {
   if (path === '/login') return 'login'
   if (path === '/map') return 'map'
   if (path === '/impact-analysis' || path === '/impact') return 'impact'
-  if (path === '/priority-queue' || path === '/queue') return 'queue'
+  if (path === '/priority' || path === '/priority-queue' || path === '/queue') return 'queue'
   if (path === '/disruptions' || path === '/simulations') return 'disruptions'
   if (path === '/workflow') return 'workflow'
   return 'dashboard'
@@ -147,7 +147,8 @@ function AppContent() {
       disruptions: '/disruptions',
       simulations: '/disruptions',
       impact: '/impact-analysis',
-      queue: '/priority-queue',
+      queue: '/priority',
+      priority: '/priority',
       workflow: '/workflow',
       login: '/login',
     }
