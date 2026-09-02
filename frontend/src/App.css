@@ -4722,6 +4722,103 @@ body {
   color: var(--text-on-dark);
 }
 
+/* Active Story Narrative Card in Demo Bar */
+.demo-story-guidance-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(5, 11, 24, 0.65);
+  border: 1px solid rgba(232, 135, 30, 0.3);
+  border-radius: 8px;
+  padding: 0.65rem 0.95rem;
+  margin-top: 0.35rem;
+  gap: 1rem;
+  animation: plan-reveal 0.25s var(--ease);
+}
+
+.dsg-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dsg-step-badge {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: var(--amber-400);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dsg-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.86rem;
+  color: #FFFFFF;
+}
+
+.dsg-summary {
+  font-size: 0.74rem;
+  color: rgba(231, 236, 242, 0.85);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.dsg-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.btn-dsg-nav {
+  padding: 0.3rem 0.65rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-dsg-nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-dsg-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-dsg-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--amber-500);
+  color: #050B18;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(232, 135, 30, 0.35);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-dsg-jump:hover {
+  background: var(--amber-400);
+  transform: translateY(-1px);
+}
+
 /* ---------- User Menu Role Switcher ---------- */
 .user-role-switch-title {
   padding: 0.35rem 0.85rem 0.15rem;
