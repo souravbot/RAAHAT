@@ -18,6 +18,7 @@ import LoginPage from './views/LoginPage'
 import MapFocusView from './views/MapFocusView'
 import ImpactAnalysisView from './views/ImpactAnalysisView'
 import PriorityQueueView from './views/PriorityQueueView'
+import ActionPlanView from './views/ActionPlanView'
 import DisruptionsView from './views/DisruptionsView'
 import SimulationsView from './views/SimulationsView'
 import FieldOfficerDashboard from './views/FieldOfficerDashboard'
@@ -42,6 +43,7 @@ function getPathView() {
   if (path === '/map') return 'map'
   if (path === '/impact-analysis' || path === '/impact') return 'impact'
   if (path === '/priority' || path === '/priority-queue' || path === '/queue') return 'queue'
+  if (path === '/action-plan' || path === '/action') return 'action-plan'
   if (path === '/disruptions' || path === '/simulations') return 'disruptions'
   if (path === '/workflow') return 'workflow'
   return 'dashboard'
@@ -149,6 +151,8 @@ function AppContent() {
       impact: '/impact-analysis',
       queue: '/priority',
       priority: '/priority',
+      'action-plan': '/action-plan',
+      action: '/action-plan',
       workflow: '/workflow',
       login: '/login',
     }
@@ -391,6 +395,10 @@ function AppContent() {
 
           {activeView === 'queue' && (
             <PriorityQueueView />
+          )}
+
+          {(activeView === 'action-plan' || activeView === 'action') && (
+            <ActionPlanView />
           )}
 
           {(activeView === 'disruptions' || activeView === 'simulations') && (
