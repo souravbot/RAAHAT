@@ -92,18 +92,19 @@ function AppContent() {
       const path = window.location.pathname
       const pathView = getPathView()
 
+      // Always show landing page when visiting root, regardless of auth state
+      if (path === '/' || path === '' || path === '/landing') {
+        window.location.replace('/landing.html')
+        return
+      }
+
       if (!isAuth) {
-        // Unauthenticated users visiting root/landing go directly to landing page
-        if (path === '/' || path === '' || path === '/landing') {
-          window.location.replace('/landing.html')
-          return
-        }
         if (path !== '/login') {
           window.history.replaceState(null, '', '/login')
         }
       } else {
-        // Authenticated users visiting root/login/landing go to dashboard
-        if (path === '/' || path === '/login' || path === '/landing' || path === '/landing.html') {
+        // Authenticated users visiting login go to dashboard
+        if (path === '/login' || path === '/landing.html') {
           window.history.replaceState(null, '', '/dashboard')
           setActiveView('dashboard')
         } else {
