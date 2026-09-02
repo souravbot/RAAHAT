@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { id: 'impact', icon: 'query_stats', label: 'Impact Analysis' },
   { id: 'queue', icon: 'priority_high', label: 'Priority Queue' },
   { id: 'action-plan', icon: 'assignment_turned_in', label: 'Action Plan' },
+  { id: 'compare', icon: 'compare_arrows', label: 'Scenario Comparison' },
   { id: 'workflow', icon: 'account_tree', label: 'Response Workflow' },
 ]
 
