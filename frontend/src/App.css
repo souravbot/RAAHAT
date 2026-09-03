@@ -158,6 +158,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .brand {
@@ -165,6 +167,7 @@ body {
   align-items: baseline;
   gap: 0.4rem;
   min-width: 0;
+  flex-shrink: 1;
 }
 
 .brand-wordmark {
@@ -185,6 +188,9 @@ body {
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   color: var(--text-on-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .topbar-divider {
@@ -244,6 +250,7 @@ body {
   flex: 1;
   display: flex;
   justify-content: center;
+  min-width: 0;
 }
 
 .kpi-strip {
@@ -301,6 +308,7 @@ body {
   align-items: center;
   gap: 0.4rem;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 /* Status badge */
