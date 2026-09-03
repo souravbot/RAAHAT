@@ -280,16 +280,16 @@ function AppContent() {
               <span className="kpi-label">Closed</span>
             </div>
           </div>
-        </div>
 
-        <div className="topbar-right">
-          {/* Status badge */}
+          {/* Status badge moved to Center Group per requirements */}
           <div className={`status-badge ${isLive ? 'status-live' : 'status-sim'}`} id="status-badge">
             <span className={`status-dot ${isLive ? 'dot-live' : 'dot-sim'}`} />
             <span className="status-text">{isLive ? 'LIVE' : 'SIMULATION'}</span>
           </div>
+        </div>
 
-          {/* Simulate Disruption button (Command Center & Demo Mode only) */}
+        <div className="topbar-action">
+          {/* Simulate Disruption button (Action Group) */}
           {hasPermission(PERMISSIONS.TRIGGER_DISRUPTION) && (
             <button
               className="btn-simulate"
@@ -300,6 +300,9 @@ function AppContent() {
               Simulate Disruption
             </button>
           )}
+        </div>
+
+        <div className="topbar-right">
 
           {/* Role & User Indicator */}
           <div className="user-menu-container" id="user-menu-container">
