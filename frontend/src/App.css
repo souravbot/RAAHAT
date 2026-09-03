@@ -425,6 +425,7 @@ body {
 .app-body {
   display: flex;
   flex: 1;
+  min-width: 0;
   min-height: 0;
   position: relative;
 }
@@ -2568,9 +2569,16 @@ body {
 @media (max-width: 1000px) {
   :root {
     --right-panel-w: 260px;
-    --controls-drawer-w: 0px;
+    --controls-drawer-w: 320px;
   }
-  .controls-drawer { display: none; }
+  .controls-drawer { 
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+  }
 }
 
 /* ===========================
@@ -9341,7 +9349,7 @@ body {
 /* Scenario Setup Configuration Grid (Step 5) */
 .scenario-setup-grid {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 1.25rem;
   padding: 1rem 1.5rem;
   align-items: center;
@@ -9358,6 +9366,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .card-scenario-a { border-top: 3.5px solid var(--navy-500); }
@@ -9421,6 +9430,7 @@ body {
   align-items: center;
   text-align: center;
   gap: 0.45rem;
+  min-width: 0;
 }
 
 .btn-run-compare-action {
