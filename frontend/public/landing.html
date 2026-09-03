@@ -3,1763 +3,857 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAAHAT — Regional Logistics &amp; Accessibility Intelligence Platform</title>
-  <meta name="description" content="AI-powered regional logistics and accessibility intelligence platform for disaster-prone regions of India. Real-time Digital Twin, Cascading Impact Analysis, and Explainable AI Resource Dispatch." />
+  <title>RAAHAT — Regional AI for Accessibility, Assistance &amp; Transport Intelligence</title>
+  <meta name="description" content="RAAHAT transforms infrastructure disruption into clear, explainable action. AI-powered regional decision support for disaster-prone territories — Digital Twin, impact analysis, and prioritized response." />
 
-  <!-- Fonts: Cambria / Georgia fallback via Google Fonts Playfair/Source Serif, Inter for UI, JetBrains Mono for metrics -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
   <style>
     /* ============================================================
-       RAAHAT DESIGN SYSTEM TOKENS
+       GRADIENT MODERN — RAAHAT DESIGN SYSTEM
+       Color = Data
+       Cyan=Connectivity | Amber/Coral=Risk | Scarlet=Disruption
+       Gold=Priority | Emerald=Routes/Action | Violet-Teal=Resilience
        ============================================================ */
     :root {
-      /* Required Palette */
-      --navy-900: #050B18;
-      --navy-800: #0A1530;
-      --navy-700: #0F1D3A;
-      --navy-600: #13294B;
-      --navy-500: #051960;
-      --navy-400: #1C7293;
-
-      --amber-500: #E8871E;
-      --amber-400: #F4A94D;
-      --amber-600: #CC7418;
-      --amber-glow: rgba(232, 135, 30, 0.45);
-      --amber-glow-soft: rgba(232, 135, 30, 0.18);
-      --amber-glow-faint: rgba(232, 135, 30, 0.08);
-
-      --green-600: #086D35;
-      --green-500: #0F9D58;
-      --green-glow: rgba(8, 109, 53, 0.35);
-
-      --text-on-dark: #E7ECF2;
-      --text-secondary: #9FB0C7;
-      --text-muted: #6B7C96;
-
-      --border-subtle: rgba(231, 236, 242, 0.08);
-      --border-card: rgba(231, 236, 242, 0.10);
-      --border-hover: rgba(232, 135, 30, 0.38);
-
-      /* Typography */
-      --font-heading: 'Cambria', 'Georgia', 'Playfair Display', serif;
-      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
-
-      /* Animation curves */
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-
-      --container-max: 1240px;
-      --nav-height: 72px;
-    }
-
-    /* ============================================================
-       RESET & BASE RESILIENCE
-       ============================================================ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html {
-      scroll-behavior: smooth;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      background-color: var(--navy-900);
-    }
-
-    body {
-      font-family: var(--font-body);
-      color: var(--text-on-dark);
-      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 45%, var(--navy-700) 100%);
-      background-attachment: fixed;
-      line-height: 1.6;
-      font-size: 16px;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Subtle SVG pattern background representing regional logistics grid */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 4L76 40 40 76 4 40Z' fill='none' stroke='rgba(231,236,242,0.035)' stroke-width='1'/%3E%3Ccircle cx='40' cy='40' r='2' fill='rgba(232,135,30,0.14)'/%3E%3Ccircle cx='4' cy='36' r='1.5' fill='rgba(231,236,242,0.06)'/%3E%3Ccircle cx='76' cy='40' r='1.5' fill='rgba(231,236,242,0.06)'/%3E%3C/svg%3E");
-      opacity: 0.85;
-      z-index: 0;
-    }
-
-    img { max-width: 100%; height: auto; display: block; }
-    a { text-decoration: none; color: inherit; }
-    button { font-family: var(--font-body); cursor: pointer; }
-
-    .container {
-      max-width: var(--container-max);
-      margin: 0 auto;
-      padding: 0 2rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1;
-    }
-
-    .tabular-nums {
-      font-variant-numeric: tabular-nums lining-nums;
-      font-family: var(--font-body);
-    }
-
-    /* ============================================================
-       1. NAV — Sticky, Semi-transparent with Blur
-       ============================================================ */
-    .nav-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--nav-height);
-      z-index: 1000;
-      background: rgba(5, 11, 24, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
-      transition: background 0.3s var(--ease-out), border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
-    }
-
-    .nav-header.scrolled {
-      background: rgba(5, 11, 24, 0.94);
-      border-bottom-color: rgba(231, 236, 242, 0.12);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    .nav-header .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 100%;
-    }
-
-    .nav-brand-group {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-      text-decoration: none;
-    }
-
-    .nav-wordmark {
-      font-family: var(--font-heading);
-      font-size: 1.65rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--text-on-dark);
-      text-shadow: 0 0 16px var(--amber-glow);
-      transition: text-shadow 0.25s ease;
-    }
-
-    .nav-brand-group:hover .nav-wordmark {
-      text-shadow: 0 0 24px rgba(232, 135, 30, 0.75);
-    }
-
-    .nav-brand-sub {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      opacity: 0.85;
-    }
-
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 1.75rem;
-      list-style: none;
-    }
-
-    .nav-menu-link {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-      transition: color 0.2s ease, background 0.2s ease;
-    }
-
-    .nav-menu-link:hover {
-      color: var(--text-on-dark);
-      background: rgba(231, 236, 242, 0.05);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-    }
-
-    .btn-nav-signin {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.55rem 1.15rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-on-dark);
-      text-decoration: none;
-      background: transparent;
-      border: 1px solid rgba(231, 236, 242, 0.18);
-      border-radius: 8px;
-      transition: all 0.2s var(--ease-out);
-    }
-
-    .btn-nav-signin:hover {
-      border-color: rgba(231, 236, 242, 0.4);
-      background: rgba(231, 236, 242, 0.06);
-      color: #fff;
-    }
-
-    .btn-nav-launch {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.58rem 1.25rem;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #050B18;
-      text-decoration: none;
-      background: var(--amber-500);
-      border: 1px solid var(--amber-400);
-      border-radius: 8px;
-      box-shadow: 0 2px 14px var(--amber-glow);
-      transition: all 0.25s var(--ease-out);
-    }
-
-    .btn-nav-launch:hover {
-      background: var(--amber-400);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 22px rgba(232, 135, 30, 0.6);
-    }
-
-    .btn-nav-launch .material-symbols-outlined {
-      font-size: 18px;
-    }
-
-    /* ============================================================
-       2. HERO SECTION
-       ============================================================ */
-    .hero-section {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      text-align: center;
-      padding-top: calc(var(--nav-height) + 3.5rem);
-      padding-bottom: 5rem;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .hero-section .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      width: 100%;
-    }
-
-    /* Animated background canvas for node graph network */
-    #hero-network-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Radial ambient aura */
-    .hero-aura {
-      position: absolute;
-      width: 900px;
-      height: 900px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(232, 135, 30, 0.09) 0%, rgba(28, 114, 147, 0.06) 45%, transparent 70%);
-      top: 35%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Small pill badge above headline */
-    .hero-pill-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.42rem 1.05rem 0.42rem 0.75rem;
-      background: rgba(8, 109, 53, 0.18);
-      border: 1px solid rgba(15, 157, 88, 0.35);
-      border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: #7BE0A0;
-      margin: 0 auto 1.5rem;
-      box-shadow: 0 0 16px var(--green-glow);
-      opacity: 0;
-      transform: translateY(-8px);
-      animation: hero-fade-in 0.8s var(--ease-out) 0.1s forwards;
-    }
-
-    .hero-pill-badge .check-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      background: var(--green-600);
-      color: #fff;
-    }
-
-    .hero-pill-badge .check-icon .material-symbols-outlined {
-      font-size: 13px;
-      font-variation-settings: 'wght' 700;
-    }
-
-    /* Massive centered serif headline */
-    .hero-headline {
-      font-family: var(--font-heading);
-      font-size: clamp(88px, 13vw, 154px);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      line-height: 0.95;
-      color: var(--text-on-dark);
-      text-align: center;
-      margin: 0 auto 1.5rem;
-      text-shadow:
-        0 0 40px rgba(232, 135, 30, 0.28),
-        0 0 90px rgba(232, 135, 30, 0.14);
-      opacity: 0;
-      transform: scale(0.94);
-      animation: hero-wordmark-scale 0.8s var(--ease-out) 0.2s forwards;
-    }
-
-    @keyframes hero-wordmark-scale {
-      0% { opacity: 0; transform: scale(0.94); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Tagline */
-    .hero-tagline {
-      font-family: var(--font-heading);
-      font-size: clamp(1.4rem, 2.6vw, 2.1rem);
-      font-weight: 600;
-      line-height: 1.4;
-      color: var(--text-on-dark);
-      text-align: center;
-      margin: 0 auto 1.25rem;
-      max-width: 680px;
-      opacity: 0;
-      transform: translateY(18px);
-      animation: hero-fade-up 0.7s var(--ease-out) 0.45s forwards;
-    }
-
-    .hero-tagline em {
-      font-style: italic;
-      color: var(--amber-400);
-      text-shadow: 0 0 16px rgba(232, 135, 30, 0.35);
-    }
-
-    /* Two-line subtext */
-    .hero-subtext {
-      font-size: clamp(0.95rem, 1.2vw, 1.08rem);
-      line-height: 1.75;
-      color: var(--text-secondary);
-      max-width: 640px;
-      margin: 0 auto 2.5rem;
-      opacity: 0;
-      transform: translateY(18px);
-      animation: hero-fade-up 0.7s var(--ease-out) 0.65s forwards;
-    }
-
-    /* CTA Buttons */
-    .hero-cta-group {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-      margin-bottom: 3.5rem;
-      opacity: 0;
-      transform: translateY(18px);
-      animation: hero-fade-up 0.7s var(--ease-out) 0.85s forwards;
-    }
-
-    .btn-hero-launch {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.95rem 2.25rem;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #050B18;
-      text-decoration: none;
-      background: var(--amber-500);
-      border: 1px solid var(--amber-400);
-      border-radius: 11px;
-      box-shadow: 0 4px 28px var(--amber-glow);
-      transition: all 0.28s var(--ease-out);
-    }
-
-    .btn-hero-launch:hover {
-      background: var(--amber-400);
-      transform: translateY(-2px) scale(1.025);
-      box-shadow: 0 8px 40px rgba(232, 135, 30, 0.65);
-    }
-
-    .btn-hero-launch .material-symbols-outlined {
-      font-size: 20px;
-    }
-
-    .btn-hero-demo {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.92rem 1.95rem;
-      font-size: 0.98rem;
-      font-weight: 600;
-      color: var(--text-on-dark);
-      text-decoration: none;
-      background: rgba(15, 29, 58, 0.6);
-      border: 1.5px solid rgba(231, 236, 242, 0.16);
-      border-radius: 11px;
-      backdrop-filter: blur(8px);
-      transition: all 0.28s var(--ease-out);
-    }
-
-    .btn-hero-demo:hover {
-      border-color: rgba(231, 236, 242, 0.38);
-      background: rgba(231, 236, 242, 0.08);
-      color: #fff;
-    }
-
-    .btn-hero-demo .material-symbols-outlined {
-      font-size: 20px;
-      color: var(--amber-400);
-    }
-
-    /* Floating preview of dashboard UI */
-    .hero-preview-wrapper {
-      width: 100%;
-      max-width: 1040px;
-      margin: 0 auto;
-      perspective: 1200px;
-      opacity: 0;
-      transform: translateY(28px);
-      animation: hero-fade-up 0.9s var(--ease-out) 1.05s forwards;
-    }
-
-    .hero-preview-card {
-      position: relative;
-      border-radius: 18px;
-      overflow: hidden;
-      background: var(--navy-800);
-      border: 1px solid rgba(232, 135, 30, 0.22);
-      box-shadow:
-        0 0 50px rgba(232, 135, 30, 0.12),
-        0 30px 90px rgba(0, 0, 0, 0.7);
-      animation: hero-drift 4s ease-in-out infinite alternate;
-    }
-
-    @keyframes hero-drift {
-      0% {
-        transform: translateY(0px);
-      }
-      100% {
-        transform: translateY(-8px);
-      }
-    }
-
-    .hero-preview-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.7rem 1.25rem;
-      background: rgba(5, 11, 24, 0.92);
-      border-bottom: 1px solid rgba(231, 236, 242, 0.08);
-    }
-
-    .preview-dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .preview-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(231, 236, 242, 0.18);
-    }
-
-    .preview-dot.red { background: #E05252; }
-    .preview-dot.amber { background: #E8871E; }
-    .preview-dot.green { background: #0F9D58; }
-
-    .preview-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      font-family: var(--font-mono);
-      color: var(--text-secondary);
-      letter-spacing: 0.04em;
-    }
-
-    .preview-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 0.2rem 0.55rem;
-      background: rgba(8, 109, 53, 0.25);
-      border: 1px solid rgba(15, 157, 88, 0.4);
-      border-radius: 4px;
-      color: #7BE0A0;
-    }
-
-    .preview-badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #0F9D58;
-      box-shadow: 0 0 6px #0F9D58;
-    }
-
-    .hero-preview-card img {
-      width: 100%;
-      height: auto;
-      display: block;
-      transition: transform 0.4s ease;
-    }
-
-    /* Scroll Cue Chevron */
-    .hero-scroll-cue {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.35rem;
-      margin-top: 3.5rem;
-      text-decoration: none;
-      opacity: 0;
-      animation: hero-fade-in 0.8s var(--ease-out) 1.3s forwards;
-    }
-
-    .scroll-cue-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .scroll-cue-chevron {
-      color: var(--amber-400);
-      animation: bounce-chevron 2.2s ease-in-out infinite;
-    }
-
-    @keyframes bounce-chevron {
-      0%, 100% {
-        transform: translateY(0);
-        opacity: 0.5;
-      }
-      50% {
-        transform: translateY(7px);
-        opacity: 1;
-      }
-    }
-
-    @keyframes hero-fade-in {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes hero-fade-up {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ============================================================
-       SECTION HEADERS & LABELS
-       ============================================================ */
-    .section-header {
-      text-align: center;
-      margin-bottom: 3.5rem;
-    }
-
-    .section-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      font-size: 0.74rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--amber-400);
-      margin-bottom: 0.85rem;
-    }
-
-    .section-eyebrow .material-symbols-outlined {
-      font-size: 16px;
-    }
-
-    .section-title {
-      font-family: var(--font-heading);
-      font-size: clamp(2rem, 3.2vw, 2.6rem);
-      font-weight: 700;
-      color: var(--text-on-dark);
-      letter-spacing: -0.01em;
-      line-height: 1.25;
-      margin-bottom: 0.85rem;
-    }
-
-    .section-description {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      max-width: 620px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* ============================================================
-       3. THE CORE LOOP — 6-Step Horizontal Flow
-       ============================================================ */
-    .core-loop-section {
-      padding: 6.5rem 0;
-      position: relative;
-      background: rgba(10, 21, 48, 0.4);
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .loop-track {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      padding: 1.5rem 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .loop-track::-webkit-scrollbar {
-      display: none;
-    }
-
-    .loop-step-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .loop-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      padding: 0.85rem 1.45rem;
-      background: var(--navy-700);
-      border: 1.5px solid var(--border-card);
-      border-radius: 999px;
-      box-shadow: 0 4px 16px rgba(5, 11, 24, 0.4);
-      transition: all 0.35s var(--ease-out);
-      cursor: default;
-      position: relative;
-    }
-
-    .loop-pill .pill-icon {
-      font-size: 20px;
-      color: var(--amber-400);
-      transition: color 0.3s ease, transform 0.3s ease;
-    }
-
-    .loop-pill .pill-label {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--text-on-dark);
-      white-space: nowrap;
-      transition: color 0.3s ease;
-    }
-
-    .loop-pill-index {
-      font-size: 0.65rem;
-      font-weight: 700;
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-      letter-spacing: 0.08em;
-      transition: color 0.3s ease;
-    }
-
-    /* Alive sequence active state (via JS loop) */
-    .loop-pill.is-active {
-      border-color: var(--amber-500);
-      background: var(--navy-600);
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 6px 28px rgba(232, 135, 30, 0.45);
-    }
-
-    .loop-pill.is-active .pill-icon {
-      color: #fff;
-      transform: scale(1.15);
-    }
-
-    .loop-pill.is-active .pill-label {
-      color: #fff;
-    }
-
-    .loop-step-item.is-active .loop-pill-index {
-      color: var(--amber-400);
-    }
-
-    .loop-connector {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 0.5rem;
-      color: var(--text-muted);
-      flex-shrink: 0;
-      opacity: 0.45;
-    }
-
-    .loop-connector .material-symbols-outlined {
-      font-size: 22px;
-    }
-
-    /* ============================================================
-       4. FEATURES SECTION — 3-Column Dark Cards
-       ============================================================ */
-    .features-section {
-      padding: 7rem 0;
-      position: relative;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-    }
-
-    .feature-card {
-      background: var(--navy-700);
-      border: 1px solid var(--border-card);
-      border-radius: 18px;
-      padding: 2.5rem 2.2rem;
-      box-shadow: 0 8px 30px rgba(5, 11, 24, 0.5);
-      transition: all 0.32s var(--ease-out);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .feature-card:hover {
-      border-color: var(--border-hover);
-      background: var(--navy-600);
-      transform: translateY(-6px);
-      box-shadow: 0 16px 45px rgba(232, 135, 30, 0.12);
-    }
-
-    .feature-icon-badge {
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 14px;
-      margin-bottom: 1.5rem;
-    }
-
-    .feature-icon-badge .material-symbols-outlined {
-      font-size: 28px;
-      color: #fff;
-    }
-
-    .feature-icon-badge.twin {
-      background: linear-gradient(135deg, var(--navy-500) 0%, var(--navy-400) 100%);
-      box-shadow: 0 4px 18px rgba(28, 114, 147, 0.35);
-    }
-
-    .feature-icon-badge.impact {
-      background: linear-gradient(135deg, var(--green-600) 0%, var(--green-500) 100%);
-      box-shadow: 0 4px 18px rgba(8, 109, 53, 0.4);
-    }
-
-    .feature-icon-badge.action {
-      background: linear-gradient(135deg, var(--amber-600) 0%, var(--amber-500) 100%);
-      box-shadow: 0 4px 18px rgba(232, 135, 30, 0.4);
-    }
-
-    .feature-card-title {
-      font-family: var(--font-heading);
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-on-dark);
-      margin-bottom: 0.85rem;
-    }
-
-    .feature-card-desc {
-      font-size: 0.94rem;
-      line-height: 1.75;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      flex-grow: 1;
-    }
-
-    .feature-card-footer {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      font-family: var(--font-mono);
-      color: var(--amber-400);
-      padding: 0.35rem 0.75rem;
-      background: rgba(232, 135, 30, 0.08);
-      border: 1px solid rgba(232, 135, 30, 0.16);
-      border-radius: 6px;
-      width: fit-content;
-    }
-
-    .feature-card-footer .material-symbols-outlined {
-      font-size: 15px;
-    }
-
-    /* ============================================================
-       5. STATS STRIP — Full-width Band with Animated CountUp
-       ============================================================ */
-    .stats-section {
-      background: linear-gradient(180deg, var(--navy-800) 0%, var(--navy-700) 100%);
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 5.5rem 0;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-    }
-
-    .stat-card {
-      text-align: center;
-      padding: 1rem;
-    }
-
-    .stat-indicator {
-      width: 32px;
-      height: 3px;
-      border-radius: 2px;
-      margin: 0 auto 1.25rem;
-    }
-
-    .stat-indicator.amber { background: var(--amber-500); }
-    .stat-indicator.green { background: var(--green-500); }
-    .stat-indicator.teal { background: var(--navy-400); }
-    .stat-indicator.amber-light { background: var(--amber-400); }
-
-    .stat-metric-wrap {
-      font-family: var(--font-body);
-      font-size: clamp(2.6rem, 4vw, 3.4rem);
-      font-weight: 800;
-      color: var(--text-on-dark);
-      line-height: 1;
-      margin-bottom: 0.65rem;
-      letter-spacing: -0.02em;
-    }
-
-    .stat-metric-wrap .stat-suffix {
-      font-size: 0.65em;
-      font-weight: 600;
-      color: var(--amber-400);
-      margin-left: 2px;
-    }
-
-    .stat-caption {
-      font-size: 0.9rem;
-      font-weight: 500;
-      line-height: 1.6;
-      color: var(--text-secondary);
-      max-width: 240px;
-      margin: 0 auto;
-    }
-
-    /* ============================================================
-       6. FOOTER — Deep Dark & Trustworthy
-       ============================================================ */
-    .footer-section {
-      background: var(--navy-900);
-      padding: 4.5rem 0 2.5rem;
-      border-top: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-    }
-
-    .footer-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 4rem;
-      margin-bottom: 3.5rem;
-    }
-
-    .footer-brand-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      max-width: 340px;
-    }
-
-    .footer-wordmark {
-      font-family: var(--font-heading);
-      font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--text-on-dark);
-      text-shadow: 0 0 12px var(--amber-glow);
-    }
-
-    .footer-tagline {
-      font-size: 0.85rem;
-      line-height: 1.65;
-      color: var(--text-secondary);
-    }
-
-    .footer-nav-col {
-      display: flex;
-      gap: 4rem;
-    }
-
-    .footer-nav-group-title {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-on-dark);
-      margin-bottom: 1rem;
-    }
-
-    .footer-links-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      list-style: none;
-    }
-
-    .footer-link-item {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .footer-link-item:hover {
-      color: var(--text-on-dark);
-    }
-
-    .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border-subtle);
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-disclaimer-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.4rem 0.85rem;
-      background: rgba(15, 29, 58, 0.8);
-      border: 1px solid rgba(231, 236, 242, 0.1);
-      border-radius: 6px;
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-
-    .footer-disclaimer-pill .material-symbols-outlined {
-      font-size: 15px;
-      color: var(--amber-400);
-    }
-
-    /* ============================================================
-       SCROLL-TRIGGERED REVEAL ANIMATIONS (Intersection Observer)
-       ============================================================ */
-    .reveal-on-scroll {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
-      will-change: opacity, transform;
-    }
-
-    .reveal-on-scroll.is-revealed {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .delay-1 { transition-delay: 0.12s; }
-    .delay-2 { transition-delay: 0.24s; }
-    .delay-3 { transition-delay: 0.36s; }
-    .delay-4 { transition-delay: 0.48s; }
-
-    /* ============================================================
-       REDUCED MOTION PREFERENCE
-       ============================================================ */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      .reveal-on-scroll {
-        opacity: 1 !important;
-        transform: none !important;
-      }
-      .hero-preview-card {
-        animation: none !important;
-      }
-    }
-
-    /* ============================================================
-       RESPONSIVE DESIGN BREAKPOINTS
-       ============================================================ */
-    @media (max-width: 1080px) {
-      .features-grid {
-        grid-template-columns: 1fr;
-        max-width: 580px;
-        margin: 0 auto;
-      }
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2.5rem;
-      }
-      .nav-menu {
-        display: none;
-      }
-    }
-
-    @media (max-width: 768px) {
-      :root {
-        --nav-height: 64px;
-      }
-      .hero-section {
-        padding-top: calc(var(--nav-height) + 2rem);
-        padding-bottom: 3.5rem;
-      }
-      .hero-headline {
-        font-size: clamp(64px, 16vw, 96px);
-      }
-      .hero-tagline {
-        font-size: 1.3rem;
-      }
-      .hero-subtext {
-        font-size: 0.92rem;
-      }
-      .loop-track {
-        flex-wrap: wrap;
-        gap: 0.85rem;
-        justify-content: center;
-      }
-      .loop-connector {
-        display: none;
-      }
-      .footer-top {
-        flex-direction: column;
-        gap: 2.5rem;
-      }
-      .footer-nav-col {
-        flex-wrap: wrap;
-        gap: 2.5rem;
-      }
-      .footer-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 0 1.25rem;
-      }
-      .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-      .hero-cta-group {
-        flex-direction: column;
-        width: 100%;
-      }
-      .btn-hero-launch,
-      .btn-hero-demo {
-        width: 100%;
-        justify-content: center;
-      }
-      .nav-brand-sub {
-        display: none;
-      }
-    }
+      --void:        #05080F;
+      --slate-900:   #0C1120;
+      --slate-800:   #111827;
+      --slate-700:   #1a2235;
+      --slate-600:   #1f2a42;
+
+      --scarlet:     #F23D3D;
+      --scarlet-dim: rgba(242,61,61,0.16);
+      --scarlet-glow:rgba(242,61,61,0.35);
+      --coral:       #F46B35;
+      --amber:       #F4A93D;
+      --amber-dim:   rgba(244,169,61,0.14);
+      --amber-glow:  rgba(244,169,61,0.4);
+      --cyan:        #22D3EE;
+      --cyan-dim:    rgba(34,211,238,0.10);
+      --cyan-glow:   rgba(34,211,238,0.3);
+      --teal:        #14B8A6;
+      --gold:        #FBBF24;
+      --gold-dim:    rgba(251,191,36,0.12);
+      --emerald:     #10B981;
+      --emerald-dim: rgba(16,185,129,0.10);
+      --emerald-glow:rgba(16,185,129,0.3);
+      --green-bright:#34D399;
+      --violet:      #7C3AED;
+      --violet-mid:  #8B5CF6;
+      --indigo:      #4F46E5;
+
+      --text-primary:   #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted:     #475569;
+
+      --border-faint: rgba(241,245,249,0.06);
+      --border-soft:  rgba(241,245,249,0.10);
+      --border-mid:   rgba(241,245,249,0.16);
+
+      --font-heading: 'DM Serif Display', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --ease-out:    cubic-bezier(0.16,1,0.3,1);
+      --nav-h: 68px;
+      --container: 1180px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    body{font-family:var(--font-body);color:var(--text-primary);background:var(--void);line-height:1.6;overflow-x:hidden}
+    a{text-decoration:none;color:inherit}
+    button{font-family:var(--font-body);cursor:pointer;border:none}
+    .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 350,'GRAD' 0,'opsz' 24;display:inline-block;vertical-align:middle;line-height:1}
+    .container{max-width:var(--container);margin:0 auto;padding:0 2rem}
+
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.8s var(--ease-out),transform 0.8s var(--ease-out)}
+    .reveal.visible{opacity:1;transform:none}
+    .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}
+    .d4{transition-delay:0.4s}.d5{transition-delay:0.5s}.d6{transition-delay:0.6s}
+
+    /* ── NAV ── */
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:999;background:rgba(5,8,15,0.7);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border-faint);transition:background 0.35s,border-color 0.35s}
+    .nav.scrolled{background:rgba(5,8,15,0.94);border-bottom-color:var(--border-soft);box-shadow:0 4px 40px rgba(0,0,0,0.5)}
+    .nav-inner{max-width:var(--container);margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:baseline;gap:0.6rem}
+    .nav-wordmark{font-family:var(--font-heading);font-size:1.5rem;letter-spacing:0.1em;background:linear-gradient(90deg,var(--text-primary) 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-tag{font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)}
+    .nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+    .nav-links a{font-size:0.875rem;font-weight:500;color:var(--text-secondary);transition:color 0.2s}
+    .nav-links a:hover{color:var(--text-primary)}
+    .nav-cta{display:flex;align-items:center;gap:0.75rem}
+    .btn-ghost{padding:0.5rem 1.1rem;font-size:0.85rem;font-weight:600;color:var(--text-secondary);background:transparent;border:1px solid var(--border-soft);border-radius:8px;transition:all 0.2s;display:inline-block}
+    .btn-ghost:hover{color:var(--text-primary);border-color:var(--border-mid);background:rgba(241,245,249,0.05)}
+    .btn-launch-nav{display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1.25rem;font-size:0.85rem;font-weight:700;color:#050810;background:linear-gradient(135deg,var(--emerald) 0%,var(--teal) 100%);border-radius:8px;box-shadow:0 2px 20px var(--emerald-glow);transition:all 0.25s}
+    .btn-launch-nav:hover{transform:translateY(-1px);box-shadow:0 6px 30px var(--emerald-glow)}
+    .btn-launch-nav .material-symbols-outlined{font-size:16px}
+
+    /* ── HERO ── */
+    .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--nav-h) + 4rem) 2rem 5rem;overflow:hidden;background:radial-gradient(ellipse 80% 60% at 50% 20%,rgba(79,70,229,0.22) 0%,transparent 70%),radial-gradient(ellipse 60% 50% at 20% 80%,rgba(34,211,238,0.07) 0%,transparent 60%),var(--void)}
+    .hero-orb{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(79,70,229,0.13) 0%,rgba(34,211,238,0.06) 45%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);animation:orb-pulse 6s ease-in-out infinite alternate;pointer-events:none}
+    @keyframes orb-pulse{0%{transform:translate(-50%,-55%) scale(1);opacity:0.8}100%{transform:translate(-50%,-55%) scale(1.12);opacity:1}}
+    #hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:860px;margin:0 auto}
+
+    .hero-alert-pill{display:inline-flex;align-items:center;gap:0.55rem;padding:0.45rem 1.1rem 0.45rem 0.85rem;background:var(--scarlet-dim);border:1px solid rgba(242,61,61,0.28);border-radius:999px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#FF8080;margin-bottom:1.75rem;animation:fade-in-down 0.7s var(--ease-out) 0.1s both}
+    .alert-pulse{width:7px;height:7px;border-radius:50%;background:var(--scarlet);box-shadow:0 0 8px var(--scarlet);animation:dot-blink 1.8s ease-in-out infinite}
+    @keyframes dot-blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
+
+    .hero-headline{font-family:var(--font-heading);font-size:clamp(3.2rem,8vw,7rem);line-height:1.05;letter-spacing:-0.01em;color:var(--text-primary);margin-bottom:1.5rem;animation:scale-in 0.9s var(--ease-out) 0.25s both}
+    .hero-headline em{font-style:italic;background:linear-gradient(135deg,var(--scarlet) 0%,var(--coral) 60%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    @keyframes scale-in{0%{opacity:0;transform:scale(0.93) translateY(16px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+    @keyframes fade-in-down{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fade-in-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+    .hero-sub{font-size:clamp(1rem,1.8vw,1.22rem);line-height:1.75;color:var(--text-secondary);max-width:640px;margin:0 auto 2.5rem;animation:fade-in-up 0.8s var(--ease-out) 0.45s both}
+
+    .three-qs{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.5rem 1.25rem;margin-bottom:3rem;animation:fade-in-up 0.8s var(--ease-out) 0.6s both}
+    .q-chip{display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.9rem;font-size:0.78rem;font-weight:600;border-radius:999px;border:1px solid;white-space:nowrap}
+    .q-chip .material-symbols-outlined{font-size:14px}
+    .q1{color:#FF8A8A;border-color:rgba(242,61,61,0.3);background:rgba(242,61,61,0.07)}
+    .q2{color:var(--amber);border-color:rgba(244,169,61,0.3);background:var(--amber-dim)}
+    .q3{color:var(--emerald);border-color:rgba(16,185,129,0.3);background:var(--emerald-dim)}
+
+    .hero-cta{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;animation:fade-in-up 0.8s var(--ease-out) 0.75s both}
+    .btn-hero-primary{display:inline-flex;align-items:center;gap:0.55rem;padding:0.9rem 2rem;font-size:0.95rem;font-weight:700;color:#05080F;background:linear-gradient(135deg,var(--emerald) 0%,var(--teal) 60%,var(--cyan) 100%);border-radius:10px;box-shadow:0 4px 30px var(--emerald-glow),0 0 0 1px rgba(16,185,129,0.3);transition:all 0.3s var(--ease-out)}
+    .btn-hero-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 10px 45px var(--emerald-glow),0 0 0 1px rgba(16,185,129,0.5)}
+    .btn-hero-primary .material-symbols-outlined{font-size:18px}
+    .btn-hero-secondary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.88rem 1.75rem;font-size:0.93rem;font-weight:600;color:var(--text-secondary);background:rgba(241,245,249,0.05);border:1px solid var(--border-soft);border-radius:10px;backdrop-filter:blur(8px);transition:all 0.25s}
+    .btn-hero-secondary:hover{color:var(--text-primary);border-color:var(--border-mid);background:rgba(241,245,249,0.09)}
+    .btn-hero-secondary .material-symbols-outlined{font-size:18px;color:var(--amber)}
+
+    .scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.4rem;text-decoration:none;opacity:0;animation:fade-in-down 0.8s var(--ease-out) 1.2s forwards}
+    .scroll-cue-lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted)}
+    .scroll-cue .material-symbols-outlined{color:var(--indigo);animation:bounce-v 2.4s ease-in-out infinite;font-size:20px}
+    @keyframes bounce-v{0%,100%{transform:translateY(0);opacity:0.4}50%{transform:translateY(8px);opacity:1}}
+
+    /* ── SHARED SECTION ATOMS ── */
+    .section-eyebrow{display:inline-flex;align-items:center;gap:0.45rem;font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1.25rem;padding:0.3rem 0.75rem;border-radius:4px}
+    .section-eyebrow .material-symbols-outlined{font-size:14px}
+    .ey-red   {color:var(--scarlet);background:var(--scarlet-dim);border:1px solid rgba(242,61,61,0.22)}
+    .ey-amber {color:var(--amber);background:var(--amber-dim);border:1px solid rgba(244,169,61,0.22)}
+    .ey-cyan  {color:var(--cyan);background:var(--cyan-dim);border:1px solid rgba(34,211,238,0.22)}
+    .ey-gold  {color:var(--gold);background:var(--gold-dim);border:1px solid rgba(251,191,36,0.22)}
+    .ey-emerald{color:var(--emerald);background:var(--emerald-dim);border:1px solid rgba(16,185,129,0.22)}
+    .ey-violet{color:var(--violet-mid);background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.22)}
+
+    .section-heading{font-family:var(--font-heading);font-size:clamp(2rem,3.5vw,3rem);line-height:1.2;color:var(--text-primary);margin-bottom:1.25rem}
+    .section-heading em{font-style:italic}
+    .section-body{font-size:1.05rem;line-height:1.8;color:var(--text-secondary);margin-bottom:1.5rem}
+
+    .callout-box{padding:1.25rem 1.5rem;border-radius:12px;border-left:3px solid;font-size:0.92rem;line-height:1.75;color:var(--text-secondary)}
+    .cb-red    {border-color:var(--scarlet);background:var(--scarlet-dim)}
+    .cb-amber  {border-color:var(--amber);background:var(--amber-dim)}
+    .cb-emerald{border-color:var(--emerald);background:var(--emerald-dim)}
+
+    .status-badge{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:4px}
+    .badge-dot{width:5px;height:5px;border-radius:50%}
+    .sb-alert{color:#FF8080;background:var(--scarlet-dim);border:1px solid rgba(242,61,61,0.25)}
+    .sb-alert .badge-dot{background:var(--scarlet);box-shadow:0 0 6px var(--scarlet);animation:dot-blink 1.8s infinite}
+    .sb-live{color:var(--emerald);background:var(--emerald-dim);border:1px solid rgba(16,185,129,0.25)}
+    .sb-live .badge-dot{background:var(--emerald);box-shadow:0 0 6px var(--emerald);animation:dot-blink 2s infinite}
+
+    /* ── DISRUPTION SECTION ── */
+    .disruption-section{position:relative;padding:7rem 0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(242,61,61,0.07) 0%,transparent 70%),linear-gradient(180deg,var(--void) 0%,var(--slate-900) 100%);border-top:1px solid var(--border-faint);overflow:hidden}
+    .disruption-section::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0px,transparent 59px,rgba(241,245,249,0.016) 60px),repeating-linear-gradient(0deg,transparent 0px,transparent 59px,rgba(241,245,249,0.016) 60px)}
+    .disruption-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+
+    .network-card{background:var(--slate-800);border:1px solid var(--border-soft);border-radius:20px;padding:1.5rem;box-shadow:0 0 60px rgba(0,0,0,0.5),0 0 0 1px var(--border-faint);position:relative;overflow:hidden}
+    .network-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(242,61,61,0.07) 0%,transparent 60%);pointer-events:none}
+    .network-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-faint)}
+    .network-card-title{font-size:0.72rem;font-weight:700;font-family:var(--font-mono);color:var(--text-muted);letter-spacing:0.08em}
+    .network-svg-wrap{width:100%;aspect-ratio:4/3}
+    #network-svg{width:100%;height:100%}
+    .impact-list{margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem}
+    .impact-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.9rem;border-radius:8px;font-size:0.82rem;font-weight:500}
+    .impact-item .i-icon{font-size:16px;flex-shrink:0}
+    .ii-critical{background:rgba(242,61,61,0.1);color:#FF9090;border:1px solid rgba(242,61,61,0.15)}
+    .ii-warning{background:rgba(244,169,61,0.1);color:var(--amber);border:1px solid rgba(244,169,61,0.15)}
+    .ii-info{background:rgba(34,211,238,0.08);color:var(--cyan);border:1px solid rgba(34,211,238,0.14)}
+
+    /* ── DIGITAL TWIN ── */
+    .twin-section{padding:8rem 0;background:radial-gradient(ellipse 90% 70% at 50% 50%,rgba(34,211,238,0.05) 0%,transparent 65%),linear-gradient(180deg,var(--slate-900) 0%,var(--slate-800) 50%,var(--slate-900) 100%);position:relative;overflow:hidden}
+    .twin-header{text-align:center;margin-bottom:4rem}
+    .twin-viz-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+    .twin-card{background:var(--slate-800);border:1px solid var(--border-soft);border-radius:16px;padding:2rem 1.75rem;text-align:left;position:relative;overflow:hidden;transition:all 0.35s var(--ease-out)}
+    .twin-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,0.4)}
+    .twin-card-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:12px;margin-bottom:1.25rem}
+    .twin-card-icon .material-symbols-outlined{font-size:24px;color:#fff}
+    .icon-cyan{background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(20,184,166,0.3));border:1px solid rgba(34,211,238,0.25)}
+    .icon-amber{background:linear-gradient(135deg,rgba(244,169,61,0.2),rgba(242,107,53,0.3));border:1px solid rgba(244,169,61,0.25)}
+    .icon-violet{background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(139,92,246,0.3));border:1px solid rgba(124,58,237,0.25)}
+    .icon-emerald{background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(52,211,153,0.3));border:1px solid rgba(16,185,129,0.25)}
+    .twin-card-title{font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:0.6rem}
+    .twin-card-desc{font-size:0.875rem;line-height:1.7;color:var(--text-secondary)}
+    .twin-card-meta{display:inline-flex;align-items:center;gap:0.35rem;margin-top:1rem;font-size:0.7rem;font-weight:600;font-family:var(--font-mono);letter-spacing:0.06em}
+    .twin-card-meta .material-symbols-outlined{font-size:13px}
+
+    /* ── THREE QUESTIONS ── */
+    .questions-section{padding:6rem 0;background:linear-gradient(135deg,rgba(79,70,229,0.12) 0%,rgba(124,58,237,0.08) 33%,rgba(20,184,166,0.08) 66%,rgba(16,185,129,0.12) 100%);border-top:1px solid var(--border-faint);border-bottom:1px solid var(--border-faint);position:relative;overflow:hidden}
+    .questions-section::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(34,211,238,0.03) 50%,transparent 100%);animation:shimmer 5s ease-in-out infinite alternate}
+    @keyframes shimmer{0%{transform:translateX(-20%)}100%{transform:translateX(20%)}}
+    .questions-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;position:relative;z-index:1}
+    .q-block{text-align:center;padding:2.5rem 2rem;border-radius:20px;background:rgba(5,8,15,0.4);border:1px solid var(--border-soft);backdrop-filter:blur(12px);transition:all 0.35s var(--ease-out)}
+    .q-block:hover{transform:translateY(-6px)}
+    .qb1{border-color:rgba(242,61,61,0.2)}.qb1:hover{background:rgba(242,61,61,0.05);box-shadow:0 20px 50px rgba(242,61,61,0.12)}
+    .qb2{border-color:rgba(244,169,61,0.2)}.qb2:hover{background:rgba(244,169,61,0.05);box-shadow:0 20px 50px rgba(244,169,61,0.12)}
+    .qb3{border-color:rgba(16,185,129,0.2)}.qb3:hover{background:rgba(16,185,129,0.05);box-shadow:0 20px 50px rgba(16,185,129,0.12)}
+    .q-number{font-family:var(--font-mono);font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:1rem}
+    .q-icon-wrap{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem}
+    .q-icon-wrap .material-symbols-outlined{font-size:28px;color:#fff}
+    .qi-red{background:rgba(242,61,61,0.15);border:1px solid rgba(242,61,61,0.25)}
+    .qi-amber{background:rgba(244,169,61,0.15);border:1px solid rgba(244,169,61,0.25)}
+    .qi-emerald{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25)}
+    .q-question{font-family:var(--font-heading);font-size:1.5rem;line-height:1.25;margin-bottom:0.85rem;color:var(--text-primary)}
+    .q-desc{font-size:0.875rem;line-height:1.7;color:var(--text-secondary)}
+
+    /* ── PIPELINE ── */
+    .pipeline-section{padding:8rem 0;background:linear-gradient(180deg,var(--slate-900) 0%,var(--slate-800) 50%,var(--slate-700) 100%);position:relative;overflow:hidden}
+    .pipeline-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(16,185,129,0.05) 0%,transparent 60%)}
+    .pipeline-header{text-align:center;margin-bottom:5rem}
+    .pipeline-steps{display:grid;grid-template-columns:repeat(7,1fr);position:relative}
+    .pipeline-steps::before{content:'';position:absolute;top:38px;left:8%;right:8%;height:2px;background:linear-gradient(90deg,var(--scarlet) 0%,var(--coral) 16%,var(--amber) 33%,var(--gold) 50%,var(--cyan) 66%,var(--emerald) 83%,var(--teal) 100%);z-index:0}
+    .pipeline-step{display:flex;flex-direction:column;align-items:center;gap:1rem;position:relative;z-index:1;text-align:center}
+    .pipe-circle{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid;background:var(--slate-900);position:relative;transition:all 0.3s var(--ease-out);cursor:default}
+    .pipe-circle::after{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:0;transition:opacity 0.3s}
+    .pipeline-step:hover .pipe-circle::after{opacity:1}
+    .pipe-circle .material-symbols-outlined{font-size:28px}
+    .pipe-num{font-family:var(--font-mono);font-size:0.55rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
+    .pipe-label{font-size:0.78rem;font-weight:600;color:var(--text-secondary);line-height:1.4;max-width:100px}
+    .ps1 .pipe-circle{border-color:var(--scarlet);color:var(--scarlet)}.ps1 .pipe-circle::after{box-shadow:0 0 20px var(--scarlet-glow)}.ps1 .pipe-num{color:var(--scarlet)}
+    .ps2 .pipe-circle{border-color:var(--coral);color:var(--coral)}.ps2 .pipe-num{color:var(--coral)}
+    .ps3 .pipe-circle{border-color:var(--amber);color:var(--amber)}.ps3 .pipe-num{color:var(--amber)}
+    .ps4 .pipe-circle{border-color:var(--gold);color:var(--gold)}.ps4 .pipe-num{color:var(--gold)}
+    .ps5 .pipe-circle{border-color:var(--cyan);color:var(--cyan)}.ps5 .pipe-num{color:var(--cyan)}
+    .ps6 .pipe-circle{border-color:var(--emerald);color:var(--emerald)}.ps6 .pipe-num{color:var(--emerald)}
+    .ps7 .pipe-circle{border-color:var(--teal);color:var(--teal)}.ps7 .pipe-num{color:var(--teal)}
+
+    /* ── IMPACT ── */
+    .impact-section{padding:8rem 0;background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(244,169,61,0.07) 0%,transparent 65%),linear-gradient(180deg,var(--slate-700) 0%,var(--slate-800) 100%);position:relative;overflow:hidden}
+    .impact-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+    .cascade-visual{display:flex;flex-direction:column;gap:1rem}
+    .cascade-item{display:flex;align-items:stretch;gap:1rem}
+    .cascade-line-wrap{display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0}
+    .cascade-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:4px}
+    .cascade-connector{flex:1;width:2px;opacity:0.22;margin:2px 0}
+    .cascade-content{flex:1;background:var(--slate-800);border:1px solid var(--border-soft);border-radius:12px;padding:1rem 1.25rem}
+    .cascade-content-title{font-size:0.85rem;font-weight:700;color:var(--text-primary);margin-bottom:0.35rem}
+    .cascade-content-desc{font-size:0.78rem;line-height:1.6;color:var(--text-secondary)}
+
+    /* ── PRIORITY ── */
+    .priority-section{padding:8rem 0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(251,191,36,0.06) 0%,transparent 60%),linear-gradient(180deg,var(--slate-800) 0%,var(--slate-900) 100%)}
+    .priority-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+    .priority-list{display:flex;flex-direction:column;gap:1rem}
+    .priority-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--slate-800);border:1px solid var(--border-soft);border-radius:12px;transition:all 0.25s var(--ease-out)}
+    .priority-item:hover{border-color:rgba(251,191,36,0.25);transform:translateX(4px)}
+    .priority-rank{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.8rem;font-weight:700;flex-shrink:0}
+    .r1{background:rgba(242,61,61,0.15);color:var(--scarlet);border:1px solid rgba(242,61,61,0.25)}
+    .r2{background:rgba(244,169,61,0.15);color:var(--amber);border:1px solid rgba(244,169,61,0.25)}
+    .r3{background:rgba(251,191,36,0.12);color:var(--gold);border:1px solid rgba(251,191,36,0.2)}
+    .r4{background:rgba(34,211,238,0.10);color:var(--cyan);border:1px solid rgba(34,211,238,0.2)}
+    .priority-info{flex:1}
+    .priority-name{font-size:0.9rem;font-weight:700;color:var(--text-primary);margin-bottom:0.2rem}
+    .priority-reason{font-size:0.76rem;color:var(--text-secondary)}
+    .priority-score{font-family:var(--font-mono);font-size:0.75rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:4px}
+    .sc-crit{color:var(--scarlet);background:var(--scarlet-dim)}
+    .sc-high{color:var(--amber);background:var(--amber-dim)}
+    .sc-med{color:var(--gold);background:var(--gold-dim)}
+    .sc-low{color:var(--cyan);background:var(--cyan-dim)}
+
+    .resources-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .resource-card{background:var(--slate-800);border:1px solid var(--border-soft);border-radius:14px;padding:1.25rem;transition:all 0.25s}
+    .resource-card:hover{border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.025)}
+    .resource-card-top{display:flex;align-items:center;gap:0.65rem;margin-bottom:0.75rem}
+    .resource-icon{font-size:18px}
+    .resource-label{font-size:0.78rem;font-weight:700;color:var(--text-primary)}
+    .resource-count{font-family:var(--font-mono);font-size:1.4rem;font-weight:700;margin-bottom:0.25rem}
+    .resource-sub{font-size:0.72rem;color:var(--text-muted)}
+
+    /* ── ACTION PLAN ── */
+    .action-section{padding:8rem 0;background:radial-gradient(ellipse 80% 70% at 50% 60%,rgba(16,185,129,0.08) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 80% 20%,rgba(20,184,166,0.06) 0%,transparent 55%),linear-gradient(180deg,var(--slate-900) 0%,var(--void) 100%);position:relative;overflow:hidden}
+    .action-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+    .action-plan-card{background:var(--slate-800);border:1px solid rgba(16,185,129,0.2);border-radius:20px;overflow:hidden;box-shadow:0 0 60px rgba(16,185,129,0.07),0 30px 70px rgba(0,0,0,0.5)}
+    .action-card-header{background:linear-gradient(135deg,rgba(16,185,129,0.14) 0%,rgba(20,184,166,0.09) 100%);padding:1.25rem 1.5rem;border-bottom:1px solid rgba(16,185,129,0.14);display:flex;align-items:center;justify-content:space-between}
+    .action-card-title-group{display:flex;align-items:center;gap:0.65rem}
+    .action-card-icon{color:var(--emerald);font-size:20px}
+    .action-card-title{font-size:0.85rem;font-weight:700;color:var(--text-primary)}
+    .action-steps-list{padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0.75rem}
+    .action-step{display:flex;align-items:flex-start;gap:0.85rem;padding:0.9rem 1rem;background:rgba(5,8,15,0.5);border:1px solid var(--border-faint);border-radius:10px;transition:all 0.2s}
+    .action-step:hover{border-color:rgba(16,185,129,0.2);background:rgba(16,185,129,0.025)}
+    .step-num-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;flex-shrink:0;margin-top:1px}
+    .sn-e{background:rgba(16,185,129,0.2);color:var(--emerald);border:1px solid rgba(16,185,129,0.3)}
+    .sn-c{background:rgba(34,211,238,0.14);color:var(--cyan);border:1px solid rgba(34,211,238,0.3)}
+    .sn-t{background:rgba(20,184,166,0.14);color:var(--teal);border:1px solid rgba(20,184,166,0.3)}
+    .sn-v{background:rgba(124,58,237,0.14);color:var(--violet-mid);border:1px solid rgba(124,58,237,0.3)}
+    .step-content-title{font-size:0.82rem;font-weight:700;color:var(--text-primary);margin-bottom:0.2rem}
+    .step-content-desc{font-size:0.74rem;line-height:1.55;color:var(--text-secondary)}
+    .confidence-row{display:flex;align-items:center;gap:0.75rem;padding:1rem 1.5rem;border-top:1px solid var(--border-faint)}
+    .confidence-label{font-size:0.72rem;font-weight:600;color:var(--text-muted);white-space:nowrap}
+    .confidence-bar{flex:1;height:6px;background:rgba(241,245,249,0.06);border-radius:3px;overflow:hidden}
+    .confidence-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--emerald),var(--teal),var(--cyan));width:0%;transition:width 1.5s var(--ease-out)}
+    .confidence-fill.animate{width:92%}
+    .confidence-pct{font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--emerald)}
+
+    /* ── STATS ── */
+    .stats-section{padding:6rem 0;background:linear-gradient(135deg,rgba(79,70,229,0.10) 0%,rgba(34,211,238,0.06) 40%,rgba(16,185,129,0.10) 100%);border-top:1px solid var(--border-faint);border-bottom:1px solid var(--border-faint);position:relative;overflow:hidden}
+    .stats-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:3rem;text-align:center}
+    .stat-value{font-family:var(--font-heading);font-size:clamp(2.4rem,4vw,3.5rem);line-height:1;font-weight:400;margin-bottom:0.5rem}
+    .stat-unit{font-size:0.55em;vertical-align:super;font-family:var(--font-mono);font-weight:700;margin-left:2px}
+    .stat-label{font-size:0.875rem;font-weight:500;color:var(--text-secondary);line-height:1.4}
+    .stat-accent-bar{width:36px;height:3px;border-radius:2px;margin:0.75rem auto 0}
+
+    /* ── CTA FINALE ── */
+    .cta-section{padding:9rem 0;background:radial-gradient(ellipse 100% 80% at 50% 50%,rgba(124,58,237,0.14) 0%,rgba(20,184,166,0.11) 40%,rgba(16,185,129,0.09) 70%,transparent 100%),var(--void);position:relative;overflow:hidden;text-align:center}
+    .cta-section::before{content:'';position:absolute;inset:0;background:conic-gradient(from 180deg at 50% 50%,rgba(124,58,237,0.05) 0deg,rgba(34,211,238,0.05) 90deg,rgba(16,185,129,0.05) 180deg,rgba(124,58,237,0.05) 270deg,rgba(124,58,237,0.05) 360deg);animation:conic-spin 15s linear infinite}
+    @keyframes conic-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .cta-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
+    .cta-kicker{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.7rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--emerald);margin-bottom:1.5rem}
+    .cta-heading{font-family:var(--font-heading);font-size:clamp(2.2rem,5vw,4rem);line-height:1.15;color:var(--text-primary);margin-bottom:1.5rem}
+    .grad-text{background:linear-gradient(135deg,var(--violet-mid) 0%,var(--teal) 50%,var(--emerald) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .cta-sub{font-size:1.05rem;line-height:1.75;color:var(--text-secondary);margin-bottom:3rem}
+    .cta-btns{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+    .btn-cta-main{display:inline-flex;align-items:center;gap:0.6rem;padding:1rem 2.25rem;font-size:1rem;font-weight:700;color:#05080F;background:linear-gradient(135deg,var(--emerald) 0%,var(--teal) 50%,var(--cyan) 100%);border-radius:12px;box-shadow:0 4px 35px var(--emerald-glow),0 0 0 1px rgba(16,185,129,0.4);transition:all 0.3s var(--ease-out)}
+    .btn-cta-main:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 12px 50px var(--emerald-glow),0 0 0 1px rgba(16,185,129,0.6)}
+    .btn-cta-main .material-symbols-outlined{font-size:20px}
+    .btn-cta-ghost{display:inline-flex;align-items:center;gap:0.5rem;padding:0.98rem 1.9rem;font-size:0.95rem;font-weight:600;color:var(--text-secondary);background:rgba(241,245,249,0.05);border:1px solid var(--border-soft);border-radius:12px;backdrop-filter:blur(8px);transition:all 0.25s}
+    .btn-cta-ghost:hover{color:var(--text-primary);border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.06)}
+    .btn-cta-ghost .material-symbols-outlined{font-size:18px;color:var(--violet-mid)}
+
+    /* ── FOOTER ── */
+    footer{background:var(--void);border-top:1px solid var(--border-faint);padding:4rem 0 2.5rem}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4rem;margin-bottom:3.5rem}
+    .footer-wordmark{font-family:var(--font-heading);font-size:1.4rem;letter-spacing:0.1em;background:linear-gradient(90deg,var(--text-primary),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem}
+    .footer-desc{font-size:0.875rem;line-height:1.7;color:var(--text-secondary);max-width:300px}
+    .footer-col-title{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-primary);margin-bottom:1rem}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+    .footer-links a{font-size:0.875rem;color:var(--text-secondary);transition:color 0.2s}
+    .footer-links a:hover{color:var(--text-primary)}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:2rem;border-top:1px solid var(--border-faint);font-size:0.775rem;color:var(--text-muted);flex-wrap:wrap;gap:1rem}
+    .footer-disclaimer{display:inline-flex;align-items:center;gap:0.4rem;padding:0.35rem 0.8rem;background:rgba(241,245,249,0.03);border:1px solid var(--border-faint);border-radius:6px}
+    .footer-disclaimer .material-symbols-outlined{font-size:14px;color:var(--amber)}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1100px){.pipeline-steps{grid-template-columns:repeat(4,1fr);gap:2rem}.pipeline-steps::before{display:none}}
+    @media(max-width:980px){.twin-viz-row{grid-template-columns:1fr 1fr}.disruption-inner,.impact-inner,.priority-inner,.action-inner{grid-template-columns:1fr;gap:3rem}.questions-inner{grid-template-columns:1fr;max-width:480px;margin:0 auto}.stats-inner{grid-template-columns:repeat(2,1fr)}.footer-top{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){.nav-links{display:none}.twin-viz-row{grid-template-columns:1fr}.pipeline-steps{grid-template-columns:repeat(2,1fr);gap:2rem 1rem}.stats-inner{grid-template-columns:1fr 1fr;gap:2rem}.hero-cta,.cta-btns{flex-direction:column;align-items:stretch}.footer-top{grid-template-columns:1fr;gap:2.5rem}}
+    @media(max-width:480px){.stats-inner{grid-template-columns:1fr}.container{padding:0 1.25rem}.resources-grid{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}.reveal{opacity:1;transform:none}}
   </style>
 </head>
 <body>
 
-  <!-- ============================================================
-       1. NAV — Sticky, Semi-transparent with Blur
-       ============================================================ -->
-  <header class="nav-header" id="navbar">
-    <div class="container">
-      <a href="#" class="nav-brand-group">
+  <!-- NAV -->
+  <nav class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
         <span class="nav-wordmark">RAAHAT</span>
-        <span class="nav-brand-sub">Logistics Intelligence</span>
+        <span class="nav-tag">Regional Intelligence</span>
       </a>
-
-      <nav aria-label="Main Navigation">
-        <ul class="nav-menu">
-          <li><a href="#features" class="nav-menu-link">Product</a></li>
-          <li><a href="#core-loop" class="nav-menu-link">How it Works</a></li>
-          <li><a href="#stats" class="nav-menu-link">About</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-actions">
-        <a href="/login" class="btn-nav-signin">Sign In</a>
-        <a href="/dashboard" class="btn-nav-launch" onclick="handleDashboardLaunch(event)">
-          <span class="material-symbols-outlined">dashboard</span>
-          Launch Dashboard
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- ============================================================
-       2. HERO SECTION
-       ============================================================ -->
-  <section class="hero-section" id="hero">
-    <!-- Animated Network Graph Canvas -->
-    <canvas id="hero-network-canvas"></canvas>
-    <div class="hero-aura"></div>
-
-    <div class="container">
-      <!-- Badge -->
-      <div class="hero-pill-badge">
-        <span class="check-icon">
-          <span class="material-symbols-outlined">check</span>
-        </span>
-        AI-Powered Regional Intelligence Platform
-      </div>
-
-      <!-- Headline -->
-      <h1 class="hero-headline">RAAHAT</h1>
-
-      <!-- Tagline -->
-      <p class="hero-tagline">
-        Predicts disruption.<br />
-        Understands <em>impact.</em><br />
-        Keeps resources moving.
-      </p>
-
-      <!-- Subtext -->
-      <p class="hero-subtext">
-        An intelligent logistics platform for India's North Eastern Region —
-        modelling road networks, hospitals, and warehouses as a living digital
-        twin to keep essential supplies flowing when disaster strikes.
-      </p>
-
-      <!-- CTA Buttons -->
-      <div class="hero-cta-group">
-        <a href="/dashboard" class="btn-hero-launch" onclick="handleDashboardLaunch(event)">
+      <ul class="nav-links">
+        <li><a href="#disruption">The Problem</a></li>
+        <li><a href="#twin">Digital Twin</a></li>
+        <li><a href="#pipeline">How It Works</a></li>
+        <li><a href="#action">Action Plan</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="/login" class="btn-ghost">Sign In</a>
+        <a href="/dashboard" class="btn-launch-nav" onclick="handleLaunch(event)">
           <span class="material-symbols-outlined">rocket_launch</span>
-          Launch Dashboard
+          Launch
         </a>
-        <a href="#core-loop" class="btn-hero-demo">
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb"></div>
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-alert-pill">
+        <span class="alert-pulse"></span>
+        <span class="material-symbols-outlined" style="font-size:13px;">warning</span>
+        Critical infrastructure event detected — NH-15, Assam
+      </div>
+      <h1 class="hero-headline">
+        Something<br>has <em>changed.</em>
+      </h1>
+      <p class="hero-sub">
+        A bridge has failed. A road is blocked. The network has shifted — silently, immediately.
+        The question is never just <em>what</em> is blocked. It is what cascades from this moment.
+        RAAHAT turns disruption into understanding.
+      </p>
+      <div class="three-qs">
+        <span class="q-chip q1"><span class="material-symbols-outlined">crisis_alert</span>What happened?</span>
+        <span class="q-chip q2"><span class="material-symbols-outlined">people</span>Who is affected?</span>
+        <span class="q-chip q3"><span class="material-symbols-outlined">task_alt</span>What should we do next?</span>
+      </div>
+      <div class="hero-cta">
+        <a href="/dashboard" class="btn-hero-primary" onclick="handleLaunch(event)">
+          <span class="material-symbols-outlined">explore</span>
+          Explore the Platform
+        </a>
+        <a href="#disruption" class="btn-hero-secondary">
           <span class="material-symbols-outlined">play_circle</span>
-          Watch Demo
+          See It in Action
         </a>
       </div>
+    </div>
+    <a href="#disruption" class="scroll-cue">
+      <span class="scroll-cue-lbl">Scroll to explore</span>
+      <span class="material-symbols-outlined">keyboard_arrow_down</span>
+    </a>
+  </section>
 
-      <!-- Floating Preview Card -->
-      <div class="hero-preview-wrapper">
-        <div class="hero-preview-card">
-          <div class="hero-preview-topbar">
-            <div class="preview-dots">
-              <span class="preview-dot red"></span>
-              <span class="preview-dot amber"></span>
-              <span class="preview-dot green"></span>
+  <!-- DISRUPTION MOMENT -->
+  <section class="disruption-section" id="disruption">
+    <div class="container">
+      <div class="disruption-inner">
+        <div>
+          <div class="section-eyebrow ey-red reveal">
+            <span class="material-symbols-outlined">crisis_alert</span>
+            The Disruption Event
+          </div>
+          <h2 class="section-heading reveal d1">The road is blocked.<br><em>Now what?</em></h2>
+          <p class="section-body reveal d2">
+            It is not enough to know that an infrastructure event has occurred.
+            The real challenge begins immediately after: which communities are now cut off?
+            Has the route to the district hospital changed? Are relief supplies delayed?
+            Which node in your network has silently become the most critical?
+          </p>
+          <div class="callout-box cb-red reveal d3">
+            <strong style="color:#FF8080;display:block;margin-bottom:0.4rem;">
+              <span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;margin-right:4px;">error</span>
+              The Visibility Gap
+            </strong>
+            Traditional monitoring tells you that an event happened. RAAHAT tells you
+            what it <em>means</em> — for every village, every facility, every supply route,
+            every decision that needs to be made in the next six hours.
+          </div>
+        </div>
+        <div class="reveal d2">
+          <div class="network-card">
+            <div class="network-card-header">
+              <span class="network-card-title">LIVE NETWORK — ASSAM EASTERN CORRIDOR</span>
+              <span class="status-badge sb-alert"><span class="badge-dot"></span>DISRUPTION ACTIVE</span>
             </div>
-            <span class="preview-title">RAAHAT Command Center &bull; Live Digital Twin</span>
-            <span class="preview-badge">
-              <span class="preview-badge-dot"></span>
-              ACTIVE
-            </span>
+            <div class="network-svg-wrap">
+              <svg id="network-svg" viewBox="0 0 480 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="80" y1="180" x2="160" y2="100" stroke="rgba(34,211,238,0.35)" stroke-width="1.5"/>
+                <line x1="160" y1="100" x2="260" y2="120" stroke="rgba(34,211,238,0.35)" stroke-width="1.5"/>
+                <line x1="260" y1="120" x2="380" y2="100" stroke="rgba(34,211,238,0.35)" stroke-width="1.5"/>
+                <line x1="80" y1="180" x2="160" y2="260" stroke="rgba(34,211,238,0.25)" stroke-width="1.5"/>
+                <line x1="160" y1="260" x2="260" y2="240" stroke="rgba(34,211,238,0.25)" stroke-width="1.5"/>
+                <line x1="260" y1="240" x2="380" y2="260" stroke="rgba(34,211,238,0.25)" stroke-width="1.5"/>
+                <line x1="160" y1="100" x2="160" y2="260" stroke="rgba(34,211,238,0.18)" stroke-width="1"/>
+                <line x1="380" y1="100" x2="380" y2="260" stroke="rgba(34,211,238,0.18)" stroke-width="1"/>
+                <line x1="260" y1="120" x2="260" y2="240" stroke="rgba(242,61,61,0.9)" stroke-width="2.5" stroke-dasharray="6 4">
+                  <animate attributeName="stroke-dashoffset" values="0;20" dur="1.2s" repeatCount="indefinite"/>
+                </line>
+                <circle cx="260" cy="180" r="14" fill="rgba(242,61,61,0.18)" stroke="rgba(242,61,61,0.6)" stroke-width="1.5">
+                  <animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <text x="260" y="185" text-anchor="middle" fill="rgba(242,61,61,0.9)" font-size="14" font-weight="bold">&#x2715;</text>
+                <circle cx="80" cy="180" r="10" fill="rgba(79,70,229,0.28)" stroke="rgba(79,70,229,0.8)" stroke-width="1.5"/>
+                <text x="80" y="202" text-anchor="middle" fill="rgba(148,163,184,0.9)" font-size="9">Dist. HQ</text>
+                <circle cx="160" cy="100" r="8" fill="rgba(244,169,61,0.22)" stroke="rgba(244,169,61,0.8)" stroke-width="1.5">
+                  <animate attributeName="stroke-opacity" values="0.8;0.4;0.8" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <text x="160" y="89" text-anchor="middle" fill="rgba(244,169,61,0.9)" font-size="9">Hospital</text>
+                <circle cx="380" cy="100" r="8" fill="rgba(34,211,238,0.2)" stroke="rgba(34,211,238,0.6)" stroke-width="1.5"/>
+                <text x="380" y="89" text-anchor="middle" fill="rgba(34,211,238,0.9)" font-size="9">Warehouse</text>
+                <circle cx="260" cy="120" r="7" fill="rgba(242,61,61,0.18)" stroke="rgba(242,61,61,0.7)" stroke-width="1.5"/>
+                <text x="260" y="109" text-anchor="middle" fill="rgba(242,61,61,0.9)" font-size="9">Village A</text>
+                <circle cx="260" cy="240" r="7" fill="rgba(242,61,61,0.18)" stroke="rgba(242,61,61,0.7)" stroke-width="1.5"/>
+                <text x="260" y="260" text-anchor="middle" fill="rgba(242,61,61,0.9)" font-size="9">Village B</text>
+                <circle cx="160" cy="260" r="7" fill="rgba(16,185,129,0.18)" stroke="rgba(16,185,129,0.6)" stroke-width="1.5"/>
+                <text x="160" y="280" text-anchor="middle" fill="rgba(16,185,129,0.9)" font-size="9">Relief Hub</text>
+                <circle cx="380" cy="260" r="7" fill="rgba(34,211,238,0.18)" stroke="rgba(34,211,238,0.6)" stroke-width="1.5"/>
+                <text x="380" y="280" text-anchor="middle" fill="rgba(34,211,238,0.9)" font-size="9">Junction</text>
+                <rect x="14" y="310" width="450" height="38" rx="6" fill="rgba(5,8,15,0.6)" stroke="rgba(241,245,249,0.06)" stroke-width="1"/>
+                <circle cx="32" cy="329" r="4" fill="none" stroke="rgba(34,211,238,0.8)" stroke-width="1.5"/><text x="42" y="333" fill="rgba(148,163,184,0.8)" font-size="8.5">Connected</text>
+                <circle cx="112" cy="329" r="4" fill="none" stroke="rgba(242,61,61,0.8)" stroke-width="1.5"/><text x="122" y="333" fill="rgba(148,163,184,0.8)" font-size="8.5">Disrupted</text>
+                <circle cx="195" cy="329" r="4" fill="none" stroke="rgba(244,169,61,0.8)" stroke-width="1.5"/><text x="205" y="333" fill="rgba(148,163,184,0.8)" font-size="8.5">At Risk</text>
+                <circle cx="265" cy="329" r="4" fill="none" stroke="rgba(16,185,129,0.8)" stroke-width="1.5"/><text x="275" y="333" fill="rgba(148,163,184,0.8)" font-size="8.5">Response Asset</text>
+              </svg>
+            </div>
+            <div class="impact-list">
+              <div class="impact-item ii-critical"><span class="material-symbols-outlined i-icon">warning</span>Village A &amp; B — road access severed</div>
+              <div class="impact-item ii-warning"><span class="material-symbols-outlined i-icon">local_hospital</span>District Hospital — accessibility changed (+40 min)</div>
+              <div class="impact-item ii-info"><span class="material-symbols-outlined i-icon">inventory_2</span>Warehouse Route — alternate path identified</div>
+            </div>
           </div>
-          <img
-            src="/assets/dashboard-preview.png"
-            alt="RAAHAT Mission Control Dashboard — Live Digital Twin Map with Priority Assessment and Critical Supply Alerts"
-            width="1400"
-            height="760"
-            loading="eager"
-          />
         </div>
       </div>
-
-      <!-- Scroll Cue -->
-      <a href="#core-loop" class="hero-scroll-cue" aria-label="Scroll to How It Works">
-        <span class="scroll-cue-label">Scroll to Explore</span>
-        <span class="material-symbols-outlined scroll-cue-chevron">expand_more</span>
-      </a>
     </div>
   </section>
 
-  <!-- ============================================================
-       3. THE CORE LOOP — 6-Step Horizontal Flow
-       ============================================================ -->
-  <section class="core-loop-section" id="core-loop">
+  <!-- DIGITAL TWIN -->
+  <section class="twin-section" id="twin">
     <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <div class="section-eyebrow">
-          <span class="material-symbols-outlined">autorenew</span>
-          System Intelligence
+      <div class="twin-header">
+        <div class="section-eyebrow ey-cyan reveal" style="display:inline-flex;">
+          <span class="material-symbols-outlined">hub</span>
+          The Intelligence Layer
         </div>
-        <h2 class="section-title">The Core Loop</h2>
-        <p class="section-description">
-          Six interconnected stages continuously assess infrastructure health, predict cascading risks, and compute optimal dispatch paths.
+        <h2 class="section-heading reveal d1" style="max-width:680px;margin:0 auto 1rem;">A living <em>Digital Twin</em><br>of your regional network</h2>
+        <p class="section-body reveal d2" style="max-width:600px;margin:0 auto;">
+          Every village, hospital, warehouse, relief centre and junction is a node.
+          Every road and bridge is an edge. When one changes, RAAHAT reflects it instantly
+          and re-evaluates the entire region — automatically.
         </p>
       </div>
-
-      <div class="loop-track reveal-on-scroll delay-1" id="loopTrack">
-        <!-- Step 1 -->
-        <div class="loop-step-item" data-step="0">
-          <div class="loop-pill">
-            <span class="material-symbols-outlined pill-icon">visibility</span>
-            <span class="pill-label">Observe</span>
-          </div>
-          <span class="loop-pill-index">STEP 01</span>
+      <div class="twin-viz-row">
+        <div class="twin-card reveal d1">
+          <div class="twin-card-icon icon-cyan"><span class="material-symbols-outlined">account_tree</span></div>
+          <div class="twin-card-title">Live Network Topology</div>
+          <div class="twin-card-desc">A real-time graph of nodes and edges representing the regional infrastructure. Every update to a road or bridge propagates instantly through the entire network model.</div>
+          <div class="twin-card-meta" style="color:var(--cyan);"><span class="material-symbols-outlined">sensors</span>Real-time reflection</div>
         </div>
-
-        <div class="loop-connector">
-          <span class="material-symbols-outlined">arrow_forward</span>
+        <div class="twin-card reveal d2">
+          <div class="twin-card-icon icon-amber"><span class="material-symbols-outlined">trending_down</span></div>
+          <div class="twin-card-title">Cascading Impact Engine</div>
+          <div class="twin-card-desc">RAAHAT doesn't just flag a disruption — it traces every consequence. Accessibility changes, supply route shifts, and facility criticality are recalculated the moment a disruption is registered.</div>
+          <div class="twin-card-meta" style="color:var(--amber);"><span class="material-symbols-outlined">psychology</span>Multi-hop analysis</div>
         </div>
-
-        <!-- Step 2 -->
-        <div class="loop-step-item" data-step="1">
-          <div class="loop-pill">
-            <span class="material-symbols-outlined pill-icon">query_stats</span>
-            <span class="pill-label">Predict</span>
-          </div>
-          <span class="loop-pill-index">STEP 02</span>
-        </div>
-
-        <div class="loop-connector">
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="loop-step-item" data-step="2">
-          <div class="loop-pill">
-            <span class="material-symbols-outlined pill-icon">hub</span>
-            <span class="pill-label">Assess Impact</span>
-          </div>
-          <span class="loop-pill-index">STEP 03</span>
-        </div>
-
-        <div class="loop-connector">
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="loop-step-item" data-step="3">
-          <div class="loop-pill">
-            <span class="material-symbols-outlined pill-icon">priority_high</span>
-            <span class="pill-label">Prioritize</span>
-          </div>
-          <span class="loop-pill-index">STEP 04</span>
-        </div>
-
-        <div class="loop-connector">
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="loop-step-item" data-step="4">
-          <div class="loop-pill">
-            <span class="material-symbols-outlined pill-icon">alt_route</span>
-            <span class="pill-label">Optimize</span>
-          </div>
-          <span class="loop-pill-index">STEP 05</span>
-        </div>
-
-        <div class="loop-connector">
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </div>
-
-        <!-- Step 6 -->
-        <div class="loop-step-item" data-step="5">
-          <div class="loop-pill">
-            <span class="material-symbols-outlined pill-icon">smart_toy</span>
-            <span class="pill-label">Recommend</span>
-          </div>
-          <span class="loop-pill-index">STEP 06</span>
+        <div class="twin-card reveal d3">
+          <div class="twin-card-icon icon-violet"><span class="material-symbols-outlined">auto_fix_high</span></div>
+          <div class="twin-card-title">Explainable AI Decisions</div>
+          <div class="twin-card-desc">Every recommendation RAAHAT makes is transparent and traceable. Decision-makers see not just what to do, but exactly why — with full reasoning they can trust, verify and act on immediately.</div>
+          <div class="twin-card-meta" style="color:var(--violet-mid);"><span class="material-symbols-outlined">visibility</span>Full transparency</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-       4. FEATURES — 3-Column Dark Cards
-       ============================================================ -->
-  <section class="features-section" id="features">
+  <!-- THREE QUESTIONS -->
+  <section class="questions-section">
     <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <div class="section-eyebrow">
-          <span class="material-symbols-outlined">grid_view</span>
-          Capabilities
+      <div class="questions-inner">
+        <div class="q-block qb1 reveal">
+          <div class="q-number" style="color:var(--scarlet);">01 / Situational Awareness</div>
+          <div class="q-icon-wrap qi-red"><span class="material-symbols-outlined">crisis_alert</span></div>
+          <div class="q-question">What happened?</div>
+          <div class="q-desc">The disruption is detected. The Digital Twin is updated. The network changes are reflected — and the question of <em>what this means</em> begins immediately.</div>
         </div>
-        <h2 class="section-title">Built for Mission-Critical Logistics</h2>
-        <p class="section-description">
-          Engineered for government disaster management authorities and regional emergency response operators.
-        </p>
+        <div class="q-block qb2 reveal d2">
+          <div class="q-number" style="color:var(--amber);">02 / Impact Intelligence</div>
+          <div class="q-icon-wrap qi-amber"><span class="material-symbols-outlined">groups</span></div>
+          <div class="q-question">Who is affected?</div>
+          <div class="q-desc">Villages, hospitals, supply routes, vulnerable populations — RAAHAT maps every consequence across the entire regional network, surfacing what matters most.</div>
+        </div>
+        <div class="q-block qb3 reveal d4">
+          <div class="q-number" style="color:var(--emerald);">03 / Actionable Response</div>
+          <div class="q-icon-wrap qi-emerald"><span class="material-symbols-outlined">task_alt</span></div>
+          <div class="q-question">What should we do next?</div>
+          <div class="q-desc">RAAHAT generates a prioritised, explainable Action Plan — routes, resources, vehicles, and sequenced steps — so decision-makers can move from understanding to action with complete confidence.</div>
+        </div>
       </div>
+    </div>
+  </section>
 
-      <div class="features-grid">
-        <!-- Feature 1 -->
-        <div class="feature-card reveal-on-scroll delay-1">
-          <div class="feature-icon-badge twin">
-            <span class="material-symbols-outlined">lan</span>
-          </div>
-          <h3 class="feature-card-title">Regional Digital Twin</h3>
-          <p class="feature-card-desc">
-            A living graph model of roads, bridges, hospitals, warehouses, and villages — reflecting real-time infrastructure state across the North Eastern Region.
-          </p>
-          <div class="feature-card-footer">
-            <span class="material-symbols-outlined">storage</span>
-            25 nodes &bull; 29 routes modelled
+  <!-- PIPELINE -->
+  <section class="pipeline-section" id="pipeline">
+    <div class="container">
+      <div class="pipeline-header">
+        <div class="section-eyebrow ey-emerald reveal" style="display:inline-flex;"><span class="material-symbols-outlined">device_hub</span>The Full Workflow</div>
+        <h2 class="section-heading reveal d1" style="max-width:560px;margin:0 auto 1rem;">From disruption to <em>action</em> — every step</h2>
+        <p class="section-body reveal d2" style="max-width:540px;margin:0 auto;">RAAHAT's intelligence pipeline transforms a raw disruption event into a clear, explainable response — automatically, transparently, reliably.</p>
+      </div>
+      <div class="pipeline-steps reveal d2">
+        <div class="pipeline-step ps1">
+          <div class="pipe-circle"><span class="material-symbols-outlined">report_problem</span></div>
+          <div class="pipe-num">01</div><div class="pipe-label">Disruption Detected</div>
+        </div>
+        <div class="pipeline-step ps2">
+          <div class="pipe-circle"><span class="material-symbols-outlined">device_hub</span></div>
+          <div class="pipe-num">02</div><div class="pipe-label">Digital Twin Updated</div>
+        </div>
+        <div class="pipeline-step ps3">
+          <div class="pipe-circle"><span class="material-symbols-outlined">analytics</span></div>
+          <div class="pipe-num">03</div><div class="pipe-label">Impact Analysed</div>
+        </div>
+        <div class="pipeline-step ps4">
+          <div class="pipe-circle"><span class="material-symbols-outlined">location_on</span></div>
+          <div class="pipe-num">04</div><div class="pipe-label">Critical Nodes Identified</div>
+        </div>
+        <div class="pipeline-step ps5">
+          <div class="pipe-circle"><span class="material-symbols-outlined">sort</span></div>
+          <div class="pipe-num">05</div><div class="pipe-label">Priorities Ranked</div>
+        </div>
+        <div class="pipeline-step ps6">
+          <div class="pipe-circle"><span class="material-symbols-outlined">alt_route</span></div>
+          <div class="pipe-num">06</div><div class="pipe-label">Routes &amp; Resources Evaluated</div>
+        </div>
+        <div class="pipeline-step ps7">
+          <div class="pipe-circle"><span class="material-symbols-outlined">task_alt</span></div>
+          <div class="pipe-num">07</div><div class="pipe-label">Action Plan Generated</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT ANALYSIS -->
+  <section class="impact-section" id="impact">
+    <div class="container">
+      <div class="impact-inner">
+        <div>
+          <div class="section-eyebrow ey-amber reveal"><span class="material-symbols-outlined">trending_down</span>Cascading Impact Analysis</div>
+          <h2 class="section-heading reveal d1">Every consequence,<br><em>mapped instantly</em></h2>
+          <p class="section-body reveal d2">A single disruption ripples. RAAHAT traces every cascade — through the network, across facilities, down supply chains — revealing not just what broke, but everything that changed because of it.</p>
+          <div class="callout-box cb-amber reveal d3">
+            <strong style="color:var(--amber);display:block;margin-bottom:0.35rem;"><span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;margin-right:4px;">local_hospital</span>Hospital Accessibility Alert</strong>
+            District General Hospital travel time increased by 42 minutes for 3 villages. Population of 8,400 now classified as medically underserved. RAAHAT has identified an alternate route via Junction 7 — capacity assessment in progress.
           </div>
         </div>
-
-        <!-- Feature 2 -->
-        <div class="feature-card reveal-on-scroll delay-2">
-          <div class="feature-icon-badge impact">
-            <span class="material-symbols-outlined">bolt</span>
+        <div class="cascade-visual reveal d2">
+          <div class="cascade-item">
+            <div class="cascade-line-wrap"><div class="cascade-dot" style="background:var(--scarlet);box-shadow:0 0 8px var(--scarlet);"></div><div class="cascade-connector" style="background:linear-gradient(180deg,var(--scarlet),transparent);"></div></div>
+            <div class="cascade-content" style="border-color:rgba(242,61,61,0.2);"><div class="cascade-content-title" style="color:#FF9090;">NH-15 Bridge Failure</div><div class="cascade-content-desc">Primary disruption event. Structural failure confirmed. 0 vehicle capacity.</div></div>
           </div>
-          <h3 class="feature-card-title">Cascading Impact Engine</h3>
-          <p class="feature-card-desc">
-            When a bridge collapses or a road floods, RAAHAT traces the cascading effect — identifying which villages lose access, which supplies deplete, and how fast.
-          </p>
-          <div class="feature-card-footer">
-            <span class="material-symbols-outlined">speed</span>
-            Sub-second impact propagation
+          <div class="cascade-item">
+            <div class="cascade-line-wrap"><div class="cascade-dot" style="background:var(--coral);box-shadow:0 0 6px var(--coral);"></div><div class="cascade-connector" style="background:linear-gradient(180deg,var(--coral),transparent);"></div></div>
+            <div class="cascade-content" style="border-color:rgba(244,107,53,0.2);"><div class="cascade-content-title" style="color:var(--coral);">3 Villages Isolated</div><div class="cascade-content-desc">Margherita, Digboi, Ledo — primary road access severed. Population: ~12,000.</div></div>
           </div>
-        </div>
-
-        <!-- Feature 3 -->
-        <div class="feature-card reveal-on-scroll delay-3">
-          <div class="feature-icon-badge action">
-            <span class="material-symbols-outlined">verified_user</span>
+          <div class="cascade-item">
+            <div class="cascade-line-wrap"><div class="cascade-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber);"></div><div class="cascade-connector" style="background:linear-gradient(180deg,var(--amber),transparent);"></div></div>
+            <div class="cascade-content" style="border-color:rgba(244,169,61,0.2);"><div class="cascade-content-title" style="color:var(--amber);">Medical Supply Chain Disrupted</div><div class="cascade-content-desc">Insulin, dialysis supplies — 36hr buffer. Alternate route adds 2.8hr per delivery.</div></div>
           </div>
-          <h3 class="feature-card-title">Explainable Recommendations</h3>
-          <p class="feature-card-desc">
-            Every action plan comes with a clear rationale — which warehouse, which vehicle, which route — so operators can trust and verify each AI-generated decision.
-          </p>
-          <div class="feature-card-footer">
-            <span class="material-symbols-outlined">check_circle</span>
-            Full decision transparency
+          <div class="cascade-item">
+            <div class="cascade-line-wrap"><div class="cascade-dot" style="background:var(--gold);box-shadow:0 0 6px var(--gold);"></div><div class="cascade-connector" style="background:linear-gradient(180deg,var(--gold),transparent);"></div></div>
+            <div class="cascade-content" style="border-color:rgba(251,191,36,0.2);"><div class="cascade-content-title" style="color:var(--gold);">Relief Centre Isolated</div><div class="cascade-content-desc">Ledo Relief Hub — inaccessible. 400 beneficiaries cannot be reached.</div></div>
+          </div>
+          <div class="cascade-item">
+            <div class="cascade-line-wrap"><div class="cascade-dot" style="background:var(--emerald);box-shadow:0 0 6px var(--emerald);"></div></div>
+            <div class="cascade-content" style="border-color:rgba(16,185,129,0.2);"><div class="cascade-content-title" style="color:var(--emerald);">Alternative Route Identified</div><div class="cascade-content-desc">Via Margherita–Digboi secondary road. Capacity: 6t. RAAHAT recommends immediate activation.</div></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-       5. STATS STRIP — Full-width Band with Animated CountUp
-       ============================================================ -->
+  <!-- PRIORITY & RESOURCES -->
+  <section class="priority-section" id="priority">
+    <div class="container">
+      <div class="priority-inner">
+        <div>
+          <div class="section-eyebrow ey-gold reveal"><span class="material-symbols-outlined">priority_high</span>Priority Intelligence</div>
+          <h2 class="section-heading reveal d1">Who needs help<br><em>most urgently?</em></h2>
+          <p class="section-body reveal d2">RAAHAT scores and ranks every affected location by urgency, vulnerability, and supply criticality — so decision-makers always know exactly where to direct resources first.</p>
+          <div class="priority-list reveal d3">
+            <div class="priority-item"><div class="priority-rank r1">P1</div><div class="priority-info"><div class="priority-name">Ledo Village — Medical Emergency</div><div class="priority-reason">Insulin supply &lt;24hr • Hospital access severed • Population: 3,200</div></div><div class="priority-score sc-crit">CRITICAL</div></div>
+            <div class="priority-item"><div class="priority-rank r2">P2</div><div class="priority-info"><div class="priority-name">District General Hospital</div><div class="priority-reason">Dialysis patients • Supply window closing • Alt route identified</div></div><div class="priority-score sc-high">HIGH</div></div>
+            <div class="priority-item"><div class="priority-rank r3">P3</div><div class="priority-info"><div class="priority-name">Margherita Relief Hub</div><div class="priority-reason">400 beneficiaries • Food supply 48hr • Route assessment needed</div></div><div class="priority-score sc-med">MEDIUM</div></div>
+            <div class="priority-item"><div class="priority-rank r4">P4</div><div class="priority-info"><div class="priority-name">Digboi — Monitoring</div><div class="priority-reason">Accessible via secondary road • Supplies stable • Precautionary</div></div><div class="priority-score sc-low">MONITOR</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-eyebrow ey-cyan reveal" style="margin-bottom:1.5rem;"><span class="material-symbols-outlined">inventory_2</span>Available Resources</div>
+          <div class="resources-grid reveal d1">
+            <div class="resource-card"><div class="resource-card-top"><span class="material-symbols-outlined resource-icon" style="color:var(--emerald);">local_shipping</span><span class="resource-label">Vehicles</span></div><div class="resource-count" style="color:var(--emerald);">12<span style="font-size:0.5em;color:var(--text-muted);">/ 18</span></div><div class="resource-sub">Available • 3 deployed</div></div>
+            <div class="resource-card"><div class="resource-card-top"><span class="material-symbols-outlined resource-icon" style="color:var(--cyan);">warehouse</span><span class="resource-label">Warehouses</span></div><div class="resource-count" style="color:var(--cyan);">4</div><div class="resource-sub">Accessible • 2 at-risk</div></div>
+            <div class="resource-card"><div class="resource-card-top"><span class="material-symbols-outlined resource-icon" style="color:var(--amber);">alt_route</span><span class="resource-label">Alt Routes</span></div><div class="resource-count" style="color:var(--amber);">3</div><div class="resource-sub">Viable • 1 recommended</div></div>
+            <div class="resource-card"><div class="resource-card-top"><span class="material-symbols-outlined resource-icon" style="color:var(--violet-mid);">medical_services</span><span class="resource-label">Medical Units</span></div><div class="resource-count" style="color:var(--violet-mid);">2</div><div class="resource-sub">Deployable • 0 in field</div></div>
+            <div class="resource-card"><div class="resource-card-top"><span class="material-symbols-outlined resource-icon" style="color:var(--gold);">volunteer_activism</span><span class="resource-label">Relief Teams</span></div><div class="resource-count" style="color:var(--gold);">6</div><div class="resource-sub">On standby • 2 alerted</div></div>
+            <div class="resource-card"><div class="resource-card-top"><span class="material-symbols-outlined resource-icon" style="color:var(--teal);">local_hospital</span><span class="resource-label">Facilities</span></div><div class="resource-count" style="color:var(--teal);">7</div><div class="resource-sub">Operational • 1 at-risk</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTION PLAN -->
+  <section class="action-section" id="action">
+    <div class="container">
+      <div class="action-inner">
+        <div>
+          <div class="section-eyebrow ey-emerald reveal"><span class="material-symbols-outlined">auto_fix_high</span>Explainable Action Plan</div>
+          <h2 class="section-heading reveal d1">Disruption becomes<br><em>clear action.</em></h2>
+          <p class="section-body reveal d2">RAAHAT doesn't just analyse — it acts. Every recommendation is structured, sequenced, and fully explained so that the person who receives it can act with complete confidence.</p>
+          <div class="callout-box cb-emerald reveal d3">
+            <strong style="color:var(--emerald);display:block;margin-bottom:0.35rem;"><span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle;margin-right:4px;">check_circle</span>Why This Matters</strong>
+            In a crisis, clarity is everything. RAAHAT's explainable AI shows not just what to do — but why each action was chosen, what it achieves, and what the alternatives were. Decision-makers lead; RAAHAT supports.
+          </div>
+        </div>
+        <div class="action-plan-card reveal d2">
+          <div class="action-card-header">
+            <div class="action-card-title-group">
+              <span class="material-symbols-outlined action-card-icon">task_alt</span>
+              <span class="action-card-title">RAAHAT Action Plan — NH-15 Disruption</span>
+            </div>
+            <span class="status-badge sb-live"><span class="badge-dot"></span>Generated</span>
+          </div>
+          <div class="action-steps-list">
+            <div class="action-step"><div class="step-num-badge sn-e">1</div><div><div class="step-content-title">Deploy Vehicle V-07 to Ledo Village</div><div class="step-content-desc">Priority 1 — Medical emergency. Carry insulin + emergency kit. Route via Margherita–Digboi secondary road (viable, 6t capacity). ETA: 1h 20min.</div></div></div>
+            <div class="action-step"><div class="step-num-badge sn-c">2</div><div><div class="step-content-title">Activate Medical Supply Chain Alt Route</div><div class="step-content-desc">Redirect dialysis supplies via Warehouse W-02 → Junction 7 → District Hospital. +2.8hr travel time accepted. Notify receiving staff.</div></div></div>
+            <div class="action-step"><div class="step-num-badge sn-t">3</div><div><div class="step-content-title">Pre-position Relief Team at Margherita Hub</div><div class="step-content-desc">2 teams + 48hr ration pack. Establish forward staging post. Monitor NH-15 repair timeline for re-activation.</div></div></div>
+            <div class="action-step"><div class="step-num-badge sn-v">4</div><div><div class="step-content-title">Continuous Network Monitoring</div><div class="step-content-desc">RAAHAT will re-evaluate priorities every 30 minutes. Alerts issued if new cascades are detected.</div></div></div>
+          </div>
+          <div class="confidence-row">
+            <span class="confidence-label">Plan Confidence</span>
+            <div class="confidence-bar"><div class="confidence-fill" id="conf-bar"></div></div>
+            <span class="confidence-pct">92%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
   <section class="stats-section" id="stats">
     <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <div class="section-eyebrow">
-          <span class="material-symbols-outlined">analytics</span>
-          Operational Impact
+      <div class="stats-inner">
+        <div class="stat-item reveal">
+          <div class="stat-value" style="color:var(--cyan);"><span class="stat-counter" data-target="247">0</span><span class="stat-unit" style="color:var(--teal);">+</span></div>
+          <div class="stat-label">Network nodes modelled per region</div>
+          <div class="stat-accent-bar" style="background:linear-gradient(90deg,var(--indigo),var(--cyan));"></div>
         </div>
-        <h2 class="section-title">Field-Ready Regional Scale</h2>
-      </div>
-
-      <div class="stats-grid">
-        <!-- Stat 1 -->
-        <div class="stat-card reveal-on-scroll delay-1">
-          <div class="stat-indicator amber"></div>
-          <div class="stat-metric-wrap tabular-nums">
-            <span class="stat-counter" data-target="25" data-prefix="" data-suffix="+">0</span><span class="stat-suffix">+</span>
-          </div>
-          <p class="stat-caption">Villages, hospitals &amp; warehouses tracked in real time</p>
+        <div class="stat-item reveal d2">
+          <div class="stat-value" style="color:var(--amber);">&lt;<span class="stat-counter" data-target="30">0</span><span class="stat-unit" style="color:var(--coral);">sec</span></div>
+          <div class="stat-label">From disruption event to full impact analysis</div>
+          <div class="stat-accent-bar" style="background:linear-gradient(90deg,var(--scarlet),var(--amber));"></div>
         </div>
-
-        <!-- Stat 2 -->
-        <div class="stat-card reveal-on-scroll delay-2">
-          <div class="stat-indicator green"></div>
-          <div class="stat-metric-wrap tabular-nums">
-            <span class="stat-counter" data-target="60" data-prefix="" data-suffix="%">0</span><span class="stat-suffix">%</span>
-          </div>
-          <p class="stat-caption">Faster response time through predictive routing</p>
+        <div class="stat-item reveal d3">
+          <div class="stat-value" style="color:var(--emerald);"><span class="stat-counter" data-target="7">0</span></div>
+          <div class="stat-label">Pipeline steps from disruption to action plan</div>
+          <div class="stat-accent-bar" style="background:linear-gradient(90deg,var(--teal),var(--emerald));"></div>
         </div>
-
-        <!-- Stat 3 -->
-        <div class="stat-card reveal-on-scroll delay-3">
-          <div class="stat-indicator teal"></div>
-          <div class="stat-metric-wrap tabular-nums">
-            &lt;<span class="stat-counter" data-target="200" data-prefix="" data-suffix="ms">0</span><span class="stat-suffix">ms</span>
-          </div>
-          <p class="stat-caption">Sub-second cascade impact propagation latency</p>
-        </div>
-
-        <!-- Stat 4 -->
-        <div class="stat-card reveal-on-scroll delay-4">
-          <div class="stat-indicator amber-light"></div>
-          <div class="stat-metric-wrap tabular-nums">
-            <span class="stat-counter" data-target="100" data-prefix="" data-suffix="%">0</span><span class="stat-suffix">%</span>
-          </div>
-          <p class="stat-caption">Explainable — every recommendation comes with reasoning</p>
+        <div class="stat-item reveal d4">
+          <div class="stat-value" style="background:linear-gradient(135deg,var(--violet-mid),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><span class="stat-counter" data-target="100">0</span><span class="stat-unit" style="-webkit-text-fill-color:var(--violet-mid);">%</span></div>
+          <div class="stat-label">Explainable — every recommendation justified</div>
+          <div class="stat-accent-bar" style="background:linear-gradient(90deg,var(--violet),var(--teal));"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-       6. FOOTER — Deep Dark & Trustworthy
-       ============================================================ -->
-  <footer class="footer-section">
+  <!-- CTA FINALE -->
+  <section class="cta-section">
     <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand-col">
-          <span class="footer-wordmark">RAAHAT</span>
-          <p class="footer-tagline">
-            Regional AI for Accessibility, Assistance &amp; Transport. Keeping essential resources moving when disaster strikes.
-          </p>
-        </div>
-
-        <div class="footer-nav-col">
-          <div>
-            <div class="footer-nav-group-title">Product</div>
-            <ul class="footer-links-list">
-              <li><a href="#features" class="footer-link-item">Digital Twin</a></li>
-              <li><a href="#features" class="footer-link-item">Impact Engine</a></li>
-              <li><a href="#features" class="footer-link-item">Recommendations</a></li>
-              <li><a href="/dashboard" class="footer-link-item" onclick="handleDashboardLaunch(event)">Dashboard</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <div class="footer-nav-group-title">Navigation</div>
-            <ul class="footer-links-list">
-              <li><a href="#core-loop" class="footer-link-item">How it Works</a></li>
-              <li><a href="#stats" class="footer-link-item">About</a></li>
-              <li><a href="/login" class="footer-link-item">Sign In</a></li>
-            </ul>
-          </div>
+      <div class="cta-inner">
+        <div class="cta-kicker reveal"><span class="material-symbols-outlined">rocket_launch</span>RAAHAT — Regional AI Response Intelligence</div>
+        <h2 class="cta-heading reveal d1">Disruption into<br><span class="grad-text">understanding.<br>Understanding into action.</span></h2>
+        <p class="cta-sub reveal d2">Every disaster-prone region deserves intelligence that moves as fast as the crisis. RAAHAT is built for the moments when clarity matters most.</p>
+        <div class="cta-btns reveal d3">
+          <a href="/dashboard" class="btn-cta-main" onclick="handleLaunch(event)"><span class="material-symbols-outlined">explore</span>Open RAAHAT Dashboard</a>
+          <a href="/login" class="btn-cta-ghost"><span class="material-symbols-outlined">login</span>Sign In to Your Region</a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="footer-bottom">
-        <span>&copy; 2026 RAAHAT &bull; Regional Logistics Intelligence &bull; SIH 2026</span>
-        <div class="footer-disclaimer-pill">
-          <span class="material-symbols-outlined">science</span>
-          <span>Prototype &mdash; simulated data for demonstration</span>
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-wordmark">RAAHAT</div>
+          <p class="footer-desc">Regional AI for Accessibility, Assistance &amp; Transport Intelligence. Transforming infrastructure disruption into clear, explainable response for disaster-prone and geographically challenging regions.</p>
         </div>
+        <div>
+          <div class="footer-col-title">Platform</div>
+          <ul class="footer-links">
+            <li><a href="#twin">Digital Twin</a></li>
+            <li><a href="#impact">Impact Analysis</a></li>
+            <li><a href="#priority">Priority Engine</a></li>
+            <li><a href="/dashboard" onclick="handleLaunch(event)">Dashboard</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Navigate</div>
+          <ul class="footer-links">
+            <li><a href="#disruption">The Problem</a></li>
+            <li><a href="#pipeline">How It Works</a></li>
+            <li><a href="#stats">About</a></li>
+            <li><a href="/login">Sign In</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 RAAHAT — Regional Intelligence Platform</span>
+        <div class="footer-disclaimer"><span class="material-symbols-outlined">science</span>Prototype — simulated data for demonstration purposes</div>
       </div>
     </div>
   </footer>
 
-  <!-- ============================================================
-       INTERACTIVE JAVASCRIPT & MOTION ENGINE
-       ============================================================ -->
   <script>
-    // ------------------------------------------------------------
-    // 1. Subtle Animated Network/Node-Graph Canvas (Digital Twin)
-    // ------------------------------------------------------------
-    (function initNetworkCanvas() {
-      const canvas = document.getElementById('hero-network-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let width, height;
-      let nodes = [];
-      let edges = [];
-      let pulses = [];
-
-      const NODE_COUNT = 48;
-      const MAX_DIST = 180;
-      const PULSE_SPEED = 0.0035;
-
-      function resize() {
-        width = canvas.width = canvas.offsetWidth;
-        height = canvas.height = canvas.offsetHeight;
+    // 1. Hero canvas
+    (function(){
+      const canvas=document.getElementById('hero-canvas');
+      if(!canvas)return;
+      const ctx=canvas.getContext('2d');
+      let W,H,nodes=[],edges=[],pulses=[];
+      const N=55,MAX_D=170;
+      function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight}
+      function buildGraph(){
+        resize();nodes=[];edges=[];pulses=[];
+        for(let i=0;i<N;i++)nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.18,vy:(Math.random()-0.5)*0.18,r:Math.random()*1.8+0.9,hue:Math.random()});
+        for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y;if(Math.sqrt(dx*dx+dy*dy)<MAX_D&&Math.random()<0.18)edges.push({from:i,to:j})}
+        for(let i=0;i<8;i++)if(edges.length>0)pulses.push({edgeIdx:Math.floor(Math.random()*edges.length),t:Math.random(),speed:0.003+Math.random()*0.003,color:Math.random()<0.5?'i':Math.random()<0.5?'c':'e'});
       }
-
-      function buildGraph() {
-        resize();
-        nodes = [];
-        edges = [];
-        pulses = [];
-
-        for (let i = 0; i < NODE_COUNT; i++) {
-          nodes.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.2,
-            vy: (Math.random() - 0.5) * 0.2,
-            r: Math.random() * 1.5 + 1.2,
-            isAmber: Math.random() < 0.25
-          });
+      const COLS={i:{n:'rgba(79,70,229,',p:'rgba(99,88,249,'},c:{n:'rgba(34,211,238,',p:'rgba(34,211,238,'},e:{n:'rgba(16,185,129,',p:'rgba(16,185,129,'}};
+      function gColor(hue){return hue<0.33?COLS.i.n:hue<0.66?COLS.c.n:COLS.e.n}
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1}
+        for(const e of edges){const a=nodes[e.from],b=nodes[e.to];ctx.strokeStyle='rgba(100,116,139,0.07)';ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+        for(const n of nodes){ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=gColor(n.hue)+'0.22)';ctx.fill()}
+        for(const p of pulses){
+          p.t+=p.speed;if(p.t>=1){p.t=0;p.edgeIdx=Math.floor(Math.random()*edges.length)}
+          const e=edges[p.edgeIdx];if(!e)continue;
+          const a=nodes[e.from],b=nodes[e.to];
+          const px=a.x+(b.x-a.x)*p.t,py=a.y+(b.y-a.y)*p.t;
+          const col=COLS[p.color].p;
+          const g=ctx.createRadialGradient(px,py,0,px,py,12);g.addColorStop(0,col+'0.5)');g.addColorStop(1,col+'0)');
+          ctx.beginPath();ctx.arc(px,py,12,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+          ctx.beginPath();ctx.arc(px,py,2,0,Math.PI*2);ctx.fillStyle=col+'0.95)';ctx.fill();
         }
-
-        for (let i = 0; i < nodes.length; i++) {
-          for (let j = i + 1; j < nodes.length; j++) {
-            const dx = nodes[i].x - nodes[j].x;
-            const dy = nodes[i].y - nodes[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < MAX_DIST && Math.random() < 0.2) {
-              edges.push({ from: i, to: j });
-            }
-          }
-        }
-
-        // Active pulses traveling along lines
-        for (let i = 0; i < 6; i++) {
-          if (edges.length > 0) {
-            pulses.push({
-              edgeIdx: Math.floor(Math.random() * edges.length),
-              progress: Math.random(),
-              speed: PULSE_SPEED + Math.random() * 0.002
-            });
-          }
-        }
+        requestAnimationFrame(draw);
       }
-
-      function render() {
-        ctx.clearRect(0, 0, width, height);
-
-        // Update nodes
-        for (let i = 0; i < nodes.length; i++) {
-          const n = nodes[i];
-          n.x += n.vx;
-          n.y += n.vy;
-          if (n.x < 0 || n.x > width) n.vx *= -1;
-          if (n.y < 0 || n.y > height) n.vy *= -1;
-        }
-
-        // Draw edges (8-12% opacity)
-        ctx.lineWidth = 0.8;
-        for (let i = 0; i < edges.length; i++) {
-          const e = edges[i];
-          const a = nodes[e.from];
-          const b = nodes[e.to];
-          if (!a || !b) continue;
-
-          ctx.strokeStyle = 'rgba(231, 236, 242, 0.08)';
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-
-        // Draw nodes
-        for (let i = 0; i < nodes.length; i++) {
-          const n = nodes[i];
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-          ctx.fillStyle = n.isAmber ? 'rgba(232, 135, 30, 0.35)' : 'rgba(231, 236, 242, 0.14)';
-          ctx.fill();
-        }
-
-        // Draw traveling pulses
-        for (let i = 0; i < pulses.length; i++) {
-          const p = pulses[i];
-          p.progress += p.speed;
-          if (p.progress >= 1) {
-            p.progress = 0;
-            p.edgeIdx = Math.floor(Math.random() * edges.length);
-          }
-
-          const e = edges[p.edgeIdx];
-          if (!e) continue;
-          const a = nodes[e.from];
-          const b = nodes[e.to];
-          if (!a || !b) continue;
-
-          const px = a.x + (b.x - a.x) * p.progress;
-          const py = a.y + (b.y - a.y) * p.progress;
-
-          // Outer soft glow
-          const grad = ctx.createRadialGradient(px, py, 0, px, py, 14);
-          grad.addColorStop(0, 'rgba(232, 135, 30, 0.35)');
-          grad.addColorStop(1, 'rgba(232, 135, 30, 0)');
-          ctx.beginPath();
-          ctx.arc(px, py, 14, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-
-          // Core pulse point
-          ctx.beginPath();
-          ctx.arc(px, py, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(244, 169, 77, 0.9)';
-          ctx.fill();
-        }
-
-        requestAnimationFrame(render);
-      }
-
-      window.addEventListener('resize', () => {
-        resize();
-      }, { passive: true });
-
-      buildGraph();
-      render();
+      window.addEventListener('resize',()=>resize(),{passive:true});
+      buildGraph();draw();
     })();
 
-    // ------------------------------------------------------------
-    // 2. Sticky Navbar Blur on Scroll
-    // ------------------------------------------------------------
-    const navbarEl = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 15) {
-        navbarEl.classList.add('scrolled');
-      } else {
-        navbarEl.classList.remove('scrolled');
-      }
-    }, { passive: true });
+    // 2. Navbar scroll
+    const nav=document.getElementById('navbar');
+    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>20),{passive:true});
 
-    // ------------------------------------------------------------
-    // 3. Scroll-triggered Reveal Animations (IntersectionObserver)
-    // ------------------------------------------------------------
-    const observerOptions = {
-      root: null,
-      threshold: 0.2, // ~20% visible as per spec
-      rootMargin: '0px 0px -40px 0px'
-    };
+    // 3. Reveal
+    const revObs=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+    },{threshold:0.14,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
 
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-          observer.unobserve(entry.target); // fire once only
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-      revealObserver.observe(el);
-    });
-
-    // ------------------------------------------------------------
-    // 4. The Core Loop Sequential Light-up (System is "Alive")
-    // ------------------------------------------------------------
-    (function initCoreLoopSequence() {
-      const stepItems = document.querySelectorAll('.loop-step-item');
-      if (stepItems.length === 0) return;
-      let activeIndex = 0;
-
-      function triggerNextStep() {
-        stepItems.forEach(item => {
-          item.classList.remove('is-active');
-          const pill = item.querySelector('.loop-pill');
-          if (pill) pill.classList.remove('is-active');
+    // 4. Stats countup
+    const statObs=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(e=>{
+        if(!e.isIntersecting)return;
+        e.target.querySelectorAll('.stat-counter').forEach(counter=>{
+          const target=parseInt(counter.dataset.target,10),dur=1400,start=performance.now();
+          function tick(now){const p=Math.min((now-start)/dur,1),ease=1-Math.pow(1-p,3);counter.textContent=Math.floor(ease*target);if(p<1)requestAnimationFrame(tick);else counter.textContent=target}
+          requestAnimationFrame(tick);
         });
-
-        const currentItem = stepItems[activeIndex];
-        if (currentItem) {
-          currentItem.classList.add('is-active');
-          const pill = currentItem.querySelector('.loop-pill');
-          if (pill) pill.classList.add('is-active');
-        }
-
-        activeIndex = (activeIndex + 1) % stepItems.length;
-      }
-
-      // Initial step activate
-      triggerNextStep();
-      // Sequential loop every 1.8s
-      setInterval(triggerNextStep, 1800);
-    })();
-
-    // ------------------------------------------------------------
-    // 5. Stats Strip Number CountUp on Viewport Entry
-    // ------------------------------------------------------------
-    const statsSection = document.getElementById('stats');
-    if (statsSection) {
-      const counters = statsSection.querySelectorAll('.stat-counter');
-      let counted = false;
-
-      const statsObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !counted) {
-            counted = true;
-            counters.forEach(counter => {
-              const target = parseInt(counter.getAttribute('data-target'), 10);
-              const duration = 1200; // ms
-              const startTime = performance.now();
-
-              function updateCount(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // Ease-out quad formula
-                const easeProgress = 1 - (1 - progress) * (1 - progress);
-                const currentVal = Math.floor(easeProgress * target);
-                counter.innerText = currentVal;
-
-                if (progress < 1) {
-                  requestAnimationFrame(updateCount);
-                } else {
-                  counter.innerText = target;
-                }
-              }
-              requestAnimationFrame(updateCount);
-            });
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.25 });
-
-      statsObserver.observe(statsSection);
-    }
-
-    // ------------------------------------------------------------
-    // 6. Navigation and Launch Handlers
-    // ------------------------------------------------------------
-    function handleDashboardLaunch(e) {
-      e.preventDefault();
-      const isAuth = localStorage.getItem('raahat_auth') === 'true';
-      window.location.href = isAuth ? '/dashboard' : '/login';
-    }
-
-    // Smooth link scrolling for anchor tags
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        if (href && href !== '#') {
-          const target = document.querySelector(href);
-          if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
+        obs.unobserve(e.target);
       });
+    },{threshold:0.3});
+    const ss=document.querySelector('.stats-section');if(ss)statObs.observe(ss);
+
+    // 5. Confidence bar
+    const confObs=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(e=>{if(e.isIntersecting){const b=document.getElementById('conf-bar');if(b)setTimeout(()=>b.classList.add('animate'),400);obs.unobserve(e.target)}});
+    },{threshold:0.4});
+    const confEl=document.getElementById('conf-bar');if(confEl)confObs.observe(confEl.closest('.action-plan-card'));
+
+    // 6. Navigation
+    function handleLaunch(e){e.preventDefault();window.location.href=localStorage.getItem('raahat_auth')==='true'?'/dashboard':'/login'}
+    document.querySelectorAll('a[href^="#"]').forEach(link=>{
+      link.addEventListener('click',e=>{const href=link.getAttribute('href');if(href&&href!=='#'){const t=document.querySelector(href);if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}}});
     });
   </script>
-
 </body>
 </html>

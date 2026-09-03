@@ -4447,48 +4447,53 @@ body {
 }
 
 .role-selector-label {
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: var(--text-primary, #17212B);
+  color: rgba(148, 163, 184, 0.9);
+  letter-spacing: 0.03em;
 }
 
 .role-selector-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  background: var(--bg-page, #F4F6F8);
+  gap: 4px;
+  background: rgba(5, 8, 15, 0.7);
   padding: 4px;
-  border-radius: var(--radius-card, 10px);
-  border: 1px solid var(--border-subtle, #D9DEE3);
+  border-radius: 11px;
+  border: 1px solid rgba(241, 245, 249, 0.1);
 }
 
 .role-tab {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   padding: 0.55rem 0.5rem;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
-  color: var(--text-secondary, #5A6472);
-  font-family: var(--font-body);
+  /* Inactive: clearly available but not selected */
+  color: rgba(148, 163, 184, 0.65);
+  font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
 }
 
 .role-tab:hover {
-  color: var(--navy, #051960);
-  background: rgba(255, 255, 255, 0.6);
+  color: rgba(241, 245, 249, 0.85);
+  background: rgba(241, 245, 249, 0.05);
 }
 
+/* ④ Active state: cyan border + subtle glow — clear, premium, on-brand */
 .role-tab.is-selected {
-  background: #ffffff;
-  color: var(--navy, #051960);
-  border-color: var(--border-subtle, #D9DEE3);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  background: rgba(17, 24, 39, 0.9);
+  color: #F1F5F9;
+  border-color: rgba(34, 211, 238, 0.35);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.12) inset,
+              0 2px 12px rgba(16, 185, 129, 0.08);
 }
 
 .role-tab-icon {

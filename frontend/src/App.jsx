@@ -15,6 +15,7 @@ import ScenarioComparison from './components/disruption/ScenarioComparison'
 import AssistantPanel from './components/disruption/AssistantPanel'
 import OperationalIntelligenceWorkflow from './components/workflow/OperationalIntelligenceWorkflow'
 import LoginPage from './views/LoginPage'
+import SignUpPage from './views/SignUpPage'
 import MapFocusView from './views/MapFocusView'
 import ImpactAnalysisView from './views/ImpactAnalysisView'
 import PriorityQueueView from './views/PriorityQueueView'
@@ -42,6 +43,7 @@ const REGIONS = [
 function getPathView() {
   const path = window.location.pathname
   if (path === '/login') return 'login'
+  if (path === '/signup' || path === '/register') return 'signup'
   if (path === '/map') return 'map'
   if (path === '/impact-analysis' || path === '/impact') return 'impact'
   if (path === '/priority' || path === '/priority-queue' || path === '/queue') return 'queue'
@@ -99,16 +101,17 @@ function AppContent() {
       }
 
       if (!isAuth) {
-        if (path !== '/login') {
+        // Allow /login and /signup for unauthenticated users
+        if (path !== '/login' && path !== '/signup' && path !== '/register') {
           window.history.replaceState(null, '', '/login')
         }
       } else {
-        // Authenticated users visiting login go to dashboard
-        if (path === '/login' || path === '/landing.html') {
+        // Authenticated users visiting login/signup go to dashboard
+        if (path === '/login' || path === '/signup' || path === '/register' || path === '/landing.html') {
           window.history.replaceState(null, '', '/dashboard')
           setActiveView('dashboard')
         } else {
-          setActiveView(pathView === 'login' ? 'dashboard' : pathView)
+          setActiveView(pathView === 'login' || pathView === 'signup' ? 'dashboard' : pathView)
         }
       }
     }
@@ -212,8 +215,12 @@ function AppContent() {
     setDrawerOpen(true)
   }
 
-  // If not authenticated, render Login Page
+  // If not authenticated, render Login or Sign-Up page
   if (!isAuthenticated) {
+    const path = window.location.pathname
+    if (path === '/signup' || path === '/register') {
+      return <SignUpPage onLoginSuccess={handleLoginSuccess} />
+    }
     return <LoginPage onLoginSuccess={handleLoginSuccess} />
   }
 
