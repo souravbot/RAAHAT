@@ -16,7 +16,7 @@ from typing import Dict, List
 from app.models.edge import EdgeStatus, TransportEdge
 from app.models.node import RegionalNode
 from app.models.regional_state import RegionalState
-from app.models.vehicles import VehicleStatus
+from app.models.vehicles import VehicleStatus, Vehicle
 from app.core.config import get_settings
 
 
